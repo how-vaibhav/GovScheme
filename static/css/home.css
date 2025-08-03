@@ -1,0 +1,153 @@
+body {
+      background: linear-gradient(to right,#1b263b, #1b263b);
+    }
+
+    .section-container {
+      background: #e5f0f1;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin: 40px auto;
+      padding: 30px;
+      max-width: 90%;
+      transition: transform 0.3s ease;
+    }
+
+    .section-container:hover {
+      transform: scale(1.01);
+    }
+#vision{color:brown;}
+    .vision-text {
+      font-size: 1.5rem;
+      line-height: 1.8;
+      text-align: justify;
+    }
+
+    .carousel-wrapper {
+      max-width: 80%;
+      margin: auto;
+      border: 3px groove #030a16;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .carousel-inner img {
+      height: 350px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      background-color: #091321;
+      border-radius: 50%;
+      padding: 10px;
+    }
+
+    .ministry-logos {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .ministry {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 120px;
+    }
+
+    .ministry-icon {
+      font-size: 40px;
+      color: #0d6efd;
+      transition: transform 0.3s, color 0.3s;
+    }
+
+    .ministry-icon:hover {
+      color: #063971;
+      transform: scale(1.2);
+    }
+
+    .ministry p {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    /* Chatbot styles */
+    #chatbot-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 28px;
+      padding: 12px;
+      border-radius: 50%;
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      z-index: 1000;
+    }
+
+    #chatbot {
+      display: none;
+      flex-direction: column;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 300px;
+      background-color: #fff;
+      border: 2px solid #0d6efd;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      z-index: 999;
+    }
+
+    #chatbot-header {
+      background-color: #0d6efd;
+      color: white;
+      padding: 12px;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+      font-weight: bold;
+      position: relative;
+    }
+
+    #chatbot-header .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      cursor: pointer;
+    }
+
+    #chatbot-body {
+      padding: 10px;
+      height: 300px;
+      overflow-y: auto;
+    }
+
+    .bot-message, .user-message {
+      margin-bottom: 8px;
+      padding: 8px;
+      border-radius: 8px;
+      max-width: 80%;
+    }
+
+    .bot-message {
+      background-color: #e1f0ff;
+      align-self: flex-start;
+    }
+
+    .user-message {
+      background-color: #d4edda;
+      align-self: flex-end;
+    }
+
+    #chat-input {
+      border: none;
+      border-top: 1px solid #ccc;
+      padding: 10px;
+      outline: none;
+      width: 100%;
+    }
+    

@@ -1,0 +1,67 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scheme.name }} - Scheme Details</title>
+    <link rel="stylesheet" href="{% static 'css/scheme_details.css' %}" />
+  </head>
+  <body>
+    <div class="container" role="main" aria-labelledby="scheme-title">
+      <h1 id="scheme-title">{{ scheme.name }}</h1>
+      <p><strong>Short Description:</strong> {{ scheme.objective }}</p>
+      <hr />
+      <h2>Full Details:</h2>
+      <p>{{ scheme.full_description|linebreaks }}</p>
+
+      <nav class="btn-group" aria-label="Scheme actions">
+        <a
+          href="{% url 'scheme_list' %}"
+          class="btn"
+          title="Back to scheme list"
+          >← Back to List</a
+        >
+        <a
+          href="{% url 'apply_scheme' %}"
+          class="btn"
+          title="Apply for this scheme"
+          >Apply</a
+        >
+        <a
+          href="{% url 'feedback' %}?scheme_id={{ scheme.id }}"
+          class="btn"
+          title="Give Feedback"
+          >Give Feedback</a
+        >
+      </nav>
+    </div>
+
+    <section class="feedback-section" aria-labelledby="feedback-title">
+      <h2 id="feedback-title">Feedback</h2>
+
+      {% if feedbacks %}
+      <ul class="feedback-list">
+        {% for feedback in feedbacks %}
+        <li
+          class="feedback-card"
+          role="article"
+          aria-label="Feedback by {{ feedback.user.username }}"
+        >
+          <strong>{{ feedback.user.username }}</strong> said:
+          <p>{{ feedback.message }}</p>
+          <time
+            class="feedback-timestamp"
+            datetime="{{ feedback.submitted_at|date:'c' }}"
+          >
+            Submitted on {{ feedback.submitted_at|date:"F j, Y, g:i a" }}
+          </time>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="no-feedback">No feedback available for this scheme.</p>
+      {% endif %}
+    </section>
+  </body>
+</html>

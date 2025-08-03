@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Scraping Quotes</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to right, #1e3c72, #2a5298);
+        color: #1a1a1a;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header,
+      footer {
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        padding: 15px 30px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      main {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 60px 20px;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 40px;
+        max-width: 700px;
+        width: 100%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        text-align: center;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+        font-size: 2rem;
+        color: #0d1b2a;
+      }
+
+      p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        color: #333;
+      }
+
+      form {
+        margin-bottom: 30px;
+      }
+
+      .btn {
+        position: relative;
+        background: #00a8e8;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+      }
+
+      .btn:hover {
+        background: #007bbf;
+        transform: translateY(-2px);
+      }
+
+      .btn:disabled {
+        background: #aaa;
+        cursor: not-allowed;
+      }
+
+      .loader {
+        display: none;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #fff;
+        border-top: 3px solid transparent;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        position: absolute;
+        top: 50%;
+        left: 12px;
+        transform: translateY(-50%);
+      }
+
+      @keyframes spin {
+        to {
+          transform: translateY(-50%) rotate(360deg);
+        }
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        text-align: left;
+        max-height: 250px;
+        overflow-y: auto;
+        margin-top: 20px;
+      }
+
+      ul li {
+        background: #f8f9fa;
+        margin-bottom: 10px;
+        padding: 12px;
+        border-radius: 6px;
+        border-left: 5px solid #007bbf;
+      }
+
+      a.home-link {
+        display: inline-block;
+        margin-top: 20px;
+        text-decoration: none;
+        font-weight: bold;
+        color: #007bbf;
+        transition: color 0.3s ease;
+      }
+
+      a.home-link:hover {
+        color: #005f99;
+      }
+    </style>
+  </head>
+  <body>
+    <header>Sikkim Government Schemes Portal</header>
+
+    <main>
+      <div class="card">
+        <h1>Web Scraping Quotes</h1>
+        <p>Click the button below to scrape some quotes.</p>
+
+        <form id="scrapeForm" method="post" action="{% url 'scrape_schemes' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn" id="scrapeBtn">
+            <span class="loader" id="loader"></span>
+            Start Scraping
+          </button>
+        </form>
+
+        {% if quotes %}
+        <h2>Scraped Quotes:</h2>
+        <ul>
+          {% for quote in quotes %}
+          <li><strong>{{ quote.author }}</strong>: {{ quote.quote }}</li>
+          {% endfor %}
+        </ul>
+        {% elif quotes is not none %}
+        <p>No quotes found.</p>
+        {% endif %}
+
+        <a href="{% url 'home' %}" class="home-link">← Back to Home</a>
+      </div>
+    </main>
+
+    <footer>&copy; 2025 Sikkim Government. All rights reserved.</footer>
+
+    <script>
+      const form = document.getElementById("scrapeForm");
+      const btn = document.getElementById("scrapeBtn");
+      const loader = document.getElementById("loader");
+
+      form.addEventListener("submit", function () {
+        loader.style.display = "inline-block";
+        btn.disabled = true;
+        btn.style.paddingLeft = "45px";
+      });
+    </script>
+  </body>
+</html>

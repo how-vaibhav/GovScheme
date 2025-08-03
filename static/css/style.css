@@ -1,0 +1,342 @@
+ body {
+            background: linear-gradient(to right, #1b263b, #1b263b);
+        margin: 0;
+        font-family: cursive;
+        background-color: #f9f9f9;
+      }
+
+      .back {
+        background: url("/static/images/sikkim.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        padding-bottom: 2rem;
+        border-bottom-left-radius: 40px;
+        border-bottom-left-radius: 40px;
+      }
+
+      header {
+        text-align: center;
+        padding: 2.5rem 2rem;
+      }
+
+      header h1 {
+        font-family: "Orbitron", sans-serif;
+        font-size: 4rem;
+        background: black;
+        background-size: 200% auto;
+        color: white;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shine 4s linear infinite;
+      }
+
+      @keyframes shine {
+        0% {
+          background-position: 0% center;
+        }
+        100% {
+          background-position: 200% center;
+        }
+      }
+
+      nav {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        padding: 1rem 0;
+        border-radius: 12px;
+        margin: 0 auto 2rem;
+        width: 90%;
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+      }
+
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 1.1rem;
+        position: relative;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      nav a:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: #eb090dcd;
+      }
+
+      nav a::before {
+        content: "";
+        position: absolute;
+        width: 0%;
+        height: 3px;
+        left: 0;
+        bottom: -5px;
+        background: #ffdd57;
+        transition: width 0.3s;
+      }
+
+      nav a:hover::before {
+        width: 100%;
+      }
+
+      .profile-container {
+        top: 1rem;
+        right: 2rem;
+      }
+
+      .profile-pic {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.3s;
+      }
+
+      .profile-pic:hover {
+        transform: scale(1.1);
+      }
+
+      #profile-toggle {
+        display: none;
+      }
+
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 60px;
+        right: 2rem;
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        min-width: 170px;
+        z-index: 10;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      .dropdown-menu.show {
+        display: block;
+      }
+
+      .dropdown-menu a,
+      .dropdown-menu p {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: #333;
+        padding: 10px 0;
+        text-decoration: none;
+        transition: background 0.3s;
+        font-size: 15px;
+      }
+
+      .dropdown-menu a:hover {
+        background-color: #f2f2f2;
+        border-radius: 5px;
+      }
+
+      .dropdown-menu p {
+        font-weight: bold;
+        color: #555;
+      }
+
+      #profile-toggle:checked + label + .dropdown-menu {
+        display: block;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .login-message,
+      .logout-message {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        animation: fade-slide 4s ease forwards;
+        z-index: 9999;
+        font-size: 1rem;
+        display: none;
+      }
+
+      .login-message {
+        background-color: #28a745;
+      }
+      .logout-message {
+        background-color: #dc3545;
+      }
+
+      @keyframes fade-slide {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -20px);
+        }
+        10% {
+          opacity: 1;
+          transform: translate(-50%, 0);
+        }
+        90% {
+          opacity: 1;
+          transform: translate(-50%, 0);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -20px);
+        }
+      }
+
+      
+    .footer {
+      background: linear-gradient(135deg, #1c1c1c, #2e2e2e);
+      color: white;
+      padding: 40px 20px 10px;
+      margin-top: 60px;
+      border-top-left-radius: 40px;
+      border-top-right-radius: 40px;
+    }
+
+    .footer ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer li a {
+      color: #ddd;
+      text-decoration: none;
+    }
+
+    .footer li a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .footer h5 {
+      margin-bottom: 20px;
+    }
+
+    .notification-container {
+      display: inline-block;
+      margin: 10px;
+      position: relative;
+  }
+
+  #notification-dropdown {
+    position: absolute;
+    right: 0;
+    top: 70px;
+    background-color: white;
+    border: 1px solid #ccc;
+    width: 250px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 9999;
+  }
+
+  #notification-dropdown ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  #notification-dropdown li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  #notification-dropdown p {
+    padding: 10px;
+    color: #555;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .notification-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    color: white; /* White bell */
+    font-size: 24px;
+  }
+
+  .notification-btn .dot {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    height: 10px;
+    width: 10px;
+    background-color: white;
+    border-radius: 50%;
+  }
+
+  .notification-btn:hover {
+    opacity: 0.8;
+  }
+
+  .top-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px; /* space between bell and profile */
+    margin-right: 2rem;
+    position: absolute;
+    top: 20px;
+    right: 0;
+    z-index: 1000;
+    position: absolute;
+  }
+
+  .translate_btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    border: none;
+    background: transparent;
+}
+
+.read-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 6px 10px;      /* smaller padding */
+  font-weight: 500;
+  border-radius: 6px;
+  transition: 0.3s ease;
+  font-size: 14px;        /* smaller font */
+  width: auto;            /* auto width for natural button size */
+  height: auto;           /* auto height */
+  cursor: pointer;
+}
+
+.read-btn:hover {
+  background-color: #218838; /* slightly darker green on hover */
+}
+.read-btn:focus {
+  outline: none;                 /* Remove default outline */
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5); /* Green glow on focus */
+}

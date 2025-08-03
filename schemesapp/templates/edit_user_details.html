@@ -1,0 +1,34 @@
+{%extends "base.html"%} {% load static %}
+<title>Edit Your Details</title>
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/edit_user_details.css' %}" />
+<body>
+  <main class="card" role="main" aria-labelledby="page-title">
+    <h2 id="page-title">Edit Your Details</h2>
+    <form method="post" onsubmit="showLoader()" novalidate>
+      {% csrf_token %} {{ form.as_p }}
+      <button
+        type="submit"
+        id="submitBtn"
+        aria-live="polite"
+        aria-busy="false"
+        aria-label="Save Changes"
+      >
+        <span class="loader" id="loader" aria-hidden="true"></span>
+        Save Changes
+      </button>
+    </form>
+  </main>
+
+  <script>
+    function showLoader() {
+      const btn = document.getElementById("submitBtn");
+      const loader = document.getElementById("loader");
+      loader.style.display = "inline-block";
+      btn.disabled = true;
+      btn.style.paddingLeft = "50px";
+      btn.setAttribute("aria-busy", "true");
+    }
+  </script>
+  {% endblock %}
+</body>

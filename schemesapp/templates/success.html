@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% load static %} {% block title %}Application
+Success{% endblock %} {% block extra_head %}
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+  rel="stylesheet"
+/>
+<link rel="stylesheet" href="{% static 'css/success.css' %}" />
+{% endblock %} {% block content %}
+<div class="success-body">
+  <div class="success-container">
+    <i class="bi bi-check-circle-fill success-icon"></i>
+    <h2>Application Submitted Successfully!</h2>
+    <p><strong>Your Aadhaar Number:</strong> {{ aadhaar }}</p>
+    <p><strong>Applied Scheme:</strong> {{ scheme_name }}</p>
+    <a href="{% url 'apply_scheme' %}" class="btn-back">
+      <i class="bi bi-arrow-left-circle me-2"></i>Apply for Another Scheme
+    </a>
+  </div>
+</div>
+{% endblock %}
