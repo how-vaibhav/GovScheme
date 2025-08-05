@@ -80,6 +80,7 @@ We built a working prototype that:
 
 ## 📜 License
 
-Currently not licensed .
+
+[MIT](https://choosealicense.com/licenses/mit/)
 
 
