@@ -1,53 +1,126 @@
-{% extends "base.html" %} {% load static %} {% block title %}Enter Your
-Details{% endblock %} {% block extra_head %}
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-  rel="stylesheet"
-/>
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-  rel="stylesheet"
-/>
-<link rel='stylesheet' href = "{% static "css/user_details.css" %}"> {% endblock%} 
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}User Details - GovAid{% endblock %}
+
 {% block content %}
-<div class="container user-form-container">
-  <a href="{% url 'home' %}" class="btn-back">
-    <i class="bi bi-house-door-fill"></i> Back to Home
-  </a>
-
-  <div class="card">
-    <h2 class="text-center mb-4">
-      <i class="bi bi-person-circle me-2"></i>Enter Your Details
-    </h2>
-
-    {% if messages %} {% for message in messages %}
-    <div class="alert alert-success text-center" role="alert">
-      <i class="bi bi-check-circle-fill me-1"></i> {{ message }}
+<!-- Header -->
+<section class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center space-x-4 mb-4">
+      <a href="{% url 'home' %}" class="text-primary-100 hover:text-white transition-colors flex items-center gap-1">
+        <i class="fas fa-arrow-left"></i> Home
+      </a>
     </div>
-    {% endfor %} {% endif %}
+    <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">
+      <i class="fas fa-id-card mr-3"></i>Your Details
+    </h1>
+    <p class="text-lg text-primary-100 dark:text-gray-300">
+      Complete your profile to check eligibility for schemes
+    </p>
+  </div>
+</section>
 
-    <form method="post" class="needs-validation" novalidate id="userForm">
-      {% csrf_token %} {% for field in form %}
-      <div class="mb-3">
-        {{ field.label_tag }} {{ field }}
-        <div class="invalid-feedback">
-          Please enter a valid {{ field.label|lower }}.
+<!-- Form Section -->
+<section class="py-12 bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <div class="max-w-2xl mx-auto">
+      <div class="card p-8 md:p-10">
+        
+        <!-- Success Message -->
+        {% if messages %}
+        <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-6 flex gap-3">
+          <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl flex-shrink-0 mt-0.5"></i>
+          <div>
+            {% for message in messages %}
+            <p class="text-sm text-green-800 dark:text-green-300">{{ message }}</p>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <form method="post" id="userForm" class="space-y-6">
+          {% csrf_token %}
+
+          {% for field in form %}
+          <div>
+            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {{ field.label }}
+              {% if field.field.required %}<span class="text-red-600 dark:text-red-400">*</span>{% endif %}
+            </label>
+            
+            {% if field.widget.input_type == 'checkbox' %}
+            <div class="flex items-center">
+              {{ field }}
+              <label for="{{ field.id_for_label }}" class="ml-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                {{ field.label }}
+              </label>
+            </div>
+            {% elif field.widget.input_type == 'textarea' %}
+            {{ field }}
+            {% else %}
+            {{ field }}
+            {% endif %}
+
+            {% if field.errors %}
+            <div class="mt-1.5 text-sm text-red-600 dark:text-red-400 space-y-1">
+              {% for error in field.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if field.help_text %}
+            <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+              {{ field.help_text|safe }}
+            </p>
+            {% endif %}
+          </div>
+          {% endfor %}
+
+          <!-- Submit Button -->
+          <button type="submit" 
+                  id="submitBtn"
+                  class="btn-primary w-full py-3 rounded-lg font-medium text-base transition-all mt-8 flex items-center justify-center gap-2">
+            <span id="submitText"><i class="fas fa-check"></i> Save Details</span>
+          </button>
+        </form>
+
+        <!-- Info Box -->
+        <div class="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <p class="text-sm text-blue-800 dark:text-blue-200">
+            <i class="fas fa-info-circle mr-2"></i>
+            Your information is secure and used only to check your eligibility for government schemes.
+          </p>
         </div>
       </div>
-      {% endfor %}
-
-      <button type="submit" class="btn btn-submit w-100 mt-3" id="submitBtn">
-        <span
-          class="spinner-border spinner-border-sm"
-          role="status"
-          aria-hidden="true"
-        ></span>
-        <span class="submit-text"
-          ><i class="bi bi-send-check-fill me-1"></i>Submit</span
-        >
-      </button>
-    </form>
+    </div>
   </div>
+</section>
+
+<script>
+  // Dark mode
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  }
+
+  // Apply input styling
+  document.querySelectorAll('input:not([type="checkbox"]), textarea, select').forEach(el => {
+    if (!el.classList.contains('input')) {
+      el.className = (el.tagName === 'TEXTAREA' ? 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none resize-none' : 'input w-full');
+    }
+  });
+
+  // Form submission
+  document.getElementById('userForm').addEventListener('submit', function(e) {
+    const btn = document.getElementById('submitBtn');
+    const text = document.getElementById('submitText');
+    btn.disabled = true;
+    text.innerHTML = '<span class="spinner"></span> Saving...';
+  });
+</script>
+{% endblock %}
 </div>
 
 <script>

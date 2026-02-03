@@ -1,59 +1,80 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Register - GovAid</title>
-  <link rel="icon" href="{% static 'images/favicon.ico' %}" />
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="{% static 'css/output.css' %}" />
-</head>
-<body class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - GovAid</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" />
 
-  <div class="min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md animate-fade-in">
-      
-      <!-- Logo -->
-      <div class="text-center mb-10">
-        <a href="{% url 'home' %}" class="inline-block mb-6 group">
-          <div class="inline-flex items-center justify-center w-14 h-14 bg-primary-600 dark:bg-primary-500 rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-110">
-            <i class="fas fa-landmark text-2xl text-white"></i>
-          </div>
-        </a>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Create Account</h1>
-        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Join GovAid today</p>
-      </div>
-
-      <!-- Register Card -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6">
-        
-        <form method="POST" action="{% url 'register' %}" id="registerForm" class="space-y-4">
-          {% csrf_token %}
-          
-          <!-- Success Message -->
-          {% if messages %}
-          <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 flex gap-2">
-            <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-lg flex-shrink-0 mt-0.5"></i>
-            <div class="text-xs text-green-800 dark:text-green-300">
-              {% for message in messages %}
-              <p>{{ message }}</p>
-              {% endfor %}
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+  </head>
+  <body class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div class="min-h-screen flex items-center justify-center p-4">
+      <div class="w-full max-w-md animate-fade-in">
+        <!-- Logo -->
+        <div class="text-center mb-10">
+          <a href="{% url 'home' %}" class="inline-block mb-6 group">
+            <div
+              class="inline-flex items-center justify-center w-14 h-14 bg-primary-600 dark:bg-primary-500 rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-110"
+            >
+              <i class="fas fa-landmark text-2xl text-white"></i>
             </div>
-          </div>
-          {% endif %}
+          </a>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+            Create Account
+          </h1>
+          <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">
+            Join GovAid today
+          </p>
+        </div>
 
-          <!-- Form Fields -->
-          {% for field in form %}
-            {% if field.name != 'password2' %}
+        <!-- Register Card -->
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6"
+        >
+          <form
+            method="POST"
+            action="{% url 'register' %}"
+            id="registerForm"
+            class="space-y-4"
+          >
+            {% csrf_token %}
+
+            <!-- Success Message -->
+            {% if messages %}
+            <div
+              class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 flex gap-2"
+            >
+              <i
+                class="fas fa-check-circle text-green-600 dark:text-green-400 text-lg flex-shrink-0 mt-0.5"
+              ></i>
+              <div class="text-xs text-green-800 dark:text-green-300">
+                {% for message in messages %}
+                <p>{{ message }}</p>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- Form Fields -->
+            {% for field in form %} {% if field.name != 'password2' %}
             <div>
-              <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              <label
+                for="{{ field.id_for_label }}"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
+              >
                 {{ field.label }}
               </label>
-              {{ field }}
-              {% if field.errors %}
+              {{ field }} {% if field.errors %}
               <div class="mt-1 text-xs text-red-600 dark:text-red-400">
                 {% for error in field.errors %}
                 <p>{{ error }}</p>
@@ -61,73 +82,96 @@
               </div>
               {% endif %}
             </div>
-            {% endif %}
-          {% endfor %}
+            {% endif %} {% endfor %}
 
-          <!-- Password Confirmation -->
-          {% if form.password2 %}
-          <div>
-            <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-              {{ form.password2.label }}
-            </label>
-            {{ form.password2 }}
-            {% if form.password2.errors %}
-            <div class="mt-1 text-xs text-red-600 dark:text-red-400">
-              {% for error in form.password2.errors %}
-              <p>{{ error }}</p>
-              {% endfor %}
+            <!-- Password Confirmation -->
+            {% if form.password2 %}
+            <div>
+              <label
+                for="{{ form.password2.id_for_label }}"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
+              >
+                {{ form.password2.label }}
+              </label>
+              {{ form.password2 }} {% if form.password2.errors %}
+              <div class="mt-1 text-xs text-red-600 dark:text-red-400">
+                {% for error in form.password2.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+              </div>
+              {% endif %}
             </div>
             {% endif %}
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="btn-primary w-full py-2.5 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-2 mt-6"
+            >
+              <span id="btnText"
+                ><i class="fas fa-user-plus"></i> Create Account</span
+              >
+            </button>
+          </form>
+
+          <!-- Login Link -->
+          <div
+            class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 text-center text-sm text-gray-600 dark:text-gray-400"
+          >
+            Already have an account?
+            <a
+              href="{% url 'login' %}"
+              class="text-primary-600 dark:text-primary-400 font-medium hover:underline"
+            >
+              Sign in
+            </a>
           </div>
-          {% endif %}
+        </div>
 
-          <!-- Submit Button -->
-          <button type="submit" 
-                  class="btn-primary w-full py-2.5 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-2 mt-6">
-            <span id="btnText"><i class="fas fa-user-plus"></i> Create Account</span>
-          </button>
-        </form>
-
-        <!-- Login Link -->
-        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 text-center text-sm text-gray-600 dark:text-gray-400">
-          Already have an account? 
-          <a href="{% url 'login' %}" class="text-primary-600 dark:text-primary-400 font-medium hover:underline">
-            Sign in
+        <!-- Back Link -->
+        <div class="text-center mt-5">
+          <a
+            href="{% url 'home' %}"
+            class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors inline-flex items-center gap-1"
+          >
+            <i class="fas fa-arrow-left text-xs"></i> Home
           </a>
         </div>
       </div>
-
-      <!-- Back Link -->
-      <div class="text-center mt-5">
-        <a href="{% url 'home' %}" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors inline-flex items-center gap-1">
-          <i class="fas fa-arrow-left text-xs"></i> Home
-        </a>
-      </div>
     </div>
-  </div>
 
-  <script src="{% static 'js/main.js' %}"></script>
-  <script>
-    // Dark mode init
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-    }
-
-    // Apply input styling to all inputs
-    document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"], textarea, select').forEach(el => {
-      if (!el.classList.contains('input')) {
-        el.className = 'input w-full text-sm';
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+      // Dark mode init
+      const savedTheme = localStorage.getItem("theme");
+      if (
+        savedTheme === "dark" ||
+        (!savedTheme &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        document.documentElement.classList.add("dark");
       }
-    });
 
-    // Form submit
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-      const btn = document.querySelector('button[type="submit"]');
-      const text = document.getElementById('btnText');
-      btn.disabled = true;
-      text.innerHTML = '<span class="spinner"></span> Creating...';
-    });
-  </script>
-</body>
+      // Apply input styling to all inputs
+      document
+        .querySelectorAll(
+          'input[type="text"], input[type="email"], input[type="password"], textarea, select',
+        )
+        .forEach((el) => {
+          if (!el.classList.contains("input")) {
+            el.className = "input w-full text-sm";
+          }
+        });
+
+      // Form submit
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", function (e) {
+          const btn = document.querySelector('button[type="submit"]');
+          const text = document.getElementById("btnText");
+          btn.disabled = true;
+          text.innerHTML = '<span class="spinner"></span> Creating...';
+        });
+    </script>
+  </body>
 </html>
