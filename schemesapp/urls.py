@@ -35,4 +35,4 @@ urlpatterns = [
       path('advanced-search/', views.advanced_search, name='advanced_search'),
       path('application/<int:app_id>/timeline/', views.application_timeline, name='application_timeline'),
       path('notifications/', views.notification_center, name='notification_center'),
-
+]

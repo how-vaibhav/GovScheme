@@ -109,9 +109,6 @@ class Scheme(models.Model):
         'minority': lambda: details.minority == self.minority if self.minority is not None else True,
         'below_poverty_line': lambda: details.below_poverty_line == self.below_poverty_line if self.below_poverty_line is not None else True,
         }
-        True, 
-        'max_income': lambda: details.income <= self.max_income if self.max_income is not None else True,
-        }
         return all(check() for check in checks.values())
 
     def __str__(self):
