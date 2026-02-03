@@ -1,94 +1,141 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Login</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - GovAid</title>
+  <link rel="icon" href="{% static 'images/favicon.ico' %}" />
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900">
 
-    <!-- Bootstrap 5 -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md animate-fade-in">
+      
+      <!-- Simple Logo -->
+      <div class="text-center mb-10">
+        <a href="{% url 'home' %}" class="inline-block mb-6 group">
+          <div class="inline-flex items-center justify-center w-14 h-14 bg-primary-600 dark:bg-primary-500 rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-110">
+            <i class="fas fa-landmark text-2xl text-white"></i>
+          </div>
+        </a>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Sign In</h1>
+        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Access your GovAid account</p>
+      </div>
 
-    <!-- Font Awesome 6 for Eye Icon -->
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      rel="stylesheet"
-    />
+      <!-- Login Card -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6">
+        
+        <form method="POST" action="{% url 'login' %}" id="loginForm" class="space-y-4">
+          {% csrf_token %}
+          
+          <!-- Error Alert -->
+          {% if form.errors %}
+          <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 flex gap-2">
+            <i class="fas fa-circle-xmark text-red-600 dark:text-red-400 text-lg flex-shrink-0 mt-0.5"></i>
+            <div class="text-xs text-red-800 dark:text-red-300">
+              <p class="font-medium">Invalid credentials</p>
+              <p class="opacity-90">Username or password is incorrect</p>
+            </div>
+          </div>
+          {% endif %}
 
-    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
-  </head>
-  <body>
-    {% block content %}
-    <form method="POST" action="{% url 'login' %}" class="w-100">
-      {% csrf_token %}
-      <div class="login-container">
-        <h2 class="text-center mb-4">Sign In</h2>
+          <!-- Username -->
+          <div>
+            <label for="id_username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              Username
+            </label>
+            {{ form.username }}
+          </div>
 
-        {% if form.errors %}
-        <p class="error">
-          Your username and password didn’t match. Please try again.
-        </p>
-        {% endif %}
+          <!-- Password -->
+          <div>
+            <label for="id_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              Password
+            </label>
+            <div class="relative">
+              {{ form.password }}
+              <button type="button" 
+                      onclick="togglePassword()" 
+                      class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 rounded focus-outline">
+                <i id="toggleIcon" class="fas fa-eye text-base"></i>
+              </button>
+            </div>
+          </div>
 
-        <!-- Username -->
-        <div class="mb-3">
-          <label for="id_username" class="form-label">Username</label>
-          {{ form.username }}
-        </div>
+          <!-- Remember Me -->
+          <div class="flex items-center">
+            <input type="checkbox" name="remember" id="rememberMe" 
+                   class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600" />
+            <label for="rememberMe" class="ml-2.5 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+              Keep me signed in
+            </label>
+          </div>
 
-        <!-- Password -->
-        <div class="mb-3 password-wrapper">
-          <label for="id_password" class="form-label">Password</label>
-          {{ form.password }}
-          <i
-            class="fa-solid fa-eye toggle-password"
-            onclick="togglePassword()"
-            id="toggleIcon"
-          ></i>
-        </div>
+          <!-- Submit Button -->
+          <button type="submit" 
+                  id="loginBtn"
+                  class="btn-primary w-full py-2.5 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-2 mt-6">
+            <span id="btnText"><i class="fas fa-sign-in-alt"></i> Sign In</span>
+          </button>
+        </form>
 
-        <!-- Remember Me -->
-        <div class="form-check mb-3">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="remember"
-            id="rememberMe"
-          />
-          <label class="form-check-label" for="rememberMe"> Remember Me </label>
-        </div>
-
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-login">Login</button>
-
-        <!-- Signup Link -->
-        <div class="signup-link mt-4 text-center">
-          <p>
-            Don't have an account?
-            <a href="{% url 'register' %}">Sign Up</a>
-          </p>
+        <!-- Sign Up Link -->
+        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 text-center text-sm text-gray-600 dark:text-gray-400">
+          Don't have account? 
+          <a href="{% url 'register' %}" class="text-primary-600 dark:text-primary-400 font-medium hover:underline">
+            Sign up
+          </a>
         </div>
       </div>
-    </form>
 
-    <!-- Show/Hide Password Script -->
-    <script>
-      function togglePassword() {
-        const pwdInput = document.getElementById("id_password");
-        const icon = document.getElementById("toggleIcon");
-        if (pwdInput.type === "password") {
-          pwdInput.type = "text";
-          icon.classList.remove("fa-eye");
-          icon.classList.add("fa-eye-slash");
-        } else {
-          pwdInput.type = "password";
-          icon.classList.remove("fa-eye-slash");
-          icon.classList.add("fa-eye");
-        }
+      <!-- Back Link -->
+      <div class="text-center mt-5">
+        <a href="{% url 'home' %}" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors inline-flex items-center gap-1">
+          <i class="fas fa-arrow-left text-xs"></i> Home
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'js/main.js' %}"></script>
+  <script>
+    // Dark mode init
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+
+    // Input styling
+    if (document.getElementById('id_username')) document.getElementById('id_username').className = 'input w-full text-sm';
+    if (document.getElementById('id_password')) document.getElementById('id_password').className = 'input w-full text-sm pr-9';
+
+    // Toggle password
+    function togglePassword() {
+      const pwd = document.getElementById('id_password');
+      const icon = document.getElementById('toggleIcon');
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        pwd.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
       }
-    </script>
-    {% endblock %}
-  </body>
+    }
+
+    // Form submit
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      const btn = document.getElementById('loginBtn');
+      const text = document.getElementById('btnText');
+      btn.disabled = true;
+      text.innerHTML = '<span class="spinner"></span> Signing in...';
+    });
+  </script>
+</body>
 </html>

@@ -1,0 +1,275 @@
+{% load static %} {% load group_filters %}
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <title>{% block title %}Government Schemes Portal{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" />
+
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      crossorigin="anonymous"
+    />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+
+    {% block extra_head %}{% endblock %}
+  </head>
+
+  <body class="min-h-screen flex flex-col"   >
+    <div class="login-message" id="login-msg">
+      <i class="fas fa-check-circle"></i> You have logged in to GovAid
+    </div>
+    <div class="logout-message" id="logout-msg">
+      <i class="fas fa-sign-out-alt"></i> You have logged out of GovAid
+    </div>
+
+    <script>
+      const loginMsg = document.getElementById("login-msg");
+      const logoutMsg = document.getElementById("logout-msg");
+
+      if (localStorage.getItem("justLoggedIn") === "true") {
+        loginMsg.style.display = "block";
+        setTimeout(() => {
+          loginMsg.style.display = "none";
+        }, 4000);
+        localStorage.removeItem("justLoggedIn");
+      }
+
+      if (localStorage.getItem("justLoggedOut") === "true") {
+        logoutMsg.style.display = "block";
+        setTimeout(() => {
+          logoutMsg.style.display = "none";
+        }, 4000);
+        localStorage.removeItem("justLoggedOut");
+      }
+    </script>
+
+    <div class="back">
+      <header>
+        <h1>Sikkim Government</h1>
+      </header>
+
+      <div class="top-container">
+        <div class="profile-container">
+          <input type="checkbox" id="profile-toggle" />
+          <label for="profile-toggle">
+            <img
+              src="https://static.vecteezy.com/system/resources/previews/014/194/215/original/avatar-icon-human-a-person-s-badge-social-media-profile-symbol-the-symbol-of-a-person-vector.jpg"
+              alt="Profile"
+              class="profile-pic"
+            />
+          </label>
+          <div class="dropdown-menu">
+            {% if user.is_authenticated %}
+            <p>
+              <i class="fas fa-user-circle"></i>
+              {{user.get_full_name|default:user.username }}
+            </p>
+            <a
+              href="{% url 'logout' %}"
+              onclick="localStorage.setItem('justLoggedOut', 'true')"
+              ><i class="fas fa-sign-out-alt"></i> Logout</a
+            >
+            <a href="{% url 'view_user_details' %}">
+              <i class="fas fa-id-badge"></i> User Details
+            </a>
+            <a href="{% url 'check_all_eligibility' %}"
+              ><i class="fas fa-search"></i>Check My Eligibility</a
+            >
+            {% else %}
+            <p><i class="fas fa-user"></i> Guest</p>
+            <a
+              href="{% url 'login' %}"
+              onclick="localStorage.setItem('justLoggedIn', 'true')"
+              ><i class="fas fa-sign-in-alt"></i> Login</a
+            >
+            <a href="{% url 'register' %}"
+              ><i class="fas fa-user-plus"></i> Sign Up</a
+            >
+            {% endif %} {% if user.is_superuser %}
+            <a href="{% url 'add_employee' %}"
+              ><i class="fas fa-user-shield"></i> Authenticate</a
+            >
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="notification-container">
+          <button id="notification-button" class="notification-btn">
+            <i class="fas fa-bell"></i>
+            {% if notifications|length > 0 %}
+            <span class="dot"></span>
+            {% endif %}
+          </button>
+
+          <div id="notification-dropdown" class="hidden">
+            {% if notifications %}
+            <ul>
+              {% for notif in notifications %}
+              <li
+                class="{% if notif.is_read %}read{% endif %}"
+                data-id="{{ notif.id }}"
+              >
+                {{ notif.message }} {% if not notif.is_read %}
+                <button class="read-btn">Read</button>
+                {% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p>No new notifications</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <nav>
+        <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+        <a href="{% url 'scheme_list' %}"
+          ><i class="fas fa-landmark"></i> Schemes</a
+        >
+        {% if user|has_group:"Employee" %}
+        <a href="{% url 'view_feedbacks' %}"
+          ><i class="fas fa-comments"></i> Feedbacks</a
+        >
+        <a href="{% url 'add_scheme' %}"
+          ><i class="fas fa-add"></i> Add Scheme</a
+        >
+        <a href="{% url 'all_applications' %}"
+          ><i class="fas fa-check"></i>Approve Application</a
+        >
+        {% else %}
+        <a href="{% url 'feedback' %}"
+          ><i class="fas fa-comment-dots"></i> Feedback</a
+        >
+        {% endif %}
+      </nav>
+    </div>
+
+    <main>{% block content %}{% endblock %}</main>
+
+    <!-- Footer -->
+    <div class="footer text-center">
+      <div class="row text-start">
+        <div class="col-md-4">
+          <h5>About Us</h5>
+          <ul>
+            <li><a href="#">Mission & Vision</a></li>
+            <li><a href="#">Leadership</a></li>
+            <li><a href="#">Partnerships</a></li>
+            <li><a href="#">Transparency</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5>Important Links</h5>
+          <ul>
+            <li><a href="#">Govt. of Sikkim</a></li>
+            <li><a href="#">Central Schemes</a></li>
+            <li><a href="#">Downloads</a></li>
+            <li><a href="#">FAQs</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5>Contact</h5>
+          <ul>
+            <li><a href="mailto:support@govaid.in">support@govaid.in</a></li>
+            <li><a href="tel:+919876543210">+91-9876543210</a></li>
+            <li>Address: Gangtok, Sikkim</li>
+          </ul>
+        </div>
+      </div>
+      <hr class="bg-light" />
+      <p>&copy; 2025 GovAid. All rights reserved.</p>
+    </div>
+    <script>
+      // Notification dropdown toggle
+      document
+        .getElementById("notification-button")
+        .addEventListener("click", function () {
+          const dropdown = document.getElementById("notification-dropdown");
+          dropdown.classList.toggle("hidden");
+        });
+
+      // Close notification dropdown on outside click
+      document.addEventListener("click", function (event) {
+        const dropdown = document.getElementById("notification-dropdown");
+        const button = document.getElementById("notification-button");
+        if (
+          !button.contains(event.target) &&
+          !dropdown.contains(event.target)
+        ) {
+          dropdown.classList.add("hidden");
+        }
+      });
+
+      // CSRF token getter function (placed globally)
+      function getCSRFToken() {
+        let token = document.querySelector('meta[name="csrf-token"]');
+        if (token) return token.getAttribute("content");
+
+        // fallback if you want to get it from cookies
+        function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === name + "=") {
+                cookieValue = decodeURIComponent(
+                  cookie.substring(name.length + 1)
+                );
+                break;
+              }
+            }
+          }
+          return cookieValue;
+        }
+        return getCookie("csrftoken");
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".read-btn").forEach((button) => {
+          button.addEventListener("click", (e) => {
+            e.preventDefault();
+            const li = e.target.closest("li");
+            const notifId = li.getAttribute("data-id");
+
+            fetch("{% url 'mark_read' %}", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": getCSRFToken(),
+              },
+              body: new URLSearchParams({
+                notification_id: notifId,
+              }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.success) {
+                  // Remove notification from UI
+                  li.remove();
+                } else {
+                  alert("Failed to mark notification read.");
+                }
+              })
+              .catch(() => alert("Error communicating with server."));
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

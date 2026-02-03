@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Government Schemes - Home</title>  
+  <link href="{% static 'css/home.css' %}" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="section-container">
+  <h1 class="text-center" id = "vision">Vision of GovAid</h1>
+  <p class="vision-text">
+At GovAid, our vision is to empower the people of Sikkim with seamless access to government schemes across all sectors.
+    We aim to bridge the gap between citizens and essential opportunities by providing timely, transparent, and comprehensive updates.
+    Our mission is to make crucial information readily available, ensuring that no one misses out on the benefits designed to improve their lives.
+    Whether it's education, healthcare, agriculture, entrepreneurship, or social welfare, GovAid ensures that every resident stays informed, engaged,
+    and ready to benefit from the resources meant for their growth and well-being.
+   </p>
+</div>
+
+<div class="section-container text-center">
+  <h1 class="mb-4" style="color: brown;">Gallery</h2>
+  <div id="schemeCarousel" class="carousel slide carousel-wrapper" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="{% static 'images/scheme1.jpg' %}" class="d-block w-100" alt="Scheme 1">
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'images/scheme2.jpg' %}" class="d-block w-100" alt="Scheme 2">
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'images/scheme3.jpg' %}" class="d-block w-100" alt="Scheme 3">
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'images/scheme4.jpg' %}" class="d-block w-100" alt="Scheme 3">
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'images/scheme5.jpg' %}" class="d-block w-100" alt="Scheme 3">
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'images/scheme6.jpg' %}" class="d-block w-100" alt="Scheme 3">
+      </div><div class="carousel-item">
+        <img src="{% static 'images/scheme7.jpg' %}" class="d-block w-100" alt="Scheme 3">
+      </div><div class="carousel-item">
+        <img src="{% static 'images/scheme8.jpg' %}" class="d-block w-100" alt="Scheme 3">
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#schemeCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#schemeCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </button>
+  </div>
+</div>
+
+<!-- Ministry Logos -->
+<div class="section-container text-center">
+  <h1 style="color: brown;">Our Ministry Partners</h2>
+  <div class="ministry-logos">
+    <div class="ministry">
+      <a href="https://sikkimpower.co.in/" class="ministry-icon"><i class="fas fa-bolt"></i></a>
+      <p>Power</p>
+    </div>
+    <div class="ministry">
+      <a href="https://agri.sikkim.gov.in" class="ministry-icon"><i class="fas fa-seedling"></i></a>
+      <p>Agriculture</p>
+    </div>
+    <div class="ministry">
+      <a href="http://sikkimfred.gov.in/user/home.aspx" class="ministry-icon"><i class="fas fa-coins"></i></a>
+      <p>Finance</p>
+    </div>
+    <div class="ministry">
+      <a href="https://www.sikkim.gov.in/departments/rural-management-development-department" class="ministry-icon"><i class="fas fa-tractor"></i></a>
+      <p>Rural Dev</p>
+    </div>
+    <div class="ministry">
+      <a href="https://dstsikkim.gov.in/" class="ministry-icon"><i class="fas fa-flask"></i></a>
+      <p>Science & Tech</p>
+    </div>
+    <div class="ministry">
+      <a href="https://www.sikkim.gov.in/departments/education-department" class="ministry-icon"><i class="fas fa-graduation-cap"></i></a>
+      <p>Education</p>
+    </div>
+    <div class="ministry">
+      <a href="https://sikkimtourism.gov.in/Public/index" class="ministry-icon"><i class="fas fa-umbrella-beach"></i></a>
+      <p>Tourism</p>
+    </div>
+    <div class="ministry">
+      <a href="https://labour.sikkim.gov.in/" class="ministry-icon"><i class="fas fa-briefcase"></i></a>
+      <p>Labour</p>
+    </div>
+  </div>
+</div>
+
+<!-- Chatbot Toggle Button -->
+<button id="chatbot-toggle" aria-label="Toggle Chatbot" onclick="toggleChat()">
+  <i class="fas fa-comment-dots"></i>
+</button>
+
+<!-- Chatbot Container -->
+<div id="chatbot">
+  <div id="chatbot-header">
+    Chat with us
+    <span class="close-btn" onclick="toggleChat()">&times;</span>
+  </div>
+  <div id="chatbot-body">
+    <div class="bot-message">Do you need help?</div>
+  </div>
+  <input id="chat-input" type="text" placeholder="Type a message..." autocomplete="off" />
+</div>
+
+<script>
+  window.onload = function () {
+    const chatbot = document.getElementById('chatbot');
+    const toggleButton = document.getElementById('chatbot-toggle');
+    const chatBody = document.getElementById('chatbot-body');
+    const chatInput = document.getElementById('chat-input');
+
+    function toggleChat() {
+      if (chatbot.style.display === 'flex') {
+        chatbot.style.display = 'none';
+        toggleButton.style.display = 'block';
+      } else {
+        chatbot.style.display = 'flex';
+        toggleButton.style.display = 'none';
+        chatInput.focus();
+      }
+    }
+
+    async function sendMessage() {
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+
+      const userMsg = document.createElement('div');
+      userMsg.className = 'user-message';
+      userMsg.textContent = msg;
+      chatBody.appendChild(userMsg);
+      chatInput.value = '';
+
+      try {
+        const res = await fetch("http://localhost:5005/webhooks/rest/webhook", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sender: "user", message: msg })
+        });
+
+        const data = await res.json();
+        if (data.length === 0) {
+          const noReply = document.createElement('div');
+          noReply.className = 'bot-message';
+          noReply.textContent = "Sorry, I didn't get that.";
+          chatBody.appendChild(noReply);
+        } else {
+          data.forEach(item => {
+            const botMsg = document.createElement('div');
+            botMsg.className = 'bot-message';
+            botMsg.textContent = item.text;
+            chatBody.appendChild(botMsg);
+          });
+        }
+      } catch (error) {
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'bot-message';
+        errorMsg.textContent = "Bot is currently unavailable.";
+        chatBody.appendChild(errorMsg);
+      }
+
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    chatInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    window.toggleChat = toggleChat;
+  };
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+{% endblock %}
+
+

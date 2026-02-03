@@ -1,63 +1,218 @@
+{% extends "base.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>{{ scheme.name }} - Scheme Details</title>
-    <link rel="stylesheet" href="{% static 'css/scheme_details.css' %}" />
-  </head>
-  <body>
-    <div class="container" role="main" aria-labelledby="scheme-title">
-      <h1 id="scheme-title">{{ scheme.name }}</h1>
-      <p><strong>Short Description:</strong> {{ scheme.objective }}</p>
-      <hr />
-      <h2>Full Details:</h2>
-      <p>{{ scheme.full_description|linebreaks }}</p>
+{% block title %}{{ scheme.name }} - GovAid{% endblock %}
 
-      <nav class="btn-group" aria-label="Scheme actions">
-        <a
-          href="{% url 'scheme_list' %}"
-          class="btn"
-          title="Back to scheme list"
-          >← Back to List</a
-        >
-        <a
-          href="{% url 'apply_scheme' %}"
-          class="btn"
-          title="Apply for this scheme"
-          >Apply</a
-        >
-        <a
-          href="{% url 'feedback' %}?scheme_id={{ scheme.id }}"
-          class="btn"
-          title="Give Feedback"
-          >Give Feedback</a
-        >
-      </nav>
+{% block content %}
+<!-- Header -->
+<section class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center space-x-4 mb-4">
+      <a href="{% url 'scheme_list' %}" class="text-primary-100 hover:text-white transition-colors flex items-center gap-1">
+        <i class="fas fa-arrow-left"></i> Back to Schemes
+      </a>
     </div>
+    <h1 class="text-4xl md:text-5xl font-bold text-white">
+      {{ scheme.name }}
+    </h1>
+    <p class="text-lg text-primary-100 dark:text-gray-300 mt-3 max-w-3xl">
+      {{ scheme.objective }}
+    </p>
+  </div>
+</section>
 
-    <section class="feedback-section" aria-labelledby="feedback-title">
-      <h2 id="feedback-title">Feedback</h2>
+<!-- Main Content -->
+<section class="py-12 bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Main Column -->
+      <div class="lg:col-span-2">
+        
+        <!-- Overview Card -->
+        <div class="card p-8 mb-8">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+            Scheme Overview
+          </h2>
+          <div class="prose dark:prose-invert max-w-none">
+            {{ scheme.full_description|linebreaks }}
+          </div>
+        </div>
 
-      {% if feedbacks %}
-      <ul class="feedback-list">
-        {% for feedback in feedbacks %}
-        <li
-          class="feedback-card"
-          role="article"
-          aria-label="Feedback by {{ feedback.user.username }}"
-        >
-          <strong>{{ feedback.user.username }}</strong> said:
-          <p>{{ feedback.message }}</p>
-          <time
-            class="feedback-timestamp"
-            datetime="{{ feedback.submitted_at|date:'c' }}"
-          >
-            Submitted on {{ feedback.submitted_at|date:"F j, Y, g:i a" }}
-          </time>
-        </li>
-        {% endfor %}
+        <!-- Details Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {% if scheme.agency %}
+          <div class="card p-6">
+            <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+              <i class="fas fa-building text-primary-600 dark:text-primary-400 mr-2"></i>
+              Implementing Agency
+            </h3>
+            <p class="text-lg font-semibold text-gray-900 dark:text-white">
+              {{ scheme.agency }}
+            </p>
+          </div>
+          {% endif %}
+
+          {% if scheme.benefits %}
+          <div class="card p-6">
+            <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+              <i class="fas fa-gift text-green-600 dark:text-green-400 mr-2"></i>
+              Key Benefits
+            </h3>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              {{ scheme.benefits }}
+            </p>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Eligibility Requirements -->
+        {% if scheme.min_age or scheme.max_age or scheme.below_poverty_line %}
+        <div class="card p-8 mb-8">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+            <i class="fas fa-check-circle text-primary-600 dark:text-primary-400 mr-2"></i>
+            Eligibility Requirements
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% if scheme.min_age %}
+            <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <p class="text-sm text-blue-600 dark:text-blue-400 font-medium mb-1">Minimum Age</p>
+              <p class="text-2xl font-bold text-blue-900 dark:text-blue-300">{{ scheme.min_age }}+</p>
+            </div>
+            {% endif %}
+            {% if scheme.max_age %}
+            <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+              <p class="text-sm text-green-600 dark:text-green-400 font-medium mb-1">Maximum Age</p>
+              <p class="text-2xl font-bold text-green-900 dark:text-green-300">{{ scheme.max_age }}</p>
+            </div>
+            {% endif %}
+            {% if scheme.max_income %}
+            <div class="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+              <p class="text-sm text-purple-600 dark:text-purple-400 font-medium mb-1">Income Limit</p>
+              <p class="text-2xl font-bold text-purple-900 dark:text-purple-300">{{ scheme.max_income }}</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4">
+          {% if user.is_authenticated %}
+          <a href="{% url 'user_eligibility' scheme.pk %}" 
+             class="btn-primary py-3 rounded-lg font-medium flex items-center justify-center gap-2">
+            <i class="fas fa-check-circle"></i> Check Eligibility
+          </a>
+          {% else %}
+          <a href="{% url 'register' %}" 
+             class="btn-primary py-3 rounded-lg font-medium flex items-center justify-center gap-2">
+            <i class="fas fa-user-plus"></i> Register to Check
+          </a>
+          {% endif %}
+          
+          {% if user.is_authenticated %}
+          <a href="{% url 'feedback' %}?scheme_id={{ scheme.id }}" 
+             class="btn-outline py-3 rounded-lg font-medium flex items-center justify-center gap-2">
+            <i class="fas fa-comment-dots"></i> Give Feedback
+          </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="lg:col-span-1">
+        <!-- Quick Info Card -->
+        <div class="card p-6 sticky top-24 space-y-6">
+          <div class="space-y-2">
+            <p class="text-sm text-gray-600 dark:text-gray-400">Status</p>
+            <span class="badge badge-success">
+              <i class="fas fa-circle-check mr-1"></i> Active
+            </span>
+          </div>
+
+          <div class="space-y-2">
+            <p class="text-sm text-gray-600 dark:text-gray-400">Category</p>
+            <p class="font-semibold text-gray-900 dark:text-white">Government</p>
+          </div>
+
+          <!-- Share Button -->
+          <button onclick="shareScheme()" 
+                  class="w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+            <i class="fas fa-share-alt"></i> Share
+          </button>
+
+          <!-- Help CTA -->
+          <div class="p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg border border-primary-200 dark:border-primary-800">
+            <p class="text-sm font-medium text-primary-900 dark:text-primary-100 mb-3">
+              Need Help?
+            </p>
+            <p class="text-xs text-primary-800 dark:text-primary-200 mb-3">
+              Our team can help you understand eligibility and guide you through the application.
+            </p>
+            <a href="#" class="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:underline">
+              Contact Support →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Feedback Section -->
+<section class="py-12 bg-white dark:bg-gray-800">
+  <div class="container mx-auto px-4 max-w-4xl">
+    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+      <i class="fas fa-comments text-primary-600 dark:text-primary-400 mr-3"></i>
+      User Feedback
+    </h2>
+
+    {% if feedbacks %}
+    <div class="space-y-4">
+      {% for feedback in feedbacks %}
+      <div class="card p-6 border-l-4 border-primary-500">
+        <div class="flex items-start justify-between mb-3">
+          <div>
+            <p class="font-semibold text-gray-900 dark:text-white">
+              {{ feedback.user.username }}
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              <i class="fas fa-calendar-alt mr-1"></i>
+              {{ feedback.submitted_at|date:"M d, Y" }}
+            </p>
+          </div>
+          <span class="badge badge-primary text-xs">Verified</span>
+        </div>
+        <p class="text-gray-700 dark:text-gray-300">
+          {{ feedback.message }}
+        </p>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-comment-slash text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+      <p class="text-gray-600 dark:text-gray-400">No feedback yet</p>
+      <p class="text-gray-500 dark:text-gray-500 text-sm mt-2">Be the first to share your experience</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+function shareScheme() {
+  if (navigator.share) {
+    navigator.share({
+      title: '{{ scheme.name }}',
+      text: '{{ scheme.objective }}',
+      url: window.location.href
+    });
+  } else {
+    showToast('Share functionality not available', 'error');
+  }
+}
+</script>
+{% endblock %}
       </ul>
       {% else %}
       <p class="no-feedback">No feedback available for this scheme.</p>

@@ -1,191 +1,1028 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block content %}
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Government Schemes - Home</title>  
-  <link href="{% static 'css/home.css' %}" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
-</head>
-
-<body>
-
-<div class="section-container">
-  <h1 class="text-center" id = "vision">Vision of GovAid</h1>
-  <p class="vision-text">
-At GovAid, our vision is to empower the people of Sikkim with seamless access to government schemes across all sectors.
-    We aim to bridge the gap between citizens and essential opportunities by providing timely, transparent, and comprehensive updates.
-    Our mission is to make crucial information readily available, ensuring that no one misses out on the benefits designed to improve their lives.
-    Whether it's education, healthcare, agriculture, entrepreneurship, or social welfare, GovAid ensures that every resident stays informed, engaged,
-    and ready to benefit from the resources meant for their growth and well-being.
-   </p>
-</div>
-
-<div class="section-container text-center">
-  <h1 class="mb-4" style="color: brown;">Gallery</h2>
-  <div id="schemeCarousel" class="carousel slide carousel-wrapper" data-bs-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="{% static 'images/scheme1.jpg' %}" class="d-block w-100" alt="Scheme 1">
-      </div>
-      <div class="carousel-item">
-        <img src="{% static 'images/scheme2.jpg' %}" class="d-block w-100" alt="Scheme 2">
-      </div>
-      <div class="carousel-item">
-        <img src="{% static 'images/scheme3.jpg' %}" class="d-block w-100" alt="Scheme 3">
-      </div>
-      <div class="carousel-item">
-        <img src="{% static 'images/scheme4.jpg' %}" class="d-block w-100" alt="Scheme 3">
-      </div>
-      <div class="carousel-item">
-        <img src="{% static 'images/scheme5.jpg' %}" class="d-block w-100" alt="Scheme 3">
-      </div>
-      <div class="carousel-item">
-        <img src="{% static 'images/scheme6.jpg' %}" class="d-block w-100" alt="Scheme 3">
-      </div><div class="carousel-item">
-        <img src="{% static 'images/scheme7.jpg' %}" class="d-block w-100" alt="Scheme 3">
-      </div><div class="carousel-item">
-        <img src="{% static 'images/scheme8.jpg' %}" class="d-block w-100" alt="Scheme 3">
-      </div>
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#schemeCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#schemeCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    </button>
+{% extends "base.html" %} {% load static %} {% block title %}Home - Government
+Schemes Portal{% endblock %} {% block content %}
+<!-- Hero Section with Parallax Effect -->
+<section
+  class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 dark:from-gray-800 dark:via-gray-900 dark:to-black overflow-hidden"
+>
+  <!-- Animated Background Pattern -->
+  <div class="absolute inset-0 opacity-10">
+    <div
+      class="absolute inset-0"
+      style="
+        background-image: url(&quot;data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E&quot;);
+      "
+    ></div>
   </div>
-</div>
 
-<!-- Ministry Logos -->
-<div class="section-container text-center">
-  <h1 style="color: brown;">Our Ministry Partners</h2>
-  <div class="ministry-logos">
-    <div class="ministry">
-      <a href="https://sikkimpower.co.in/" class="ministry-icon"><i class="fas fa-bolt"></i></a>
-      <p>Power</p>
-    </div>
-    <div class="ministry">
-      <a href="https://agri.sikkim.gov.in" class="ministry-icon"><i class="fas fa-seedling"></i></a>
-      <p>Agriculture</p>
-    </div>
-    <div class="ministry">
-      <a href="http://sikkimfred.gov.in/user/home.aspx" class="ministry-icon"><i class="fas fa-coins"></i></a>
-      <p>Finance</p>
-    </div>
-    <div class="ministry">
-      <a href="https://www.sikkim.gov.in/departments/rural-management-development-department" class="ministry-icon"><i class="fas fa-tractor"></i></a>
-      <p>Rural Dev</p>
-    </div>
-    <div class="ministry">
-      <a href="https://dstsikkim.gov.in/" class="ministry-icon"><i class="fas fa-flask"></i></a>
-      <p>Science & Tech</p>
-    </div>
-    <div class="ministry">
-      <a href="https://www.sikkim.gov.in/departments/education-department" class="ministry-icon"><i class="fas fa-graduation-cap"></i></a>
-      <p>Education</p>
-    </div>
-    <div class="ministry">
-      <a href="https://sikkimtourism.gov.in/Public/index" class="ministry-icon"><i class="fas fa-umbrella-beach"></i></a>
-      <p>Tourism</p>
-    </div>
-    <div class="ministry">
-      <a href="https://labour.sikkim.gov.in/" class="ministry-icon"><i class="fas fa-briefcase"></i></a>
-      <p>Labour</p>
+  <div class="container mx-auto px-4 py-20 relative z-10">
+    <div class="max-w-4xl mx-auto text-center animate-fade-in">
+      <h1
+        class="text-4xl md:text-6xl font-display font-bold text-white mb-6 leading-tight"
+      >
+        Welcome to <span class="text-yellow-300">GovAid</span>
+      </h1>
+      <p
+        class="text-xl md:text-2xl text-primary-100 dark:text-gray-300 mb-8 leading-relaxed"
+      >
+        Your Gateway to Government Schemes in Sikkim
+      </p>
+      <p
+        class="text-lg text-primary-50 dark:text-gray-400 mb-10 max-w-3xl mx-auto"
+      >
+        Empowering citizens with seamless access to schemes across education,
+        healthcare, agriculture, entrepreneurship, and social welfare.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="{% url 'scheme_list' %}"
+          class="btn-primary inline-flex items-center space-x-2 px-8 py-4 text-lg group"
+        >
+          <span>Explore Schemes</span>
+          <i
+            class="fas fa-arrow-right group-hover:translate-x-1 transition-transform duration-200"
+          ></i>
+        </a>
+        {% if user.is_authenticated %}
+        <a
+          href="{% url 'check_all_eligibility' %}"
+          class="btn-outline inline-flex items-center space-x-2 px-8 py-4 text-lg bg-white dark:bg-gray-800 border-white dark:border-gray-600 text-primary-700 dark:text-primary-300 hover:bg-primary-50 dark:hover:bg-gray-700"
+        >
+          <i class="fas fa-check-circle"></i>
+          <span>Check My Eligibility</span>
+        </a>
+        {% else %}
+        <a
+          href="{% url 'register' %}"
+          class="btn-outline inline-flex items-center space-x-2 px-8 py-4 text-lg bg-white dark:bg-gray-800 border-white dark:border-gray-600 text-primary-700 dark:text-primary-300 hover:bg-primary-50 dark:hover:bg-gray-700"
+        >
+          <i class="fas fa-user-plus"></i>
+          <span>Get Started</span>
+        </a>
+        {% endif %}
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Chatbot Toggle Button -->
-<button id="chatbot-toggle" aria-label="Toggle Chatbot" onclick="toggleChat()">
-  <i class="fas fa-comment-dots"></i>
+  <!-- Wave Divider -->
+  <div class="absolute bottom-0 left-0 right-0">
+    <svg
+      viewBox="0 0 1440 120"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      class="w-full"
+    >
+      <path
+        d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0V0Z"
+        fill="currentColor"
+        class="text-gray-50 dark:text-gray-900"
+      />
+    </svg>
+  </div>
+</section>
+
+<!-- Quick Stats Section -->
+<section class="py-12 bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div
+        class="card p-6 text-center transform hover:scale-105 transition-all duration-300"
+      >
+        <div
+          class="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <i
+            class="fas fa-landmark text-3xl text-primary-600 dark:text-primary-400"
+          ></i>
+        </div>
+        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          50+
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400">Active Schemes</p>
+      </div>
+      <div
+        class="card p-6 text-center transform hover:scale-105 transition-all duration-300"
+      >
+        <div
+          class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <i
+            class="fas fa-users text-3xl text-green-600 dark:text-green-400"
+          ></i>
+        </div>
+        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          10K+
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400">Beneficiaries</p>
+      </div>
+      <div
+        class="card p-6 text-center transform hover:scale-105 transition-all duration-300"
+      >
+        <div
+          class="w-16 h-16 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <i
+            class="fas fa-building text-3xl text-yellow-600 dark:text-yellow-400"
+          ></i>
+        </div>
+        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">8</h3>
+        <p class="text-gray-600 dark:text-gray-400">Departments</p>
+      </div>
+      <div
+        class="card p-6 text-center transform hover:scale-105 transition-all duration-300"
+      >
+        <div
+          class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <i
+            class="fas fa-check-circle text-3xl text-purple-600 dark:text-purple-400"
+          ></i>
+        </div>
+        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          98%
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400">Success Rate</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Vision Section -->
+<section class="py-16 bg-white dark:bg-gray-800">
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto text-center animate-slide-up">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-primary-100 dark:bg-primary-900 rounded-full mb-6"
+      >
+        <i
+          class="fas fa-eye text-4xl text-primary-600 dark:text-primary-400"
+        ></i>
+      </div>
+      <h2
+        class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6"
+      >
+        Our Vision
+      </h2>
+      <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+        At GovAid, our vision is to empower the people of Sikkim with seamless
+        access to government schemes across all sectors. We aim to bridge the
+        gap between citizens and essential opportunities by providing timely,
+        transparent, and comprehensive updates. Our mission is to make crucial
+        information readily available, ensuring that no one misses out on the
+        benefits designed to improve their lives.
+      </p>
+      <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mt-4">
+        Whether it's education, healthcare, agriculture, entrepreneurship, or
+        social welfare, GovAid ensures that every resident stays informed,
+        engaged, and ready to benefit from the resources meant for their growth
+        and well-being.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-16 bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2
+        class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4"
+      >
+        Why Choose GovAid?
+      </h2>
+      <p class="text-lg text-gray-600 dark:text-gray-400">
+        Your trusted partner in accessing government benefits
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Feature 1 -->
+      <div class="card p-8 group">
+        <div
+          class="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
+        >
+          <i
+            class="fas fa-search text-3xl text-primary-600 dark:text-primary-400"
+          ></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+          Easy Discovery
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400">
+          Find relevant schemes quickly with our intelligent search and
+          filtering system.
+        </p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="card p-8 group">
+        <div
+          class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
+        >
+          <i
+            class="fas fa-check-double text-3xl text-green-600 dark:text-green-400"
+          ></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+          Instant Eligibility Check
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400">
+          Know which schemes you qualify for in seconds with our smart
+          eligibility checker.
+        </p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="card p-8 group">
+        <div
+          class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
+        >
+          <i
+            class="fas fa-file-alt text-3xl text-blue-600 dark:text-blue-400"
+          ></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+          Simple Application
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400">
+          Apply for schemes directly through our platform with step-by-step
+          guidance.
+        </p>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="card p-8 group">
+        <div
+          class="w-16 h-16 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
+        >
+          <i
+            class="fas fa-bell text-3xl text-yellow-600 dark:text-yellow-400"
+          ></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+          Timely Notifications
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400">
+          Stay updated with real-time notifications about new schemes and
+          application status.
+        </p>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="card p-8 group">
+        <div
+          class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
+        >
+          <i
+            class="fas fa-shield-alt text-3xl text-purple-600 dark:text-purple-400"
+          ></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+          Secure & Trusted
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400">
+          Your data is protected with enterprise-grade security and privacy
+          measures.
+        </p>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="card p-8 group">
+        <div
+          class="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
+        >
+          <i class="fas fa-headset text-3xl text-red-600 dark:text-red-400"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+          24/7 Support
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400">
+          Get help anytime with our dedicated support team and AI-powered
+          chatbot.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery Section with Modern Carousel -->
+<section class="py-16 bg-white dark:bg-gray-800">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2
+        class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4"
+      >
+        Gallery
+      </h2>
+      <p class="text-lg text-gray-600 dark:text-gray-400">
+        Glimpses of schemes making a difference
+      </p>
+    </div>
+
+    <div class="max-w-5xl mx-auto">
+      <div id="galleryCarousel" class="relative group">
+        <!-- Carousel Container -->
+        <div class="overflow-hidden rounded-2xl shadow-2xl">
+          <div
+            id="carouselInner"
+            class="flex transition-transform duration-500 ease-in-out"
+          >
+            <!-- Slide 1 -->
+            <div class="carousel-slide min-w-full relative">
+              <img
+                src="{% static 'images/scheme1.jpg' %}"
+                alt="Government Scheme 1"
+                class="w-full h-96 object-cover"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end"
+              >
+                <div class="p-8">
+                  <h3 class="text-white text-2xl font-bold mb-2">
+                    Education Initiatives
+                  </h3>
+                  <p class="text-gray-200">
+                    Empowering students with scholarships and resources
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="carousel-slide min-w-full relative">
+              <img
+                src="{% static 'images/scheme2.jpg' %}"
+                alt="Government Scheme 2"
+                class="w-full h-96 object-cover"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end"
+              >
+                <div class="p-8">
+                  <h3 class="text-white text-2xl font-bold mb-2">
+                    Healthcare Programs
+                  </h3>
+                  <p class="text-gray-200">
+                    Ensuring health and wellness for all citizens
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="carousel-slide min-w-full relative">
+              <img
+                src="{% static 'images/scheme3.jpg' %}"
+                alt="Government Scheme 3"
+                class="w-full h-96 object-cover"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end"
+              >
+                <div class="p-8">
+                  <h3 class="text-white text-2xl font-bold mb-2">
+                    Agricultural Support
+                  </h3>
+                  <p class="text-gray-200">
+                    Boosting farming communities and rural development
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- Slide 4 -->
+            <div class="carousel-slide min-w-full relative">
+              <img
+                src="{% static 'images/scheme4.jpg' %}"
+                alt="Government Scheme 4"
+                class="w-full h-96 object-cover"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end"
+              >
+                <div class="p-8">
+                  <h3 class="text-white text-2xl font-bold mb-2">
+                    Entrepreneurship Schemes
+                  </h3>
+                  <p class="text-gray-200">
+                    Supporting startups and small businesses
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- Slide 5 -->
+            <div class="carousel-slide min-w-full relative">
+              <img
+                src="{% static 'images/scheme5.jpg' %}"
+                alt="Government Scheme 5"
+                class="w-full h-96 object-cover"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end"
+              >
+                <div class="p-8">
+                  <h3 class="text-white text-2xl font-bold mb-2">
+                    Social Welfare
+                  </h3>
+                  <p class="text-gray-200">
+                    Programs for inclusive growth and development
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- Slide 6 -->
+            <div class="carousel-slide min-w-full relative">
+              <img
+                src="{% static 'images/scheme6.jpg' %}"
+                alt="Government Scheme 6"
+                class="w-full h-96 object-cover"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end"
+              >
+                <div class="p-8">
+                  <h3 class="text-white text-2xl font-bold mb-2">
+                    Infrastructure Development
+                  </h3>
+                  <p class="text-gray-200">
+                    Building a stronger Sikkim for tomorrow
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- Slide 7 -->
+            <div class="carousel-slide min-w-full relative">
+              <img
+                src="{% static 'images/scheme7.jpg' %}"
+                alt="Government Scheme 7"
+                class="w-full h-96 object-cover"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end"
+              >
+                <div class="p-8">
+                  <h3 class="text-white text-2xl font-bold mb-2">
+                    Tourism Initiatives
+                  </h3>
+                  <p class="text-gray-200">
+                    Promoting Sikkim's natural beauty and culture
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- Slide 8 -->
+            <div class="carousel-slide min-w-full relative">
+              <img
+                src="{% static 'images/scheme8.jpg' %}"
+                alt="Government Scheme 8"
+                class="w-full h-96 object-cover"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end"
+              >
+                <div class="p-8">
+                  <h3 class="text-white text-2xl font-bold mb-2">
+                    Women Empowerment
+                  </h3>
+                  <p class="text-gray-200">
+                    Creating opportunities for women in Sikkim
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <button
+          onclick="moveCarousel(-1)"
+          class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-700 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 focus-outline z-10"
+          aria-label="Previous Slide"
+        >
+          <i class="fas fa-chevron-left text-gray-800 dark:text-white"></i>
+        </button>
+        <button
+          onclick="moveCarousel(1)"
+          class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-700 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 focus-outline z-10"
+          aria-label="Next Slide"
+        >
+          <i class="fas fa-chevron-right text-gray-800 dark:text-white"></i>
+        </button>
+
+        <!-- Indicators -->
+        <div class="flex justify-center mt-6 space-x-2">
+          <button
+            onclick="goToSlide(0)"
+            class="carousel-indicator w-3 h-3 rounded-full bg-primary-600 dark:bg-primary-400"
+            aria-label="Slide 1"
+          ></button>
+          <button
+            onclick="goToSlide(1)"
+            class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"
+            aria-label="Slide 2"
+          ></button>
+          <button
+            onclick="goToSlide(2)"
+            class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"
+            aria-label="Slide 3"
+          ></button>
+          <button
+            onclick="goToSlide(3)"
+            class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"
+            aria-label="Slide 4"
+          ></button>
+          <button
+            onclick="goToSlide(4)"
+            class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"
+            aria-label="Slide 5"
+          ></button>
+          <button
+            onclick="goToSlide(5)"
+            class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"
+            aria-label="Slide 6"
+          ></button>
+          <button
+            onclick="goToSlide(6)"
+            class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"
+            aria-label="Slide 7"
+          ></button>
+          <button
+            onclick="goToSlide(7)"
+            class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"
+            aria-label="Slide 8"
+          ></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Ministry Partners Section -->
+<section class="py-16 bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2
+        class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4"
+      >
+        Our Ministry Partners
+      </h2>
+      <p class="text-lg text-gray-600 dark:text-gray-400">
+        Collaborating with departments for comprehensive service delivery
+      </p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-6">
+      <!-- Power -->
+      <a
+        href="https://sikkimpower.co.in/"
+        target="_blank"
+        class="card p-6 text-center group hover:shadow-xl transition-all duration-300"
+        data-tooltip="Power Department"
+      >
+        <div
+          class="w-16 h-16 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300"
+        >
+          <i
+            class="fas fa-bolt text-3xl text-yellow-600 dark:text-yellow-400"
+          ></i>
+        </div>
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Power
+        </p>
+      </a>
+
+      <!-- Agriculture -->
+      <a
+        href="https://agri.sikkim.gov.in"
+        target="_blank"
+        class="card p-6 text-center group hover:shadow-xl transition-all duration-300"
+        data-tooltip="Agriculture Department"
+      >
+        <div
+          class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300"
+        >
+          <i
+            class="fas fa-seedling text-3xl text-green-600 dark:text-green-400"
+          ></i>
+        </div>
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Agriculture
+        </p>
+      </a>
+
+      <!-- Finance -->
+      <a
+        href="http://sikkimfred.gov.in/user/home.aspx"
+        target="_blank"
+        class="card p-6 text-center group hover:shadow-xl transition-all duration-300"
+        data-tooltip="Finance Department"
+      >
+        <div
+          class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300"
+        >
+          <i class="fas fa-coins text-3xl text-blue-600 dark:text-blue-400"></i>
+        </div>
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Finance
+        </p>
+      </a>
+
+      <!-- Rural Dev -->
+      <a
+        href="https://www.sikkim.gov.in/departments/rural-management-development-department"
+        target="_blank"
+        class="card p-6 text-center group hover:shadow-xl transition-all duration-300"
+        data-tooltip="Rural Development"
+      >
+        <div
+          class="w-16 h-16 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300"
+        >
+          <i
+            class="fas fa-tractor text-3xl text-orange-600 dark:text-orange-400"
+          ></i>
+        </div>
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Rural Dev
+        </p>
+      </a>
+
+      <!-- Science & Tech -->
+      <a
+        href="https://dstsikkim.gov.in/"
+        target="_blank"
+        class="card p-6 text-center group hover:shadow-xl transition-all duration-300"
+        data-tooltip="Science & Technology"
+      >
+        <div
+          class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300"
+        >
+          <i
+            class="fas fa-flask text-3xl text-purple-600 dark:text-purple-400"
+          ></i>
+        </div>
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Science & Tech
+        </p>
+      </a>
+
+      <!-- Education -->
+      <a
+        href="https://www.sikkim.gov.in/departments/education-department"
+        target="_blank"
+        class="card p-6 text-center group hover:shadow-xl transition-all duration-300"
+        data-tooltip="Education Department"
+      >
+        <div
+          class="w-16 h-16 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300"
+        >
+          <i
+            class="fas fa-graduation-cap text-3xl text-indigo-600 dark:text-indigo-400"
+          ></i>
+        </div>
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Education
+        </p>
+      </a>
+
+      <!-- Tourism -->
+      <a
+        href="https://sikkimtourism.gov.in/Public/index"
+        target="_blank"
+        class="card p-6 text-center group hover:shadow-xl transition-all duration-300"
+        data-tooltip="Tourism Department"
+      >
+        <div
+          class="w-16 h-16 bg-pink-100 dark:bg-pink-900 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300"
+        >
+          <i
+            class="fas fa-umbrella-beach text-3xl text-pink-600 dark:text-pink-400"
+          ></i>
+        </div>
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Tourism
+        </p>
+      </a>
+
+      <!-- Labour -->
+      <a
+        href="https://labour.sikkim.gov.in/"
+        target="_blank"
+        class="card p-6 text-center group hover:shadow-xl transition-all duration-300"
+        data-tooltip="Labour Department"
+      >
+        <div
+          class="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300"
+        >
+          <i
+            class="fas fa-briefcase text-3xl text-red-600 dark:text-red-400"
+          ></i>
+        </div>
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Labour
+        </p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section
+  class="py-16 bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900"
+>
+  <div class="container mx-auto px-4 text-center">
+    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
+      Ready to Get Started?
+    </h2>
+    <p
+      class="text-xl text-primary-100 dark:text-gray-300 mb-8 max-w-2xl mx-auto"
+    >
+      Join thousands of Sikkim residents who are already benefiting from
+      government schemes.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      {% if not user.is_authenticated %}
+      <a
+        href="{% url 'register' %}"
+        class="inline-flex items-center space-x-2 bg-white hover:bg-gray-100 text-primary-700 font-medium px-8 py-4 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg"
+      >
+        <i class="fas fa-user-plus"></i>
+        <span>Create Account</span>
+      </a>
+      <a
+        href="{% url 'scheme_list' %}"
+        class="inline-flex items-center space-x-2 bg-primary-800 hover:bg-primary-900 dark:bg-gray-700 dark:hover:bg-gray-600 text-white font-medium px-8 py-4 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg"
+      >
+        <i class="fas fa-compass"></i>
+        <span>Browse Schemes</span>
+      </a>
+      {% else %}
+      <a
+        href="{% url 'check_all_eligibility' %}"
+        class="inline-flex items-center space-x-2 bg-white hover:bg-gray-100 text-primary-700 font-medium px-8 py-4 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg"
+      >
+        <i class="fas fa-check-circle"></i>
+        <span>Check Eligibility</span>
+      </a>
+      <a
+        href="{% url 'scheme_list' %}"
+        class="inline-flex items-center space-x-2 bg-primary-800 hover:bg-primary-900 dark:bg-gray-700 dark:hover:bg-gray-600 text-white font-medium px-8 py-4 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg"
+      >
+        <i class="fas fa-compass"></i>
+        <span>Explore Schemes</span>
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Floating Chat Button -->
+<button
+  id="chatbot-toggle"
+  onclick="toggleChat()"
+  class="fixed bottom-6 right-6 w-16 h-16 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-full shadow-2xl flex items-center justify-center z-40 transform hover:scale-110 transition-all duration-300 focus-outline"
+  aria-label="Open Chat"
+>
+  <i class="fas fa-comment-dots text-2xl"></i>
 </button>
 
 <!-- Chatbot Container -->
-<div id="chatbot">
-  <div id="chatbot-header">
-    Chat with us
-    <span class="close-btn" onclick="toggleChat()">&times;</span>
+<div
+  id="chatbot"
+  class="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-3rem)] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 hidden flex-col z-40 animate-scale-in overflow-hidden"
+>
+  <!-- Chat Header -->
+  <div
+    class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-700 dark:to-gray-800 p-4 flex items-center justify-between"
+  >
+    <div class="flex items-center space-x-3">
+      <div
+        class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"
+      >
+        <i class="fas fa-robot text-white text-lg"></i>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold">GovAid Assistant</h3>
+        <p
+          class="text-primary-100 dark:text-gray-300 text-xs flex items-center space-x-1"
+        >
+          <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+          <span>Online</span>
+        </p>
+      </div>
+    </div>
+    <button
+      onclick="toggleChat()"
+      class="text-white hover:bg-white/20 p-2 rounded-lg transition-colors duration-200 focus-outline"
+    >
+      <i class="fas fa-times text-lg"></i>
+    </button>
   </div>
-  <div id="chatbot-body">
-    <div class="bot-message">Do you need help?</div>
+
+  <!-- Chat Body -->
+  <div
+    id="chatbot-body"
+    class="flex-1 p-4 space-y-3 overflow-y-auto scrollbar-thin"
+    style="max-height: 400px"
+  >
+    <div class="flex items-start space-x-2">
+      <div
+        class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center flex-shrink-0"
+      >
+        <i
+          class="fas fa-robot text-primary-600 dark:text-primary-400 text-sm"
+        ></i>
+      </div>
+      <div
+        class="bg-gray-100 dark:bg-gray-700 rounded-2xl rounded-tl-none px-4 py-3 max-w-[75%]"
+      >
+        <p class="text-sm text-gray-800 dark:text-gray-200">
+          Hello! How can I help you today?
+        </p>
+      </div>
+    </div>
   </div>
-  <input id="chat-input" type="text" placeholder="Type a message..." autocomplete="off" />
+
+  <!-- Chat Input -->
+  <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+    <div class="flex items-center space-x-2">
+      <input
+        id="chat-input"
+        type="text"
+        placeholder="Type your message..."
+        class="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 border-0 rounded-full text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600 outline-none transition-all duration-200"
+        autocomplete="off"
+      />
+      <button
+        onclick="sendChatMessage()"
+        class="w-10 h-10 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-full flex items-center justify-center transition-all duration-200 focus-outline"
+      >
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
 </div>
 
 <script>
-  window.onload = function () {
-    const chatbot = document.getElementById('chatbot');
-    const toggleButton = document.getElementById('chatbot-toggle');
-    const chatBody = document.getElementById('chatbot-body');
-    const chatInput = document.getElementById('chat-input');
+  // Carousel Functionality
+  let currentSlide = 0;
+  const totalSlides = 8;
 
-    function toggleChat() {
-      if (chatbot.style.display === 'flex') {
-        chatbot.style.display = 'none';
-        toggleButton.style.display = 'block';
+  function moveCarousel(direction) {
+    currentSlide += direction;
+    if (currentSlide < 0) currentSlide = totalSlides - 1;
+    if (currentSlide >= totalSlides) currentSlide = 0;
+    updateCarousel();
+  }
+
+  function goToSlide(index) {
+    currentSlide = index;
+    updateCarousel();
+  }
+
+  function updateCarousel() {
+    const carousel = document.getElementById("carouselInner");
+    carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+    // Update indicators
+    const indicators = document.querySelectorAll(".carousel-indicator");
+    indicators.forEach((indicator, index) => {
+      if (index === currentSlide) {
+        indicator.classList.remove("bg-gray-300", "dark:bg-gray-600");
+        indicator.classList.add("bg-primary-600", "dark:bg-primary-400");
       } else {
-        chatbot.style.display = 'flex';
-        toggleButton.style.display = 'none';
-        chatInput.focus();
+        indicator.classList.remove("bg-primary-600", "dark:bg-primary-400");
+        indicator.classList.add("bg-gray-300", "dark:bg-gray-600");
       }
+    });
+  }
+
+  // Auto-advance carousel
+  setInterval(() => {
+    moveCarousel(1);
+  }, 5000);
+
+  // Chatbot Functionality
+  function toggleChat() {
+    const chatbot = document.getElementById("chatbot");
+    const toggleButton = document.getElementById("chatbot-toggle");
+
+    if (chatbot.classList.contains("hidden")) {
+      chatbot.classList.remove("hidden");
+      chatbot.classList.add("flex");
+      toggleButton.classList.add("scale-0");
+    } else {
+      chatbot.classList.add("hidden");
+      chatbot.classList.remove("flex");
+      toggleButton.classList.remove("scale-0");
     }
+  }
 
-    async function sendMessage() {
-      const msg = chatInput.value.trim();
-      if (!msg) return;
+  async function sendChatMessage() {
+    const input = document.getElementById("chat-input");
+    const message = input.value.trim();
 
-      const userMsg = document.createElement('div');
-      userMsg.className = 'user-message';
-      userMsg.textContent = msg;
-      chatBody.appendChild(userMsg);
-      chatInput.value = '';
+    if (!message) return;
 
-      try {
-        const res = await fetch("http://localhost:5005/webhooks/rest/webhook", {
+    // Add user message to chat
+    const chatBody = document.getElementById("chatbot-body");
+    const userMessageDiv = document.createElement("div");
+    userMessageDiv.className = "flex items-start space-x-2 justify-end";
+    userMessageDiv.innerHTML = `
+    <div class="bg-primary-600 dark:bg-primary-500 rounded-2xl rounded-tr-none px-4 py-3 max-w-[75%]">
+      <p class="text-sm text-white">${message}</p>
+    </div>
+    <div class="w-8 h-8 bg-primary-600 dark:bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
+      <i class="fas fa-user text-white text-sm"></i>
+    </div>
+  `;
+    chatBody.appendChild(userMessageDiv);
+    input.value = "";
+
+    // Show typing indicator
+    const typingDiv = document.createElement("div");
+    typingDiv.id = "typing-indicator";
+    typingDiv.className = "flex items-start space-x-2";
+    typingDiv.innerHTML = `
+    <div class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center flex-shrink-0">
+      <i class="fas fa-robot text-primary-600 dark:text-primary-400 text-sm"></i>
+    </div>
+    <div class="bg-gray-100 dark:bg-gray-700 rounded-2xl rounded-tl-none px-4 py-3">
+      <div class="flex space-x-1">
+        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+      </div>
+    </div>
+  `;
+    chatBody.appendChild(typingDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    try {
+      const response = await fetch(
+        "http://localhost:5005/webhooks/rest/webhook",
+        {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sender: "user", message: msg })
+          body: JSON.stringify({ sender: "user", message: message }),
+        },
+      );
+
+      document.getElementById("typing-indicator").remove();
+
+      const data = await response.json();
+
+      if (data.length === 0) {
+        addBotMessage("Sorry, I didn't get that. Could you please rephrase?");
+      } else {
+        data.forEach((item) => {
+          addBotMessage(item.text);
         });
-
-        const data = await res.json();
-        if (data.length === 0) {
-          const noReply = document.createElement('div');
-          noReply.className = 'bot-message';
-          noReply.textContent = "Sorry, I didn't get that.";
-          chatBody.appendChild(noReply);
-        } else {
-          data.forEach(item => {
-            const botMsg = document.createElement('div');
-            botMsg.className = 'bot-message';
-            botMsg.textContent = item.text;
-            chatBody.appendChild(botMsg);
-          });
-        }
-      } catch (error) {
-        const errorMsg = document.createElement('div');
-        errorMsg.className = 'bot-message';
-        errorMsg.textContent = "Bot is currently unavailable.";
-        chatBody.appendChild(errorMsg);
       }
-
-      chatBody.scrollTop = chatBody.scrollHeight;
+    } catch (error) {
+      document.getElementById("typing-indicator").remove();
+      addBotMessage(
+        "I'm currently unavailable. Please try again later or contact support.",
+      );
     }
 
-    chatInput.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') sendMessage();
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function addBotMessage(text) {
+    const chatBody = document.getElementById("chatbot-body");
+    const botMessageDiv = document.createElement("div");
+    botMessageDiv.className = "flex items-start space-x-2 animate-slide-up";
+    botMessageDiv.innerHTML = `
+    <div class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center flex-shrink-0">
+      <i class="fas fa-robot text-primary-600 dark:text-primary-400 text-sm"></i>
+    </div>
+    <div class="bg-gray-100 dark:bg-gray-700 rounded-2xl rounded-tl-none px-4 py-3 max-w-[75%]">
+      <p class="text-sm text-gray-800 dark:text-gray-200">${text}</p>
+    </div>
+  `;
+    chatBody.appendChild(botMessageDiv);
+  }
+
+  // Send message on Enter key
+  document
+    .getElementById("chat-input")
+    .addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        sendChatMessage();
+      }
     });
 
-    window.toggleChat = toggleChat;
+  // Animate elements on scroll
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: "0px 0px -50px 0px",
   };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("animate-slide-up");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll(".card").forEach((el) => observer.observe(el));
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
 {% endblock %}
-
-

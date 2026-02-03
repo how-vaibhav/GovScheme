@@ -1,10 +1,12 @@
 {% load static %} {% load group_filters %}
 
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <title>Government Schemes Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <title>{% block title %}Government Schemes Portal{% endblock %}</title>
     <link rel="icon" href="{% static 'images/favicon.ico' %}" />
 
     <!-- Font Awesome for icons -->
@@ -16,182 +18,608 @@
 
     <!-- Google Fonts -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@500;700&display=swap"
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
 
     {% block extra_head %}{% endblock %}
   </head>
 
-  <body>
-    <div class="login-message" id="login-msg">
-      <i class="fas fa-check-circle"></i> You have logged in to GovAid
-    </div>
-    <div class="logout-message" id="logout-msg">
-      <i class="fas fa-sign-out-alt"></i> You have logged out of GovAid
-    </div>
+  <body class="min-h-screen flex flex-col">
+    <!-- Mobile Menu Overlay -->
+    <div
+      id="menuOverlay"
+      class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+      onclick="toggleMobileMenu()"
+    ></div>
 
-    <script>
-      const loginMsg = document.getElementById("login-msg");
-      const logoutMsg = document.getElementById("logout-msg");
-
-      if (localStorage.getItem("justLoggedIn") === "true") {
-        loginMsg.style.display = "block";
-        setTimeout(() => {
-          loginMsg.style.display = "none";
-        }, 4000);
-        localStorage.removeItem("justLoggedIn");
-      }
-
-      if (localStorage.getItem("justLoggedOut") === "true") {
-        logoutMsg.style.display = "block";
-        setTimeout(() => {
-          logoutMsg.style.display = "none";
-        }, 4000);
-        localStorage.removeItem("justLoggedOut");
-      }
-    </script>
-
-    <div class="back">
-      <header>
-        <h1>Sikkim Government</h1>
-      </header>
-
-      <div class="top-container">
-        <div class="profile-container">
-          <input type="checkbox" id="profile-toggle" />
-          <label for="profile-toggle">
-            <img
-              src="https://static.vecteezy.com/system/resources/previews/014/194/215/original/avatar-icon-human-a-person-s-badge-social-media-profile-symbol-the-symbol-of-a-person-vector.jpg"
-              alt="Profile"
-              class="profile-pic"
-            />
-          </label>
-          <div class="dropdown-menu">
-            {% if user.is_authenticated %}
-            <p>
-              <i class="fas fa-user-circle"></i>
-              {{user.get_full_name|default:user.username }}
-            </p>
-            <a
-              href="{% url 'logout' %}"
-              onclick="localStorage.setItem('justLoggedOut', 'true')"
-              ><i class="fas fa-sign-out-alt"></i> Logout</a
+    <!-- Header -->
+    <header
+      class="bg-gradient-to-r from-primary-700 via-primary-600 to-primary-700 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 shadow-lg sticky top-0 z-50 transition-all duration-300"
+    >
+      <div class="container mx-auto px-4">
+        <!-- Top Bar -->
+        <div
+          class="flex items-center justify-between py-4 border-b border-primary-500/30 dark:border-gray-700"
+        >
+          <!-- Logo and Title -->
+          <div class="flex items-center space-x-3 group">
+            <div
+              class="w-12 h-12 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center shadow-md transform group-hover:rotate-12 transition-transform duration-300"
             >
-            <a href="{% url 'view_user_details' %}">
-              <i class="fas fa-id-badge"></i> User Details
-            </a>
-            <a href="{% url 'check_all_eligibility' %}"
-              ><i class="fas fa-search"></i>Check My Eligibility</a
-            >
-            {% else %}
-            <p><i class="fas fa-user"></i> Guest</p>
-            <a
-              href="{% url 'login' %}"
-              onclick="localStorage.setItem('justLoggedIn', 'true')"
-              ><i class="fas fa-sign-in-alt"></i> Login</a
-            >
-            <a href="{% url 'register' %}"
-              ><i class="fas fa-user-plus"></i> Sign Up</a
-            >
-            {% endif %} {% if user.is_superuser %}
-            <a href="{% url 'add_employee' %}"
-              ><i class="fas fa-user-shield"></i> Authenticate</a
-            >
-            {% endif %}
-          </div>
-        </div>
-
-        <div class="notification-container">
-          <button id="notification-button" class="notification-btn">
-            <i class="fas fa-bell"></i>
-            {% if notifications|length > 0 %}
-            <span class="dot"></span>
-            {% endif %}
-          </button>
-
-          <div id="notification-dropdown" class="hidden">
-            {% if notifications %}
-            <ul>
-              {% for notif in notifications %}
-              <li
-                class="{% if notif.is_read %}read{% endif %}"
-                data-id="{{ notif.id }}"
+              <i
+                class="fas fa-landmark text-primary-600 dark:text-primary-400 text-xl"
+              ></i>
+            </div>
+            <div>
+              <h1
+                class="text-2xl md:text-3xl font-display font-bold text-white"
               >
-                {{ notif.message }} {% if not notif.is_read %}
-                <button class="read-btn">Read</button>
+                GovAid
+              </h1>
+              <p class="text-xs text-primary-100 dark:text-gray-400">
+                Sikkim Government Portal
+              </p>
+            </div>
+          </div>
+
+          <!-- Right Side Controls -->
+          <div class="flex items-center space-x-2 md:space-x-4">
+            <!-- Dark Mode Toggle -->
+            <div class="relative group">
+              <label
+                for="darkModeToggle"
+                class="cursor-pointer flex items-center space-x-2 bg-white/10 hover:bg-white/20 dark:bg-gray-700 dark:hover:bg-gray-600 px-3 py-2 rounded-lg transition-all duration-200"
+                data-tooltip="Toggle Dark Mode"
+              >
+                <i
+                  class="fas fa-sun text-yellow-300 text-lg hidden dark:block"
+                ></i>
+                <i class="fas fa-moon text-gray-200 text-lg dark:hidden"></i>
+                <input type="checkbox" id="darkModeToggle" class="sr-only" />
+              </label>
+            </div>
+
+            <!-- Notifications -->
+            <div class="relative">
+              <button
+                id="notification-button"
+                class="relative p-2.5 bg-white/10 hover:bg-white/20 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-all duration-200 focus-outline group"
+                aria-label="Notifications"
+                data-tooltip="Notifications"
+              >
+                <i
+                  class="fas fa-bell text-white text-lg group-hover:animate-pulse"
+                ></i>
+                {% if notifications|length > 0 %}
+                <span
+                  class="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-primary-700 dark:border-gray-800 animate-pulse"
+                ></span>
+                <span
+                  class="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center -mt-1 -mr-1"
+                >
+                  {{ notifications|length }}
+                </span>
                 {% endif %}
-              </li>
-              {% endfor %}
-            </ul>
-            {% else %}
-            <p>No new notifications</p>
-            {% endif %}
+              </button>
+
+              <!-- Notification Dropdown -->
+              <div
+                id="notification-dropdown"
+                class="hidden absolute right-0 mt-2 w-80 max-w-sm bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 animate-scale-in z-50"
+              >
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                  <h3 class="font-semibold text-gray-900 dark:text-gray-100">
+                    Notifications
+                  </h3>
+                </div>
+                <div class="max-h-96 overflow-y-auto scrollbar-thin">
+                  {% if notifications %} {% for notif in notifications %}
+                  <div
+                    class="p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200 {% if notif.is_read %}opacity-60{% endif %}"
+                    data-id="{{ notif.id }}"
+                  >
+                    <div class="flex items-start space-x-3">
+                      <div
+                        class="flex-shrink-0 w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center"
+                      >
+                        <i
+                          class="fas fa-info-circle text-primary-600 dark:text-primary-400"
+                        ></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm text-gray-900 dark:text-gray-100">
+                          {{ notif.message }}
+                        </p>
+                        <p
+                          class="text-xs text-gray-500 dark:text-gray-400 mt-1"
+                        >
+                          {{ notif.created_at|timesince }} ago
+                        </p>
+                      </div>
+                      {% if not notif.is_read %}
+                      <button
+                        class="read-btn flex-shrink-0 text-primary-600 hover:text-primary-700 dark:text-primary-400 text-xs font-medium focus-outline rounded px-2 py-1"
+                      >
+                        Mark Read
+                      </button>
+                      {% endif %}
+                    </div>
+                  </div>
+                  {% endfor %} {% else %}
+                  <div class="empty-state py-8">
+                    <i
+                      class="fas fa-bell-slash text-gray-300 dark:text-gray-600 text-4xl mb-3"
+                    ></i>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm">
+                      No notifications
+                    </p>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Menu -->
+            <div class="relative">
+              <button
+                id="profileButton"
+                onclick="toggleProfileDropdown()"
+                class="flex items-center space-x-2 bg-white/10 hover:bg-white/20 dark:bg-gray-700 dark:hover:bg-gray-600 px-3 py-2 rounded-lg transition-all duration-200 focus-outline group"
+                aria-label="Profile Menu"
+                aria-haspopup="true"
+              >
+                <img
+                  src="https://static.vecteezy.com/system/resources/previews/014/194/215/original/avatar-icon-human-a-person-s-badge-social-media-profile-symbol-the-symbol-of-a-person-vector.jpg"
+                  alt="Profile"
+                  class="w-8 h-8 rounded-full border-2 border-white/30 group-hover:border-white transition-all duration-200"
+                />
+                <span class="hidden md:block text-white font-medium">
+                  {% if user.is_authenticated %} {{
+                  user.get_full_name|default:user.username|truncatewords:2 }} {%
+                  else %} Guest {% endif %}
+                </span>
+                <i
+                  class="fas fa-chevron-down text-white text-xs group-hover:rotate-180 transition-transform duration-200"
+                ></i>
+              </button>
+
+              <!-- Profile Dropdown -->
+              <div
+                id="profileDropdown"
+                class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 animate-scale-in z-50"
+              >
+                {% if user.is_authenticated %}
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                  <p class="font-semibold text-gray-900 dark:text-gray-100">
+                    {{ user.get_full_name|default:user.username }}
+                  </p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    {{ user.email }}
+                  </p>
+                </div>
+                <div class="p-2">
+                  <a
+                    href="{% url 'view_user_details' %}"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+                  >
+                    <i
+                      class="fas fa-id-badge text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+                    ></i>
+                    <span>User Details</span>
+                  </a>
+                  <a
+                    href="{% url 'check_all_eligibility' %}"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+                  >
+                    <i
+                      class="fas fa-search text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+                    ></i>
+                    <span>Check Eligibility</span>
+                  </a>
+                  {% if user.is_superuser %}
+                  <a
+                    href="{% url 'add_employee' %}"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+                  >
+                    <i
+                      class="fas fa-user-shield text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+                    ></i>
+                    <span>Authenticate</span>
+                  </a>
+                  {% endif %}
+                  <div
+                    class="border-t border-gray-200 dark:border-gray-700 my-2"
+                  ></div>
+                  <a
+                    href="{% url 'logout' %}"
+                    onclick="localStorage.setItem('justLoggedOut', 'true')"
+                    class="flex items-center space-x-3 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors duration-200 group"
+                  >
+                    <i
+                      class="fas fa-sign-out-alt group-hover:scale-110 transition-transform duration-200"
+                    ></i>
+                    <span>Logout</span>
+                  </a>
+                </div>
+                {% else %}
+                <div class="p-2">
+                  <a
+                    href="{% url 'login' %}"
+                    onclick="localStorage.setItem('justLoggedIn', 'true')"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+                  >
+                    <i
+                      class="fas fa-sign-in-alt text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+                    ></i>
+                    <span>Login</span>
+                  </a>
+                  <a
+                    href="{% url 'register' %}"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+                  >
+                    <i
+                      class="fas fa-user-plus text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+                    ></i>
+                    <span>Sign Up</span>
+                  </a>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button
+              onclick="toggleMobileMenu()"
+              class="lg:hidden p-2.5 bg-white/10 hover:bg-white/20 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-all duration-200 focus-outline"
+              aria-label="Toggle Mobile Menu"
+            >
+              <i class="fas fa-bars text-white text-xl"></i>
+            </button>
           </div>
         </div>
+
+        <!-- Desktop Navigation -->
+        <nav
+          class="hidden lg:flex items-center justify-center space-x-2 py-4"
+          role="navigation"
+          aria-label="Main Navigation"
+        >
+          <a
+            href="{% url 'home' %}"
+            class="flex items-center space-x-2 px-5 py-2.5 text-white hover:bg-white/20 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group focus-outline"
+          >
+            <i
+              class="fas fa-home group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Home</span>
+          </a>
+          <a
+            href="{% url 'scheme_list' %}"
+            class="flex items-center space-x-2 px-5 py-2.5 text-white hover:bg-white/20 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group focus-outline"
+          >
+            <i
+              class="fas fa-landmark group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Schemes</span>
+          </a>
+          {% if user|has_group:"Employee" %}
+          <a
+            href="{% url 'view_feedbacks' %}"
+            class="flex items-center space-x-2 px-5 py-2.5 text-white hover:bg-white/20 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group focus-outline"
+          >
+            <i
+              class="fas fa-comments group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Feedbacks</span>
+          </a>
+          <a
+            href="{% url 'add_scheme' %}"
+            class="flex items-center space-x-2 px-5 py-2.5 text-white hover:bg-white/20 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group focus-outline"
+          >
+            <i
+              class="fas fa-plus-circle group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Add Scheme</span>
+          </a>
+          <a
+            href="{% url 'all_applications' %}"
+            class="flex items-center space-x-2 px-5 py-2.5 text-white hover:bg-white/20 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group focus-outline"
+          >
+            <i
+              class="fas fa-check-circle group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Applications</span>
+          </a>
+          {% else %}
+          <a
+            href="{% url 'feedback' %}"
+            class="flex items-center space-x-2 px-5 py-2.5 text-white hover:bg-white/20 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group focus-outline"
+          >
+            <i
+              class="fas fa-comment-dots group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Feedback</span>
+          </a>
+          {% endif %}
+        </nav>
       </div>
+    </header>
 
-      <nav>
-        <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
-        <a href="{% url 'scheme_list' %}"
-          ><i class="fas fa-landmark"></i> Schemes</a
-        >
-        {% if user|has_group:"Employee" %}
-        <a href="{% url 'view_feedbacks' %}"
-          ><i class="fas fa-comments"></i> Feedbacks</a
-        >
-        <a href="{% url 'add_scheme' %}"
-          ><i class="fas fa-add"></i> Add Scheme</a
-        >
-        <a href="{% url 'all_applications' %}"
-          ><i class="fas fa-check"></i>Approve Application</a
-        >
-        {% else %}
-        <a href="{% url 'feedback' %}"
-          ><i class="fas fa-comment-dots"></i> Feedback</a
-        >
-        {% endif %}
-      </nav>
-    </div>
+    <!-- Mobile Sidebar Menu -->
+    <aside
+      id="mobileMenu"
+      class="fixed left-0 top-0 h-full w-64 bg-white dark:bg-gray-800 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 lg:hidden"
+    >
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-8">
+          <h2
+            class="text-2xl font-display font-bold text-gray-900 dark:text-white"
+          >
+            Menu
+          </h2>
+          <button
+            onclick="toggleMobileMenu()"
+            class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus-outline rounded-lg"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+        <nav class="space-y-2" role="navigation" aria-label="Mobile Navigation">
+          <a
+            href="{% url 'home' %}"
+            class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+          >
+            <i
+              class="fas fa-home text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Home</span>
+          </a>
+          <a
+            href="{% url 'scheme_list' %}"
+            class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+          >
+            <i
+              class="fas fa-landmark text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Schemes</span>
+          </a>
+          {% if user|has_group:"Employee" %}
+          <a
+            href="{% url 'view_feedbacks' %}"
+            class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+          >
+            <i
+              class="fas fa-comments text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Feedbacks</span>
+          </a>
+          <a
+            href="{% url 'add_scheme' %}"
+            class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+          >
+            <i
+              class="fas fa-plus-circle text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Add Scheme</span>
+          </a>
+          <a
+            href="{% url 'all_applications' %}"
+            class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+          >
+            <i
+              class="fas fa-check-circle text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Applications</span>
+          </a>
+          {% else %}
+          <a
+            href="{% url 'feedback' %}"
+            class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+          >
+            <i
+              class="fas fa-comment-dots text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Feedback</span>
+          </a>
+          {% endif %}
+        </nav>
+      </div>
+    </aside>
 
-    <main>{% block content %}{% endblock %}</main>
+    <!-- Main Content -->
+    <main class="flex-1">{% block content %}{% endblock %}</main>
 
     <!-- Footer -->
-    <div class="footer text-center">
-      <div class="row text-start">
-        <div class="col-md-4">
-          <h5>About Us</h5>
-          <ul>
-            <li><a href="#">Mission & Vision</a></li>
-            <li><a href="#">Leadership</a></li>
-            <li><a href="#">Partnerships</a></li>
-            <li><a href="#">Transparency</a></li>
-          </ul>
+    <footer class="bg-gray-900 dark:bg-black text-gray-300 mt-auto">
+      <div class="container mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <!-- About Section -->
+          <div class="space-y-4">
+            <h5
+              class="text-xl font-bold text-white flex items-center space-x-2"
+            >
+              <i class="fas fa-landmark text-primary-400"></i>
+              <span>GovAid</span>
+            </h5>
+            <p class="text-sm text-gray-400">
+              Empowering Sikkim citizens with seamless access to government
+              schemes across all sectors.
+            </p>
+          </div>
+
+          <!-- About Us Links -->
+          <div class="space-y-4">
+            <h5 class="text-lg font-semibold text-white">About Us</h5>
+            <ul class="space-y-2">
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-primary-400 transition-colors duration-200 text-sm flex items-center space-x-2"
+                >
+                  <i class="fas fa-angle-right text-xs"></i
+                  ><span>Mission & Vision</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-primary-400 transition-colors duration-200 text-sm flex items-center space-x-2"
+                >
+                  <i class="fas fa-angle-right text-xs"></i
+                  ><span>Leadership</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-primary-400 transition-colors duration-200 text-sm flex items-center space-x-2"
+                >
+                  <i class="fas fa-angle-right text-xs"></i
+                  ><span>Partnerships</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-primary-400 transition-colors duration-200 text-sm flex items-center space-x-2"
+                >
+                  <i class="fas fa-angle-right text-xs"></i
+                  ><span>Transparency</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Important Links -->
+          <div class="space-y-4">
+            <h5 class="text-lg font-semibold text-white">Important Links</h5>
+            <ul class="space-y-2">
+              <li>
+                <a
+                  href="https://sikkim.gov.in"
+                  target="_blank"
+                  class="text-gray-400 hover:text-primary-400 transition-colors duration-200 text-sm flex items-center space-x-2"
+                >
+                  <i class="fas fa-external-link-alt text-xs"></i
+                  ><span>Govt. of Sikkim</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-primary-400 transition-colors duration-200 text-sm flex items-center space-x-2"
+                >
+                  <i class="fas fa-angle-right text-xs"></i
+                  ><span>Central Schemes</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-primary-400 transition-colors duration-200 text-sm flex items-center space-x-2"
+                >
+                  <i class="fas fa-angle-right text-xs"></i
+                  ><span>Downloads</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-primary-400 transition-colors duration-200 text-sm flex items-center space-x-2"
+                >
+                  <i class="fas fa-angle-right text-xs"></i><span>FAQs</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Contact Section -->
+          <div class="space-y-4">
+            <h5 class="text-lg font-semibold text-white">Contact</h5>
+            <ul class="space-y-3">
+              <li class="flex items-center space-x-3 text-sm">
+                <i class="fas fa-envelope text-primary-400"></i>
+                <a
+                  href="mailto:support@govaid.in"
+                  class="text-gray-400 hover:text-primary-400 transition-colors duration-200"
+                  >support@govaid.in</a
+                >
+              </li>
+              <li class="flex items-center space-x-3 text-sm">
+                <i class="fas fa-phone text-primary-400"></i>
+                <a
+                  href="tel:+919876543210"
+                  class="text-gray-400 hover:text-primary-400 transition-colors duration-200"
+                  >+91-9876543210</a
+                >
+              </li>
+              <li class="flex items-start space-x-3 text-sm">
+                <i class="fas fa-map-marker-alt text-primary-400 mt-1"></i>
+                <span class="text-gray-400">Gangtok, Sikkim</span>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="col-md-4">
-          <h5>Important Links</h5>
-          <ul>
-            <li><a href="#">Govt. of Sikkim</a></li>
-            <li><a href="#">Central Schemes</a></li>
-            <li><a href="#">Downloads</a></li>
-            <li><a href="#">FAQs</a></li>
-          </ul>
-        </div>
-        <div class="col-md-4">
-          <h5>Contact</h5>
-          <ul>
-            <li><a href="mailto:support@govaid.in">support@govaid.in</a></li>
-            <li><a href="tel:+919876543210">+91-9876543210</a></li>
-            <li>Address: Gangtok, Sikkim</li>
-          </ul>
+
+        <div class="border-t border-gray-800 mt-8 pt-8">
+          <div
+            class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0"
+          >
+            <p class="text-sm text-gray-400">
+              &copy; 2026 GovAid. All rights reserved.
+            </p>
+            <div class="flex items-center space-x-6">
+              <a
+                href="#"
+                class="text-gray-400 hover:text-primary-400 transition-colors duration-200"
+                aria-label="Privacy Policy"
+              >
+                <span class="text-sm">Privacy Policy</span>
+              </a>
+              <a
+                href="#"
+                class="text-gray-400 hover:text-primary-400 transition-colors duration-200"
+                aria-label="Terms of Service"
+              >
+                <span class="text-sm">Terms of Service</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
-      <hr class="bg-light" />
-      <p>&copy; 2025 GovAid. All rights reserved.</p>
-    </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{% static 'js/main.js' %}"></script>
     <script>
+      // CSRF token getter function
+      function getCSRFToken() {
+        let token = document.querySelector('meta[name="csrf-token"]');
+        if (token) return token.getAttribute("content");
+
+        function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === name + "=") {
+                cookieValue = decodeURIComponent(
+                  cookie.substring(name.length + 1),
+                );
+                break;
+              }
+            }
+          }
+          return cookieValue;
+        }
+        return getCookie("csrftoken");
+      }
+
       // Notification dropdown toggle
       document
         .getElementById("notification-button")
@@ -212,37 +640,13 @@
         }
       });
 
-      // CSRF token getter function (placed globally)
-      function getCSRFToken() {
-        let token = document.querySelector('meta[name="csrf-token"]');
-        if (token) return token.getAttribute("content");
-
-        // fallback if you want to get it from cookies
-        function getCookie(name) {
-          let cookieValue = null;
-          if (document.cookie && document.cookie !== "") {
-            const cookies = document.cookie.split(";");
-            for (let i = 0; i < cookies.length; i++) {
-              const cookie = cookies[i].trim();
-              if (cookie.substring(0, name.length + 1) === name + "=") {
-                cookieValue = decodeURIComponent(
-                  cookie.substring(name.length + 1)
-                );
-                break;
-              }
-            }
-          }
-          return cookieValue;
-        }
-        return getCookie("csrftoken");
-      }
-
+      // Mark notification as read
       document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".read-btn").forEach((button) => {
           button.addEventListener("click", (e) => {
             e.preventDefault();
-            const li = e.target.closest("li");
-            const notifId = li.getAttribute("data-id");
+            const container = e.target.closest("[data-id]");
+            const notifId = container.getAttribute("data-id");
 
             fetch("{% url 'mark_read' %}", {
               method: "POST",
@@ -257,16 +661,31 @@
               .then((response) => response.json())
               .then((data) => {
                 if (data.success) {
-                  // Remove notification from UI
-                  li.remove();
+                  container.remove();
+                  showToast("Notification marked as read", "success");
+
+                  // Update notification count
+                  const count = document.querySelectorAll("[data-id]").length;
+                  if (count === 0) {
+                    document.getElementById("notification-dropdown").innerHTML =
+                      `
+                      <div class="empty-state py-8">
+                        <i class="fas fa-bell-slash text-gray-300 dark:text-gray-600 text-4xl mb-3"></i>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">No notifications</p>
+                      </div>
+                    `;
+                  }
                 } else {
-                  alert("Failed to mark notification read.");
+                  showToast("Failed to mark notification as read", "error");
                 }
               })
-              .catch(() => alert("Error communicating with server."));
+              .catch(() =>
+                showToast("Error communicating with server", "error"),
+              );
           });
         });
       });
     </script>
+    {% block extra_scripts %}{% endblock %}
   </body>
 </html>
