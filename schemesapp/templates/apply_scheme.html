@@ -1,108 +1,187 @@
-{% extends "base.html" %} {% load static %} {% block title %}Apply for
-Scheme{%endblock %} {% block extra_head %}
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-  rel="stylesheet"
-/>
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-  rel="stylesheet"
-/>
-<link href="{% static 'css/apply_scheme.css'%}" rel="stylesheet" /> {%endblock%}
-{% block content %}
-<div class="container">
-  <h2><i class="bi bi-pencil-square me-2"></i>Apply for Scheme</h2>
-
-  <form
-    method="post"
-    action="{% url 'apply_scheme' %}"
-    class="needs-validation"
-    novalidate
-    onsubmit="startLoading()"
-  >
-    {% csrf_token %}
-
-    <div class="mb-3">
-      <label for="scheme" class="form-label">Select Scheme</label>
-      <select name="scheme" id="scheme" class="form-select" required>
-        <option value="" disabled selected>Choose a scheme</option>
-        {% for scheme in schemes %}
-        <option value="{{ scheme.id }}">{{ scheme.name }}</option>
-        {% endfor %}
-      </select>
-      <div class="invalid-feedback">Please select a scheme.</div>
+{% extends "base.html" %} {% load static %} {% block title %}Apply for Scheme -
+GovAid{% endblock %} {% block content %}
+<!-- Header -->
+<section
+  class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12"
+>
+  <div class="container mx-auto px-4">
+    <div class="flex items-center space-x-4 mb-4">
+      <a
+        href="{% url 'home' %}"
+        class="text-primary-100 hover:text-white transition-colors flex items-center gap-1"
+      >
+        <i class="fas fa-arrow-left"></i> Home
+      </a>
     </div>
+    <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">
+      <i class="fas fa-file-circle-check mr-3"></i>Apply for Scheme
+    </h1>
+    <p class="text-lg text-primary-100 dark:text-gray-300">
+      Submit your application for government benefits
+    </p>
+  </div>
+</section>
 
-    <div class="mb-3">
-      <label for="aadhaar" class="form-label">Aadhaar Number</label>
-      <input
-        type="text"
-        name="aadhaar"
-        id="aadhaar"
-        maxlength="12"
-        pattern="\d{12}"
-        class="form-control"
-        required
-      />
-      <div class="invalid-feedback">
-        Please enter a valid 12-digit Aadhaar number.
+<!-- Form Section -->
+<section class="py-12 bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <div class="max-w-2xl mx-auto">
+      <div class="card p-8 md:p-10">
+        <!-- Error Messages -->
+        {% if form.non_field_errors %}
+        <div
+          class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6 flex gap-3"
+        >
+          <i
+            class="fas fa-exclamation-circle text-red-600 dark:text-red-400 text-xl flex-shrink-0 mt-0.5"
+          ></i>
+          <div>
+            {% for error in form.non_field_errors %}
+            <p class="text-sm text-red-800 dark:text-red-300">{{ error }}</p>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'apply_scheme' %}" class="space-y-6">
+          {% csrf_token %}
+
+          <!-- Scheme Selection -->
+          <div>
+            <label
+              for="scheme"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              <i class="fas fa-building mr-2 text-primary-600"></i>Select Scheme
+              <span class="text-red-600 dark:text-red-400">*</span>
+            </label>
+            <select name="scheme" id="scheme" class="input w-full" required>
+              <option value="" disabled selected>
+                Choose a scheme to apply for
+              </option>
+              {% for scheme in schemes %}
+              <option value="{{ scheme.id }}">
+                {{ scheme.name }} - {{ scheme.agency }}
+              </option>
+              {% endfor %}
+            </select>
+            {% if form.scheme.errors %}
+            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">
+              {{ form.scheme.errors.0 }}
+            </p>
+            {% endif %}
+          </div>
+
+          <!-- Aadhaar Number -->
+          <div>
+            <label
+              for="aadhaar"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              <i class="fas fa-id-card mr-2 text-primary-600"></i>Aadhaar Number
+              <span class="text-red-600 dark:text-red-400">*</span>
+            </label>
+            <input
+              type="text"
+              name="aadhaar"
+              id="aadhaar"
+              maxlength="12"
+              pattern="\d{12}"
+              placeholder="Enter your 12-digit Aadhaar number"
+              class="input w-full"
+              required
+            />
+            {% if form.aadhaar.errors %}
+            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">
+              {{ form.aadhaar.errors.0 }}
+            </p>
+            {% endif %}
+            <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+              <i class="fas fa-info-circle mr-1"></i> Your Aadhaar is secure and
+              used only for verification
+            </p>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+            <button type="submit" 
+                    id="submitBtn"
+                    class="btn-primary w-full py-3 rounded-lg font-medium text-base transition-all flex items-center justify-center gap-2">
+              <span id="submitText"><i class="fas fa-paper-plane"></i> Submit Application</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Info Box -->
+        <div class="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <p class="text-sm text-blue-800 dark:text-blue-200 mb-3">
+            <i class="fas fa-info-circle mr-2"></i>
+            <strong>Important Information:</strong>
+          </p>
+          <ul class="text-sm text-blue-700 dark:text-blue-300 space-y-1 ml-5">
+            <li>• Your application will be verified within 3-5 working days</li>
+            <li>• Keep your Aadhaar handy for quick verification</li>
+            <li>• You can track your application status in "My Applications"</li>
+            <li>• All information provided is secure and confidential</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Already Applied Card -->
+      <div class="mt-8 card p-6 bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800">
+        <p class="text-sm text-amber-900 dark:text-amber-200">
+          <i class="fas fa-lightbulb mr-2"></i>
+          <strong>Tip:</strong> Check your eligibility before applying to increase your chances of approval.
+          <a href="{% url 'eligible_schemes' %}" class="font-semibold underline hover:no-underline">Check eligibility</a>
+        </p>
       </div>
     </div>
-
-    <button type="submit" class="btn btn-apply" id="submit-btn">
-      <span id="btn-text"><i class="bi bi-send-check-fill me-1"></i>Apply</span>
-      <div
-        class="spinner-border spinner-border-sm text-light"
-        id="loading-spinner"
-        role="status"
-      ></div>
-    </button>
-  </form>
-
-  {% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-    <li><i class="bi bi-check-circle-fill me-1"></i> {{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-
-  <a href="{% url 'scheme_list' %}" class="btn-back">
-    <i class="bi bi-arrow-left-circle me-1"></i>Back to Schemes
-  </a>
-</div>
+  </div>
+</section>
 
 <script>
-  // Bootstrap validation
-  (function () {
-    "use strict";
-    var forms = document.querySelectorAll(".needs-validation");
-    Array.from(forms).forEach(function (form) {
-      form.addEventListener(
-        "submit",
-        function (event) {
-          if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
-          form.classList.add("was-validated");
-        },
-        false
-      );
-    });
-  })();
-
-  // Show spinner on submit
-  function startLoading() {
-    const button = document.getElementById("submit-btn");
-    const spinner = document.getElementById("loading-spinner");
-    const text = document.getElementById("btn-text");
-
-    if (button && spinner && text) {
-      spinner.style.display = "inline-block";
-      text.textContent = "Submitting...";
-      button.disabled = true;
-    }
+  // Dark mode
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
   }
+
+  // Apply input styling
+  document.querySelectorAll('input:not([type="checkbox"]), select').forEach(el => {
+    if (!el.classList.contains('input')) {
+      el.className = 'input w-full';
+    }
+  });
+
+  // Form submission
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const btn = document.getElementById('submitBtn');
+    const text = document.getElementById('submitText');
+    btn.disabled = true;
+    text.innerHTML = '<span class="spinner"></span> Submitting...';
+  });
 </script>
 {% endblock %}
+              },
+              false,
+            );
+          });
+        })();
+
+        // Show spinner on submit
+        function startLoading() {
+          const button = document.getElementById("submit-btn");
+          const spinner = document.getElementById("loading-spinner");
+          const text = document.getElementById("btn-text");
+
+          if (button && spinner && text) {
+            spinner.style.display = "inline-block";
+            text.textContent = "Submitting...";
+            button.disabled = true;
+          }
+        }
+      </script>
+      {% endblock %}
+    </div>
+  </div>
+</section>

@@ -1,103 +1,198 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Scraping Quotes</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Import - GovAid</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      * {
-        box-sizing: border-box;
-      }
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(to right, #1e3c72, #2a5298);
-        color: #1a1a1a;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+        .animate-slide-up { animation: slideUp 0.5s ease-out; }
+        .spinner { display: inline-block; width: 16px; height: 16px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .dark:dark-mode-active { color-scheme: dark; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen">
 
-      header,
-      footer {
-        background: rgba(0, 0, 0, 0.6);
-        color: #fff;
-        padding: 15px 30px;
-        text-align: center;
-        font-weight: bold;
-        font-size: 1.2rem;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      }
+<!-- Header -->
+<header class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 text-white shadow-lg">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex items-center gap-3 mb-2">
+            <i class="fas fa-download text-2xl"></i>
+            <h1 class="text-4xl font-bold">Data Import</h1>
+        </div>
+        <p class="text-primary-100 dark:text-gray-300">Import government schemes from external sources</p>
+    </div>
+</header>
 
-      main {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 60px 20px;
-      }
+<!-- Main Content -->
+<main class="container mx-auto px-4 py-12 flex-grow">
+    <div class="max-w-2xl mx-auto">
+        <!-- Info Card -->
+        <div class="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-lg p-6 mb-8 animate-fade-in">
+            <div class="flex gap-3">
+                <i class="fas fa-info-circle text-blue-600 dark:text-blue-400 text-xl flex-shrink-0 mt-0.5"></i>
+                <div>
+                    <h3 class="font-bold text-blue-900 dark:text-blue-100 mb-1">How It Works</h3>
+                    <p class="text-sm text-blue-800 dark:text-blue-200">
+                        This tool fetches the latest government schemes from official sources and imports them into the system. 
+                        The process may take a few minutes depending on the number of schemes.
+                    </p>
+                </div>
+            </div>
+        </div>
 
-      .card {
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
-        border-radius: 16px;
-        padding: 40px;
-        max-width: 700px;
-        width: 100%;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        text-align: center;
-      }
+        <!-- Import Form -->
+        <div class="card p-8 md:p-10 animate-slide-up">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <i class="fas fa-cloud-download-alt text-white text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Import Schemes</h2>
+                <p class="text-gray-600 dark:text-gray-400 mt-2">Fetch and import the latest government schemes</p>
+            </div>
 
-      h1 {
-        margin-bottom: 20px;
-        font-size: 2rem;
-        color: #0d1b2a;
-      }
+            <form method="POST" class="space-y-6">
+                {% csrf_token %}
 
-      p {
-        font-size: 1.1rem;
-        margin-bottom: 30px;
-        color: #333;
-      }
+                <!-- Source Selection -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fas fa-database mr-2 text-primary-600"></i> Select Data Source
+                    </label>
+                    <select name="source" class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 dark:focus:ring-primary-900/30 transition-all outline-none">
+                        <option value="default">Default Government Source</option>
+                        <option value="sikkim">Sikkim State Government Portal</option>
+                        <option value="custom">Custom CSV File</option>
+                    </select>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                        <i class="fas fa-lightbulb mr-1"></i> Choose the source from which to import schemes
+                    </p>
+                </div>
 
-      form {
-        margin-bottom: 30px;
-      }
+                <!-- File Upload (for Custom) -->
+                <div id="fileUploadSection" style="display: none;">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fas fa-file-csv mr-2 text-primary-600"></i> Upload CSV File
+                    </label>
+                    <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-primary-500 transition-colors">
+                        <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 dark:text-gray-600 mb-2 block"></i>
+                        <input type="file" name="csv_file" accept=".csv" class="w-full">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Upload CSV file with scheme details</p>
+                    </div>
+                </div>
 
-      .btn {
-        position: relative;
-        background: #00a8e8;
-        color: white;
-        padding: 12px 30px;
-        border: none;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.3s ease, transform 0.2s ease;
-      }
+                <!-- Options -->
+                <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" name="update_existing" value="true" class="w-4 h-4">
+                        <span class="text-sm text-gray-700 dark:text-gray-300">
+                            <strong>Update existing schemes</strong> if already present
+                        </span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer mt-3">
+                        <input type="checkbox" name="skip_errors" value="true" class="w-4 h-4">
+                        <span class="text-sm text-gray-700 dark:text-gray-300">
+                            <strong>Skip errors</strong> and continue import
+                        </span>
+                    </label>
+                </div>
 
-      .btn:hover {
-        background: #007bbf;
-        transform: translateY(-2px);
-      }
+                <!-- Submit Button -->
+                <button type="submit" id="submitBtn" class="btn-primary w-full py-3 rounded-lg font-medium text-base transition-all mt-8 flex items-center justify-center gap-2">
+                    <span id="submitText"><i class="fas fa-download"></i> Start Import</span>
+                </button>
+            </form>
 
-      .btn:disabled {
-        background: #aaa;
-        cursor: not-allowed;
-      }
+            <!-- Progress Section (Hidden by default) -->
+            <div id="progressSection" style="display: none;" class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Importing schemes...</span>
+                        <span id="progressPercent" class="text-sm font-bold text-primary-600 dark:text-primary-400">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                        <div id="progressBar" class="bg-gradient-to-r from-primary-400 to-primary-600 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+                <p id="statusMessage" class="text-sm text-gray-600 dark:text-gray-400 text-center">Processing... Please wait.</p>
+            </div>
 
-      .loader {
-        display: none;
-        width: 20px;
-        height: 20px;
-        border: 3px solid #fff;
-        border-top: 3px solid transparent;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        position: absolute;
+            <!-- Results Section (Hidden by default) -->
+            <div id="resultsSection" style="display: none;" class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <div class="bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-green-800 dark:text-green-200 font-medium">
+                        <i class="fas fa-check-circle mr-2"></i> <span id="successMessage">Import completed successfully!</span>
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded text-center">
+                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="importedCount">0</div>
+                        <p class="text-xs text-blue-700 dark:text-blue-300 mt-1">Schemes Imported</p>
+                    </div>
+                    <div class="p-3 bg-orange-50 dark:bg-orange-900/20 rounded text-center">
+                        <div class="text-2xl font-bold text-orange-600 dark:text-orange-400" id="skippedCount">0</div>
+                        <p class="text-xs text-orange-700 dark:text-orange-300 mt-1">Skipped</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tips Box -->
+        <div class="mt-8 p-6 bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800 rounded-lg">
+            <h3 class="font-bold text-amber-900 dark:text-amber-100 mb-3 flex items-center">
+                <i class="fas fa-lightbulb mr-2"></i> Tips for Best Results
+            </h3>
+            <ul class="space-y-2 text-sm text-amber-800 dark:text-amber-200">
+                <li class="flex gap-2"><i class="fas fa-check text-green-600 flex-shrink-0 mt-0.5"></i> Ensure data source is accessible</li>
+                <li class="flex gap-2"><i class="fas fa-check text-green-600 flex-shrink-0 mt-0.5"></i> Review imported schemes for accuracy</li>
+                <li class="flex gap-2"><i class="fas fa-check text-green-600 flex-shrink-0 mt-0.5"></i> Backup data before bulk import</li>
+                <li class="flex gap-2"><i class="fas fa-check text-green-600 flex-shrink-0 mt-0.5"></i> Schedule imports during off-peak hours</li>
+            </ul>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-300 py-6 mt-12">
+    <div class="container mx-auto px-4 text-center text-sm">
+        <p>&copy; 2026 GovAid - Government Schemes Portal. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+  // Dark mode
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  }
+
+  // Toggle file upload section
+  document.querySelector('select[name="source"]').addEventListener('change', function() {
+    const fileSection = document.getElementById('fileUploadSection');
+    if (this.value === 'custom') {
+      fileSection.style.display = 'block';
+    } else {
+      fileSection.style.display = 'none';
+    }
+  });
+
+  // Form submission
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const btn = document.getElementById('submitBtn');
+    const text = document.getElementById('submitText');
+    btn.disabled = true;
+    text.innerHTML = '<span class="spinner"></span> Importing...';
+  });
+</script>
+
+</body>
+</html>
         top: 50%;
         left: 12px;
         transform: translateY(-50%);

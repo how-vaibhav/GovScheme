@@ -1,0 +1,245 @@
+{% extends "base.html" %} {% load static %} {% block title %}Notification Center
+- GovAid{% endblock %} {% block content %}
+<!-- Header -->
+<section
+  class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12"
+>
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+        <i class="fas fa-bell mr-3"></i>Notification Center
+      </h1>
+      <p class="text-lg text-primary-100 dark:text-gray-300">
+        Stay updated with all your scheme notifications
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Notifications Content -->
+<section class="py-12 bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto">
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="card p-6 text-center animate-fade-in">
+          <div
+            class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mx-auto mb-3"
+          >
+            <i
+              class="fas fa-inbox text-2xl text-blue-600 dark:text-blue-400"
+            ></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ total_notifications }}
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Total</p>
+        </div>
+
+        <div
+          class="card p-6 text-center animate-fade-in"
+          style="animation-delay: 0.1s"
+        >
+          <div
+            class="w-12 h-12 bg-amber-100 dark:bg-amber-900 rounded-lg flex items-center justify-center mx-auto mb-3"
+          >
+            <i
+              class="fas fa-bell text-2xl text-amber-600 dark:text-amber-400"
+            ></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ unread_count }}
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Unread</p>
+        </div>
+
+        <div
+          class="card p-6 text-center animate-fade-in"
+          style="animation-delay: 0.2s"
+        >
+          <div
+            class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mx-auto mb-3"
+          >
+            <i
+              class="fas fa-check-double text-2xl text-green-600 dark:text-green-400"
+            ></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ total_notifications|add:"-"|add:unread_count }}
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Read</p>
+        </div>
+      </div>
+
+      <!-- Actions Bar -->
+      <div
+        class="flex flex-col md:flex-row gap-4 justify-between items-center mb-6"
+      >
+        <!-- Filters -->
+        <div class="flex gap-2">
+          <a
+            href="?filter=all"
+            class="px-4 py-2 rounded-lg font-medium transition-all {% if filter_type == 'all' %}bg-primary-600 text-white{% else %}bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}"
+          >
+            <i class="fas fa-list mr-2"></i>All
+          </a>
+          <a
+            href="?filter=unread"
+            class="px-4 py-2 rounded-lg font-medium transition-all {% if filter_type == 'unread' %}bg-primary-600 text-white{% else %}bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}"
+          >
+            <i class="fas fa-bell mr-2"></i>Unread
+          </a>
+          <a
+            href="?filter=read"
+            class="px-4 py-2 rounded-lg font-medium transition-all {% if filter_type == 'read' %}bg-primary-600 text-white{% else %}bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}"
+          >
+            <i class="fas fa-check mr-2"></i>Read
+          </a>
+        </div>
+
+        <!-- Mark All Read -->
+        {% if unread_count > 0 %}
+        <form method="POST" class="inline">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="mark_all_read" />
+          <button type="submit" class="btn-outline">
+            <i class="fas fa-check-double mr-2"></i>Mark All as Read
+          </button>
+        </form>
+        {% endif %}
+      </div>
+
+      <!-- Notifications List -->
+      {% if notifications %}
+      <div class="space-y-4">
+        {% for notification in notifications %}
+        <div
+          class="card p-5 {% if not notification.is_read %}bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800{% endif %} animate-fade-in hover:shadow-lg transition-all"
+        >
+          <div class="flex items-start gap-4">
+            <!-- Icon -->
+            <div
+              class="w-10 h-10 {% if notification.is_read %}bg-gray-100 dark:bg-gray-700{% else %}bg-blue-100 dark:bg-blue-900{% endif %} rounded-lg flex items-center justify-center flex-shrink-0"
+            >
+              <i
+                class="fas {% if notification.scheme %}fa-landmark{% else %}fa-bell{% endif %} text-lg {% if notification.is_read %}text-gray-600 dark:text-gray-400{% else %}text-blue-600 dark:text-blue-400{% endif %}"
+              ></i>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-1">
+              <div class="flex items-start justify-between gap-4 mb-2">
+                <p
+                  class="text-sm font-medium {% if notification.is_read %}text-gray-700 dark:text-gray-300{% else %}text-gray-900 dark:text-white{% endif %}"
+                >
+                  {{ notification.message }}
+                </p>
+                {% if not notification.is_read %}
+                <span
+                  class="inline-block w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-1"
+                ></span>
+                {% endif %}
+              </div>
+
+              <div
+                class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400"
+              >
+                <span>
+                  <i class="fas fa-clock mr-1"></i>{{
+                  notification.created_at|timesince }} ago
+                </span>
+                {% if notification.scheme %}
+                <span>
+                  <i class="fas fa-tag mr-1"></i>{{
+                  notification.scheme.name|truncatewords:3 }}
+                </span>
+                {% endif %}
+              </div>
+
+              <!-- Actions -->
+              <div class="mt-3 flex gap-2">
+                {% if notification.link %}
+                <a
+                  href="{{ notification.link }}"
+                  class="text-xs text-primary-600 dark:text-primary-400 hover:underline font-medium"
+                >
+                  <i class="fas fa-external-link-alt mr-1"></i>View Details
+                </a>
+                {% endif %} {% if not notification.is_read %}
+                <form
+                  method="POST"
+                  action="{% url 'mark_read' %}"
+                  class="inline"
+                >
+                  {% csrf_token %}
+                  <input
+                    type="hidden"
+                    name="notification_id"
+                    value="{{ notification.id }}"
+                  />
+                  <button
+                    type="submit"
+                    class="text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-medium"
+                  >
+                    <i class="fas fa-check mr-1"></i>Mark as Read
+                  </button>
+                </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <!-- Empty State -->
+      <div class="empty-state py-16">
+        <i
+          class="fas fa-bell-slash text-6xl text-gray-300 dark:text-gray-600 mb-4"
+        ></i>
+        <p class="text-gray-600 dark:text-gray-400 text-lg mb-2">
+          No notifications yet
+        </p>
+        <p class="text-gray-500 dark:text-gray-500 text-sm">
+          You'll see updates about your applications and schemes here
+        </p>
+      </div>
+      {% endif %}
+
+      <!-- Help Card -->
+      <div
+        class="mt-8 card p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800"
+      >
+        <div class="flex items-start gap-4">
+          <div
+            class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center flex-shrink-0"
+          >
+            <i class="fas fa-info-circle text-blue-600 dark:text-blue-400"></i>
+          </div>
+          <div>
+            <h4 class="text-lg font-bold text-blue-900 dark:text-blue-200 mb-2">
+              About Notifications
+            </h4>
+            <p class="text-sm text-blue-800 dark:text-blue-300">
+              You'll receive notifications for application status updates,
+              feedback replies, scheme updates, and important announcements.
+              Check this page regularly to stay informed!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Dark mode
+  const savedTheme = localStorage.getItem("theme");
+  if (
+    savedTheme === "dark" ||
+    (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)
+  ) {
+    document.documentElement.classList.add("dark");
+  }
+</script>
+{% endblock %}

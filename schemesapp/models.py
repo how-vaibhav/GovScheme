@@ -39,11 +39,29 @@ class UserDetails(models.Model):
     income = models.PositiveIntegerField()
 
 class Scheme(models.Model):
+    CATEGORY_CHOICES = [
+        ('education', 'Education'),
+        ('health', 'Health'),
+        ('agriculture', 'Agriculture'),
+        ('business', 'Business'),
+        ('social', 'Social Welfare'),
+        ('employment', 'Employment'),
+        ('infrastructure', 'Infrastructure'),
+        ('sports', 'Sports'),
+        ('women', 'Women Empowerment'),
+        ('other', 'Other'),
+    ]
+
     name = models.CharField(max_length=255)
     objective = models.TextField()
     benefits = models.TextField()
     agency = models.CharField(max_length=255)
-    full_description = models.TextField(blank=True, null=True) 
+    full_description = models.TextField(blank=True, null=True)
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='other')
+    website = models.URLField(blank=True, null=True)
+    contact_email = models.EmailField(blank=True, null=True)
+    contact_phone = models.CharField(max_length=20, blank=True, null=True)
+    application_deadline = models.DateField(blank=True, null=True)
 
     GENDER_CHOICES = [
     ('M' ,'Male'),
@@ -81,15 +99,16 @@ class Scheme(models.Model):
     def is_user_eligible(self, details):
         checks = {
         'min_age': lambda: details.age >= self.min_age if self.min_age is not None else True,
-        'max_age': lambda: details.age <= self.min_age if self.min_age is not None else True,
-        'max_income': lambda: details.income <= self.income if self.income is not None else True,
+        'max_age': lambda: details.age <= self.max_age if self.max_age is not None else True,
+        'max_income': lambda: details.income <= self.max_income if self.max_income is not None else True,
         'gender': lambda: details.gender.lower() == self.gender.lower() if self.gender else True,
-        'caste': lambda: details.caste == self.caste_required if self.caste is not None else True,
+        'caste': lambda: details.caste == self.caste if self.caste is not None else True,
         'disability': lambda: details.disability == self.disability if self.disability is not None else True,
         'marital_status': lambda: details.maritial_status == self.maritial_status if self.maritial_status is not None else True,
         'location': lambda: details.location == self.location if self.location is not None else True,
         'minority': lambda: details.minority == self.minority if self.minority is not None else True,
-        'below_poverty_line': lambda: details.below_poverty_line == self.below_poverty_line if self.below_poverty_line is not None else 
+        'below_poverty_line': lambda: details.below_poverty_line == self.below_poverty_line if self.below_poverty_line is not None else True,
+        }
         True, 
         'max_income': lambda: details.income <= self.max_income if self.max_income is not None else True,
         }
@@ -148,3 +167,27 @@ class Application(models.Model):
         else:
             self._aadhaar = None
 
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    scheme = models.ForeignKey(Scheme, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'scheme')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.scheme.name}"
+
+
+class ApplicationTimeline(models.Model):
+    application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name='timeline_events')
+    status = models.CharField(max_length=50)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.application.id} - {self.status}"

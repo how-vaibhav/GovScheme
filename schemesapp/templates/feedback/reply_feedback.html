@@ -1,52 +1,149 @@
-{% extends "base.html" %} {% load static %} {% block extra_head %}
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-  rel="stylesheet"
-/>
-<link rel="stylesheet" href="{% static 'css/replyfeedback.css' %}" />
-{% endblock %} {% block content %}
-<div class="container reply-container">
-  <!-- Success message (shown via JS) -->
-  <div id="successMessage" class="alert alert-success">
-    ✅ Your reply has been successfully submitted!
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Reply to Feedback - GovAid{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<section class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center space-x-4 mb-4">
+      <a href="{% url 'view_feedbacks' %}" class="text-primary-100 hover:text-white transition-colors flex items-center gap-1">
+        <i class="fas fa-arrow-left"></i> Back to Feedbacks
+      </a>
+    </div>
+    <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">
+      <i class="fas fa-reply mr-3"></i>Reply to Feedback
+    </h1>
+    <p class="text-lg text-primary-100 dark:text-gray-300">
+      Respond to user feedback
+    </p>
   </div>
+</section>
 
-  <h2>Reply to Feedback</h2>
-
-  <div class="feedback-card">
-    <p><strong>From:</strong> {{ feedback.user.username }}</p>
-    <p><strong>Message:</strong> {{ feedback.message }}</p>
-  </div>
-
-  <div class="reply-form-card">
-    <form method="post" id="replyForm">
-      {% csrf_token %}
-      <div class="mb-3">
-        <label for="reply" class="form-label"
-          ><strong>Your Reply:</strong></label
-        >
-        <textarea
-          id="reply"
-          name="reply"
-          rows="5"
-          class="form-control"
-          placeholder="Write your reply..."
-          required
-        >
-{{ feedback.reply|default_if_none:"" }}</textarea
-        >
+<!-- Content -->
+<section class="py-12 bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <div class="max-w-2xl mx-auto">
+      
+      <!-- Success Message -->
+      <div id="successMessage" class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-6 flex gap-3 hidden">
+        <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl flex-shrink-0 mt-0.5"></i>
+        <div>
+          <p class="text-sm text-green-800 dark:text-green-300">Your reply has been successfully submitted!</p>
+        </div>
       </div>
-      <button type="submit" class="btn btn-submit">Send Reply</button>
-    </form>
+
+      <!-- Original Feedback Card -->
+      <div class="card p-8 mb-8 border-2 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+          <i class="fas fa-comment text-blue-600 dark:text-blue-400 mr-3"></i> Original Feedback
+        </h3>
+        
+        <div class="space-y-4">
+          <div>
+            <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">From</p>
+            <p class="text-lg font-medium text-gray-900 dark:text-white">{{ feedback.user.username }}</p>
+          </div>
+          
+          <div>
+            <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Message</p>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">{{ feedback.message }}</p>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-blue-200 dark:border-blue-700">
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Submitted Date</p>
+              <p class="font-medium text-gray-900 dark:text-white">{{ feedback.created_at|date:"M d, Y" }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Scheme</p>
+              <p class="font-medium text-gray-900 dark:text-white">{{ feedback.scheme }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reply Form -->
+      <div class="card p-8">
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+          <i class="fas fa-pen-fancy text-primary-600 dark:text-primary-400 mr-3"></i> Write Your Reply
+        </h3>
+
+        <form method="post" id="replyForm" class="space-y-6">
+          {% csrf_token %}
+          
+          <div>
+            <label for="reply" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Reply Message
+              <span class="text-red-600 dark:text-red-400">*</span>
+            </label>
+            <textarea
+              id="reply"
+              name="reply"
+              rows="7"
+              placeholder="Write a helpful and professional reply..."
+              class="input w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none resize-none"
+              required
+            >{{ feedback.reply|default_if_none:"" }}</textarea>
+            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              <i class="fas fa-info-circle mr-1"></i> Keep your reply professional and helpful
+            </p>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <button type="submit" 
+                    id="submitBtn"
+                    class="btn-primary flex-1 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
+              <span id="submitText"><i class="fas fa-paper-plane"></i> Send Reply</span>
+            </button>
+            <a href="{% url 'view_feedbacks' %}" class="flex-1 px-4 py-3 rounded-lg font-medium bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center gap-2">
+              <i class="fas fa-times"></i> Cancel
+            </a>
+          </div>
+        </form>
+
+        <!-- Info Box -->
+        <div class="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+          <p class="text-sm text-amber-800 dark:text-amber-200">
+            <i class="fas fa-lightbulb mr-2"></i>
+            <strong>Tips for a good reply:</strong>
+          </p>
+          <ul class="text-xs text-amber-700 dark:text-amber-300 mt-2 ml-5 space-y-1">
+            <li>• Address the user's concerns directly</li>
+            <li>• Be polite and professional</li>
+            <li>• Provide helpful solutions or next steps</li>
+            <li>• Keep it concise but informative</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
 <script>
-  const form = document.getElementById("replyForm");
-  const successBox = document.getElementById("successMessage");
+  // Dark mode
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  }
 
-  // Hide success message initially
-  successBox.style.display = "none";
+  // Form submission
+  document.getElementById('replyForm').addEventListener('submit', function(e) {
+    const btn = document.getElementById('submitBtn');
+    const text = document.getElementById('submitText');
+    btn.disabled = true;
+    text.innerHTML = '<span class="spinner"></span> Sending...';
+  });
+
+  // Show success message if form was submitted successfully
+  // (This would be added by Django template context)
+  {% if success %}
+  document.getElementById('successMessage').classList.remove('hidden');
+  {% endif %}
+</script>
+{% endblock %}
 
   form.addEventListener("submit", function () {
     // Show success message after submission

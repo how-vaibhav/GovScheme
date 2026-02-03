@@ -1,63 +1,201 @@
-{% extends "base.html" %} {% load static %} {% block title %}Scheme Eligibility
-Check{% endblock %} {% block extra_head %}
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-  rel="stylesheet"
-/>
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-  rel="stylesheet"
-/>
-<link href="{% static "css/eligibility.css" %}" rel="stylesheet" /> {%endblock%}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Check Eligibility - GovAid{% endblock %}
+
 {% block content %}
-<div class="container">
-  <h1 class="text-center mb-4">
-    <i class="bi bi-patch-check-fill me-2"></i>Scheme Eligibility Check
-  </h1>
-
-  <div class="mb-4">
-    <h2>
-      <i class="bi bi-file-earmark-text me-2"></i>Scheme: {{ scheme.name }}
-    </h2>
-    <p><strong>Description:</strong> {{ scheme.description }}</p>
+<!-- Header -->
+<section class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center space-x-4 mb-4">
+      <a href="{% url 'home' %}" class="text-primary-100 hover:text-white transition-colors flex items-center gap-1">
+        <i class="fas fa-arrow-left"></i> Home
+      </a>
+    </div>
+    <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">
+      <i class="fas fa-magnifying-glass-check mr-3"></i>Eligibility Check
+    </h1>
+    <p class="text-lg text-primary-100 dark:text-gray-300">
+      For: <strong class="text-white">{{ scheme.name }}</strong>
+    </p>
   </div>
+</section>
 
-  <div class="mb-4">
-    <h2><i class="bi bi-person-lines-fill me-2"></i>Your Details</h2>
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover">
-        <tr>
-          <th>Age</th>
-          <td>{{ details.age }}</td>
-        </tr>
-        <tr>
-          <th>Income</th>
-          <td>{{ details.income }}</td>
-        </tr>
-        <tr>
-          <th>Gender</th>
-          <td>{{ details.gender }}</td>
-        </tr>
-        <tr>
-          <th>Caste</th>
-          <td>{{ details.caste }}</td>
-        </tr>
-        <tr>
-          <th>Disability</th>
-          <td>{{ details.disability }}</td>
-        </tr>
-        <tr>
-          <th>Marital Status</th>
-          <td>{{ details.marital_status }}</td>
-        </tr>
-        <tr>
-          <th>Location</th>
-          <td>{{ details.location }}</td>
-        </tr>
-        <tr>
-          <th>Minority</th>
-          <td>{{ details.minority }}</td>
-        </tr>
+<!-- Content -->
+<section class="py-12 bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+      
+      <!-- Scheme Information -->
+      <div class="space-y-6">
+        <div class="card p-8">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+            <i class="fas fa-info-circle mr-3 text-primary-600 dark:text-primary-400"></i>Scheme Details
+          </h2>
+          <div class="space-y-4">
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Scheme Name</p>
+              <p class="text-lg font-medium text-gray-900 dark:text-white">{{ scheme.name }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Agency</p>
+              <p class="text-lg font-medium text-gray-900 dark:text-white">{{ scheme.agency }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Description</p>
+              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">{{ scheme.description }}</p>
+            </div>
+            <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+              <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Benefits</p>
+              <p class="text-gray-700 dark:text-gray-300">{{ scheme.benefits|default:"View details for more information" }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Your Details & Eligibility -->
+      <div class="space-y-6">
+        <!-- Your Details -->
+        <div class="card p-8">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+            <i class="fas fa-user mr-3 text-primary-600 dark:text-primary-400"></i>Your Profile
+          </h2>
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
+              <span class="text-gray-600 dark:text-gray-400">Age</span>
+              <span class="font-medium text-gray-900 dark:text-white">{{ details.age|default:"Not provided" }} years</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
+              <span class="text-gray-600 dark:text-gray-400">Annual Income</span>
+              <span class="font-medium text-gray-900 dark:text-white">₹ {{ details.income|default:"Not provided" }}</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
+              <span class="text-gray-600 dark:text-gray-400">Caste</span>
+              <span class="font-medium text-gray-900 dark:text-white">{{ details.caste|default:"Not provided" }}</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
+              <span class="text-gray-600 dark:text-gray-400">Marital Status</span>
+              <span class="font-medium text-gray-900 dark:text-white">{{ details.marital_status|default:"Not provided" }}</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
+              <span class="text-gray-600 dark:text-gray-400">Disability</span>
+              <span class="font-medium text-gray-900 dark:text-white">
+                {% if details.disable %}
+                  <i class="fas fa-check text-green-600"></i> Yes
+                {% else %}
+                  <i class="fas fa-times text-gray-400"></i> No
+                {% endif %}
+              </span>
+            </div>
+            <div class="flex justify-between items-center py-2">
+              <span class="text-gray-600 dark:text-gray-400">BPL Status</span>
+              <span class="font-medium text-gray-900 dark:text-white">
+                {% if details.below_poverty_line %}
+                  <i class="fas fa-check text-green-600"></i> Yes
+                {% else %}
+                  <i class="fas fa-times text-gray-400"></i> No
+                {% endif %}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Eligibility Requirements -->
+        <div class="card p-8 border-2 border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/20">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+            <i class="fas fa-check-circle mr-3 text-primary-600 dark:text-primary-400"></i>Eligibility Criteria
+          </h2>
+          <div class="space-y-3 text-sm">
+            <div class="flex items-start gap-3 py-2">
+              <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+                {% if details.age >= scheme.min_age %}
+                  <i class="fas fa-check text-xs"></i>
+                {% else %}
+                  <i class="fas fa-times text-xs"></i>
+                {% endif %}
+              </div>
+              <div class="flex-grow">
+                <p class="text-gray-700 dark:text-gray-300">
+                  Age: {{ scheme.min_age }}+ years
+                  {% if scheme.max_age %}
+                    to {{ scheme.max_age }} years
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 py-2">
+              <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+                {% if details.income <= scheme.max_income %}
+                  <i class="fas fa-check text-xs"></i>
+                {% else %}
+                  <i class="fas fa-times text-xs"></i>
+                {% endif %}
+              </div>
+              <div class="flex-grow">
+                <p class="text-gray-700 dark:text-gray-300">
+                  Maximum Annual Income: ₹ {{ scheme.max_income|floatformat:0 }}
+                </p>
+              </div>
+            </div>
+            {% if scheme.caste %}
+            <div class="flex items-start gap-3 py-2">
+              <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+                {% if details.caste == scheme.caste %}
+                  <i class="fas fa-check text-xs"></i>
+                {% else %}
+                  <i class="fas fa-times text-xs"></i>
+                {% endif %}
+              </div>
+              <div class="flex-grow">
+                <p class="text-gray-700 dark:text-gray-300">
+                  Caste: {{ scheme.caste }}
+                </p>
+              </div>
+            </div>
+            {% endif %}
+            {% if scheme.below_poverty_line %}
+            <div class="flex items-start gap-3 py-2">
+              <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+                {% if details.below_poverty_line %}
+                  <i class="fas fa-check text-xs"></i>
+                {% else %}
+                  <i class="fas fa-times text-xs"></i>
+                {% endif %}
+              </div>
+              <div class="flex-grow">
+                <p class="text-gray-700 dark:text-gray-300">
+                  Below Poverty Line (BPL) Status Required
+                </p>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Section -->
+    <div class="max-w-5xl mx-auto mt-8 pt-8 border-t-2 border-gray-200 dark:border-gray-700">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <a href="{% url 'scheme_list' %}" class="px-6 py-4 rounded-lg font-medium bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center gap-2">
+          <i class="fas fa-arrow-left"></i> Back to Schemes
+        </a>
+        <a href="{% url 'apply_scheme' %}?scheme={{ scheme.id }}" class="btn-primary px-6 py-4 rounded-lg font-medium flex items-center justify-center gap-2">
+          <i class="fas fa-paper-plane"></i> Apply for This Scheme
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Dark mode
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  }
+</script>
+{% endblock %}
         <tr>
           <th>Below Poverty Line</th>
           <td>{{ details.below_poverty_line }}</td>

@@ -54,6 +54,7 @@
       <div
         class="card p-6 group hover:shadow-xl transition-all duration-300 animate-fade-in scheme-item"
         data-name="{{ scheme.name|lower }}"
+        data-category="{{ scheme.get_category_display|lower }}"
       >
         <!-- Icon -->
         <div
@@ -175,16 +176,44 @@
     const searchTerm = document
       .getElementById("searchInput")
       .value.toLowerCase();
+    const selectedCategory = document
+      .getElementById("categoryFilter")
+      .value.toLowerCase();
     const schemes = document.querySelectorAll(".scheme-item");
+    let visibleCount = 0;
 
     schemes.forEach((scheme) => {
       const name = scheme.getAttribute("data-name");
-      if (name.includes(searchTerm)) {
+      const category = scheme.getAttribute("data-category");
+
+      const matchesSearch = name.includes(searchTerm);
+      const matchesCategory =
+        selectedCategory === "" || category === selectedCategory;
+
+      if (matchesSearch && matchesCategory) {
         scheme.style.display = "";
+        scheme.classList.add("animate-fade-in");
+        visibleCount++;
       } else {
         scheme.style.display = "none";
       }
     });
+
+    // Show empty state if no schemes match
+    const container = document.getElementById("schemesContainer");
+    const emptyState = container.querySelector(".empty-state");
+    if (visibleCount === 0 && !emptyState) {
+      const noResults = document.createElement("div");
+      noResults.className = "col-span-full empty-state";
+      noResults.innerHTML = `
+        <i class="fas fa-search text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+        <p class="text-gray-600 dark:text-gray-400 text-lg">No schemes found</p>
+        <p class="text-gray-500 dark:text-gray-500 text-sm mt-2">Try adjusting your search or filters</p>
+      `;
+      container.appendChild(noResults);
+    } else if (visibleCount > 0 && emptyState) {
+      emptyState.remove();
+    }
   }
 </script>
 {% endblock %}

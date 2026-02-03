@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Compare Schemes - GovAid{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<section class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12">
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+        <i class="fas fa-balance-scale mr-3"></i>Compare Schemes
+      </h1>
+      <p class="text-lg text-primary-100 dark:text-gray-300">
+        Compare multiple schemes side-by-side to find the best fit
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Comparison Content -->
+<section class="py-12 bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    
+    <!-- Scheme Selector -->
+    <div class="max-w-6xl mx-auto mb-8">
+      <div class="card p-6 bg-white dark:bg-gray-800">
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">
+          <i class="fas fa-search mr-2"></i>Select Schemes to Compare
+        </h3>
+        <form method="GET" id="comparisonForm">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+            {% for scheme in all_schemes %}
+            <label class="flex items-center p-3 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-600 cursor-pointer transition-all {% if scheme.pk|stringformat:'s' in request.GET.getlist:'schemes' %}border-primary-500 bg-primary-50 dark:bg-primary-900/20{% endif %}">
+              <input type="checkbox" name="schemes" value="{{ scheme.pk }}" 
+                     class="mr-3 w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+                     {% if scheme.pk|stringformat:'s' in request.GET.getlist:'schemes' %}checked{% endif %}
+                     onchange="this.form.submit()">
+              <span class="text-sm text-gray-700 dark:text-gray-300 font-medium line-clamp-2">{{ scheme.name }}</span>
+            </label>
+            {% endfor %}
+          </div>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            <i class="fas fa-info-circle mr-1"></i>Select 2-3 schemes for best comparison results
+          </p>
+        </form>
+      </div>
+    </div>
+
+    {% if schemes_to_compare %}
+    <!-- Comparison Table -->
+    <div class="max-w-6xl mx-auto overflow-x-auto">
+      <table class="w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+        <thead>
+          <tr class="bg-gray-100 dark:bg-gray-700">
+            <th class="px-4 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-300 sticky left-0 bg-gray-100 dark:bg-gray-700">
+              Attribute
+            </th>
+            {% for scheme in schemes_to_compare %}
+            <th class="px-4 py-3 text-left text-sm font-bold text-gray-900 dark:text-white min-w-[250px]">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <p class="line-clamp-2 mb-2">{{ scheme.name }}</p>
+                  <span class="inline-block px-2 py-1 text-xs font-medium rounded-full bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300">
+                    {{ scheme.get_category_display }}
+                  </span>
+                </div>
+              </div>
+            </th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Objective -->
+          <tr class="border-t border-gray-200 dark:border-gray-700">
+            <td class="px-4 py-4 font-medium text-gray-700 dark:text-gray-300 sticky left-0 bg-white dark:bg-gray-800">
+              <i class="fas fa-bullseye mr-2 text-primary-600"></i>Objective
+            </td>
+            {% for scheme in schemes_to_compare %}
+            <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
+              {{ scheme.objective }}
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- Benefits -->
+          <tr class="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+            <td class="px-4 py-4 font-medium text-gray-700 dark:text-gray-300 sticky left-0 bg-gray-50 dark:bg-gray-900/50">
+              <i class="fas fa-gift mr-2 text-green-600"></i>Benefits
+            </td>
+            {% for scheme in schemes_to_compare %}
+            <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
+              {{ scheme.benefits }}
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- Agency -->
+          <tr class="border-t border-gray-200 dark:border-gray-700">
+            <td class="px-4 py-4 font-medium text-gray-700 dark:text-gray-300 sticky left-0 bg-white dark:bg-gray-800">
+              <i class="fas fa-building mr-2 text-blue-600"></i>Agency
+            </td>
+            {% for scheme in schemes_to_compare %}
+            <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
+              {{ scheme.agency }}
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- Age Criteria -->
+          <tr class="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+            <td class="px-4 py-4 font-medium text-gray-700 dark:text-gray-300 sticky left-0 bg-gray-50 dark:bg-gray-900/50">
+              <i class="fas fa-birthday-cake mr-2 text-purple-600"></i>Age Criteria
+            </td>
+            {% for scheme in schemes_to_compare %}
+            <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
+              {% if scheme.min_age or scheme.max_age %}
+                {% if scheme.min_age %}{{ scheme.min_age }}{% else %}Any{% endif %} - 
+                {% if scheme.max_age %}{{ scheme.max_age }}{% else %}Any{% endif %} years
+              {% else %}
+                <span class="text-green-600 dark:text-green-400">All ages</span>
+              {% endif %}
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- Income Criteria -->
+          <tr class="border-t border-gray-200 dark:border-gray-700">
+            <td class="px-4 py-4 font-medium text-gray-700 dark:text-gray-300 sticky left-0 bg-white dark:bg-gray-800">
+              <i class="fas fa-rupee-sign mr-2 text-amber-600"></i>Max Income
+            </td>
+            {% for scheme in schemes_to_compare %}
+            <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
+              {% if scheme.max_income %}
+                ₹{{ scheme.max_income|floatformat:0 }}
+              {% else %}
+                <span class="text-green-600 dark:text-green-400">No limit</span>
+              {% endif %}
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- Location -->
+          <tr class="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+            <td class="px-4 py-4 font-medium text-gray-700 dark:text-gray-300 sticky left-0 bg-gray-50 dark:bg-gray-900/50">
+              <i class="fas fa-map-marker-alt mr-2 text-red-600"></i>Location
+            </td>
+            {% for scheme in schemes_to_compare %}
+            <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
+              {% if scheme.location %}
+                {{ scheme.get_location_display }}
+              {% else %}
+                <span class="text-green-600 dark:text-green-400">All locations</span>
+              {% endif %}
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- Gender -->
+          <tr class="border-t border-gray-200 dark:border-gray-700">
+            <td class="px-4 py-4 font-medium text-gray-700 dark:text-gray-300 sticky left-0 bg-white dark:bg-gray-800">
+              <i class="fas fa-venus-mars mr-2 text-pink-600"></i>Gender
+            </td>
+            {% for scheme in schemes_to_compare %}
+            <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
+              {% if scheme.gender %}
+                {{ scheme.get_gender_display }}
+              {% else %}
+                <span class="text-green-600 dark:text-green-400">All genders</span>
+              {% endif %}
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- Contact -->
+          <tr class="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+            <td class="px-4 py-4 font-medium text-gray-700 dark:text-gray-300 sticky left-0 bg-gray-50 dark:bg-gray-900/50">
+              <i class="fas fa-phone mr-2 text-indigo-600"></i>Contact
+            </td>
+            {% for scheme in schemes_to_compare %}
+            <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
+              {% if scheme.contact_phone or scheme.contact_email %}
+                {% if scheme.contact_phone %}<div>{{ scheme.contact_phone }}</div>{% endif %}
+                {% if scheme.contact_email %}<div>{{ scheme.contact_email }}</div>{% endif %}
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- Actions -->
+          <tr class="border-t border-gray-200 dark:border-gray-700">
+            <td class="px-4 py-4 font-medium text-gray-700 dark:text-gray-300 sticky left-0 bg-white dark:bg-gray-800">
+              <i class="fas fa-hand-pointer mr-2 text-primary-600"></i>Actions
+            </td>
+            {% for scheme in schemes_to_compare %}
+            <td class="px-4 py-4">
+              <div class="flex flex-col gap-2">
+                <a href="{% url 'scheme_detail' scheme.pk %}" class="btn-outline py-2 text-xs rounded-lg text-center">
+                  <i class="fas fa-info-circle mr-1"></i>View Details
+                </a>
+                <a href="{% url 'user_eligibility' scheme.pk %}" class="btn-primary py-2 text-xs rounded-lg text-center">
+                  <i class="fas fa-check mr-1"></i>Check Eligibility
+                </a>
+              </div>
+            </td>
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="max-w-6xl mx-auto">
+      <div class="empty-state py-16">
+        <i class="fas fa-balance-scale text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+        <p class="text-gray-600 dark:text-gray-400 text-lg mb-2">No schemes selected for comparison</p>
+        <p class="text-gray-500 dark:text-gray-500 text-sm">
+          Select 2-3 schemes from the list above to start comparing
+        </p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+  // Dark mode
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  }
+</script>
+{% endblock %}

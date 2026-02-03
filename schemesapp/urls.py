@@ -27,5 +27,12 @@ urlpatterns = [
       path('applications/<int:app_id>/accept/', views.accept_application, name='accept_application'),
       path('applications/<int:app_id>/reject/', views.reject_application, name='reject_application'),
       path('notifications/mark-read/', views.mark_read, name='mark_read'),
-]
+      
+      # New Features
+      path('favorites/', views.favorites_list, name='favorites_list'),
+      path('favorites/toggle/<int:scheme_id>/', views.toggle_favorite, name='toggle_favorite'),
+      path('comparison/', views.comparison, name='comparison'),
+      path('advanced-search/', views.advanced_search, name='advanced_search'),
+      path('application/<int:app_id>/timeline/', views.application_timeline, name='application_timeline'),
+      path('notifications/', views.notification_center, name='notification_center'),
 

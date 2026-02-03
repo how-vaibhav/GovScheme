@@ -2,61 +2,185 @@
 {% load group_filters %}
 {% load static %}
 
-{% block extra_head %}
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<link rel="stylesheet" href="{% static 'css/viewfeedback.css' %}" />
-
-{% endblock %}
+{% block title %}Your Feedbacks - GovAid{% endblock %}
 
 {% block content %}
+<!-- Header -->
+<section class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center space-x-4 mb-4">
+      <a href="{% url 'home' %}" class="text-primary-100 hover:text-white transition-colors flex items-center gap-1">
+        <i class="fas fa-arrow-left"></i> Home
+      </a>
+    </div>
+    <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">
+      <i class="fas fa-comments mr-3"></i>Your Feedbacks
+    </h1>
+    <p class="text-lg text-primary-100 dark:text-gray-300">
+      Track and manage your feedback submissions
+    </p>
+  </div>
+</section>
 
-{% if user|has_group:"Employee" %}
-<div class="feedback-summary">
-  <span><strong>Total Feedbacks:</strong> {{ total_feedbacks }}</span> |
-  <span class="replied"><strong>Replied:</strong> {{ total_replied }}</span> |
-  <span class="unreplied"><strong>Unreplied:</strong> {{ total_unreplied }}</span>
-</div>
+<!-- Content -->
+<section class="py-12 bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <!-- Summary Stats (For Employees) -->
+    {% if user|has_group:"Employee" %}
+    <div class="max-w-5xl mx-auto mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="card p-6 text-center">
+          <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-2">{{ total_feedbacks }}</div>
+          <p class="text-gray-600 dark:text-gray-400">Total Feedbacks</p>
+        </div>
+        <div class="card p-6 text-center">
+          <div class="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">{{ total_replied }}</div>
+          <p class="text-gray-600 dark:text-gray-400">Replied</p>
+        </div>
+        <div class="card p-6 text-center">
+          <div class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">{{ total_unreplied }}</div>
+          <p class="text-gray-600 dark:text-gray-400">Awaiting Reply</p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
 
-{% endif %}
-
-<div class="container feedback-container">
-    <h2>Feedbacks</h2>
-
-    <!-- Improved Filter Section -->
-    <form method="get" class="row g-3 align-items-end mb-4 p-3 bg-light rounded shadow-sm">
-        <div class="col-md-5">
-            <label for="scheme" class="form-label">Scheme:</label>
-            <select name="scheme" id="scheme" class="form-select">
-                <option value="">All</option>
-                {% for code, name in scheme_choices %}
-                    <option value="{{ code }}" {% if code == selected_scheme %}selected{% endif %}>{{ name }}</option>
-                {% endfor %}
+    <div class="max-w-5xl mx-auto">
+      <!-- Filter Section -->
+      <div class="card p-6 mb-8">
+        <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label for="scheme" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <i class="fas fa-filter mr-2"></i>Scheme
+            </label>
+            <select name="scheme" id="scheme" class="input w-full">
+              <option value="">All Schemes</option>
+              {% for code, name in scheme_choices %}
+              <option value="{{ code }}" {% if code == selected_scheme %}selected{% endif %}>{{ name }}</option>
+              {% endfor %}
             </select>
-        </div>
+          </div>
 
-        <div class="col-md-5">
-            <label for="replied" class="form-label">Replied:</label>
-            <select name="replied" id="replied" class="form-select">
-                <option value="">All</option>
-                <option value="yes" {% if selected_replied == 'yes' %}selected{% endif %}>Yes</option>
-                <option value="no" {% if selected_replied == 'no' %}selected{% endif %}>No</option>
+          <div>
+            <label for="replied" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <i class="fas fa-reply mr-2"></i>Reply Status
+            </label>
+            <select name="replied" id="replied" class="input w-full">
+              <option value="">All</option>
+              <option value="yes" {% if selected_replied == 'yes' %}selected{% endif %}>Replied</option>
+              <option value="no" {% if selected_replied == 'no' %}selected{% endif %}>Awaiting Reply</option>
             </select>
-        </div>
+          </div>
 
-        <div class="col-md-2 d-grid">
-            <button type="submit" class="btn btn-primary">Filter</button>
-        </div>
-    </form>
+          <div class="flex items-end">
+            <button type="submit" class="btn-primary w-full py-3 rounded-lg font-medium flex items-center justify-center gap-2">
+              <i class="fas fa-search"></i> Filter
+            </button>
+          </div>
+        </form>
+      </div>
 
-    {% for feedback in feedbacks %}
-        <div class="feedback-card">
-            <strong>{{ feedback.name }}</strong>
-            <p><strong>Scheme:</strong> {{ feedback.scheme }}</p>
-            <p>{{ feedback.message }}</p>
-            <p><small><strong>Submitted by:</strong> {{ feedback.user.username }}</small></p>
-            <p><small><strong>Date:</strong> {{ feedback.created_at }}</small></p>
+      <!-- Feedbacks List -->
+      {% if feedbacks %}
+      <div class="space-y-6">
+        {% for feedback in feedbacks %}
+        <div class="card p-6 md:p-8 hover:shadow-lg transition-all">
+          <!-- Header -->
+          <div class="flex items-start justify-between mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex-grow">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-lg">
+                  {{ feedback.name|first|upper }}
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ feedback.name }}</h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">@{{ feedback.user.username }}</p>
+                </div>
+              </div>
+            </div>
+            <span class="px-4 py-2 rounded-full font-semibold text-sm {% if feedback.reply %}bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200{% else %}bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200{% endif %}">
+              {% if feedback.reply %}
+              <i class="fas fa-check-circle mr-1"></i> Replied
+              {% else %}
+              <i class="fas fa-hourglass-half mr-1"></i> Awaiting Reply
+              {% endif %}
+            </span>
+          </div>
+
+          <!-- Scheme & Date -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Scheme</p>
+              <p class="text-sm font-medium text-gray-900 dark:text-white">{{ feedback.scheme }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Date</p>
+              <p class="text-sm font-medium text-gray-900 dark:text-white">{{ feedback.created_at|date:"M d, Y" }}</p>
+            </div>
+          </div>
+
+          <!-- Feedback Message -->
+          <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+            <p class="text-gray-700 dark:text-gray-300">{{ feedback.message }}</p>
+          </div>
+
+          <!-- Reply Section -->
+          {% if feedback.reply %}
+          <div class="mb-0 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border-2 border-green-200 dark:border-green-800">
+            <p class="text-xs text-green-700 dark:text-green-300 uppercase tracking-wide font-bold mb-2">
+              <i class="fas fa-reply mr-1"></i> Reply
+            </p>
+            <p class="text-green-900 dark:text-green-100">{{ feedback.reply }}</p>
+            <p class="text-xs text-green-600 dark:text-green-400 mt-2">
+              Replied on: {{ feedback.reply_date|default:"N/A"|date:"M d, Y" }}
+            </p>
+          </div>
+          {% else %}
+          <div class="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <button type="button" 
+                    onclick="alert('Your feedback is being reviewed. A response will be provided soon.')"
+                    class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors flex items-center gap-2 text-sm font-medium">
+              <i class="fas fa-hourglass-half"></i> Under Review
+            </button>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <!-- Empty State -->
+      <div class="card p-12 text-center">
+        <div class="text-center mb-6">
+          <i class="fas fa-inbox text-5xl text-gray-300 dark:text-gray-600 mb-4 block"></i>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">No Feedbacks Yet</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-8">
+            You haven't submitted any feedbacks. Share your experience with us!
+          </p>
+        </div>
+        <a href="{% url 'feedback' %}" class="btn-primary px-6 py-3 rounded-lg inline-flex items-center gap-2">
+          <i class="fas fa-comments"></i> Send Feedback
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Dark mode
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  }
+
+  // Apply input styling
+  document.querySelectorAll('input:not([type="checkbox"]), select').forEach(el => {
+    if (!el.classList.contains('input')) {
+      el.className = 'input w-full';
+    }
+  });
+</script>
+{% endblock %}
 
             {% if feedback.reply %}
                 <span class="badge badge-success">Replied</span>

@@ -85,7 +85,8 @@
 
             <!-- Notifications -->
             <div class="relative">
-              <button
+              <a
+                href="{% url 'notification_center' %}"
                 id="notification-button"
                 class="relative p-2.5 bg-white/10 hover:bg-white/20 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-all duration-200 focus-outline group"
                 aria-label="Notifications"
@@ -104,7 +105,7 @@
                   {{ notifications|length }}
                 </span>
                 {% endif %}
-              </button>
+              </a>
 
               <!-- Notification Dropdown -->
               <div
@@ -306,7 +307,35 @@
             ></i>
             <span class="font-medium">Schemes</span>
           </a>
-          {% if user|has_group:"Employee" %}
+          <a
+            href="{% url 'advanced_search' %}"
+            class="flex items-center space-x-2 px-5 py-2.5 text-white hover:bg-white/20 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group focus-outline"
+          >
+            <i
+              class="fas fa-search-plus group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Advanced Search</span>
+          </a>
+          {% if user.is_authenticated %}
+          <a
+            href="{% url 'favorites_list' %}"
+            class="flex items-center space-x-2 px-5 py-2.5 text-white hover:bg-white/20 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group focus-outline"
+          >
+            <i
+              class="fas fa-heart group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Favorites</span>
+          </a>
+          <a
+            href="{% url 'comparison' %}"
+            class="flex items-center space-x-2 px-5 py-2.5 text-white hover:bg-white/20 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group focus-outline"
+          >
+            <i
+              class="fas fa-balance-scale group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Compare</span>
+          </a>
+          {% endif %} {% if user|has_group:"Employee" %}
           <a
             href="{% url 'view_feedbacks' %}"
             class="flex items-center space-x-2 px-5 py-2.5 text-white hover:bg-white/20 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group focus-outline"
@@ -387,7 +416,35 @@
             ></i>
             <span class="font-medium">Schemes</span>
           </a>
-          {% if user|has_group:"Employee" %}
+          <a
+            href="{% url 'advanced_search' %}"
+            class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+          >
+            <i
+              class="fas fa-search-plus text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Advanced Search</span>
+          </a>
+          {% if user.is_authenticated %}
+          <a
+            href="{% url 'favorites_list' %}"
+            class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+          >
+            <i
+              class="fas fa-heart text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Favorites</span>
+          </a>
+          <a
+            href="{% url 'comparison' %}"
+            class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+          >
+            <i
+              class="fas fa-balance-scale text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">Compare</span>
+          </a>
+          {% endif %} {% if user|has_group:"Employee" %}
           <a
             href="{% url 'view_feedbacks' %}"
             class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"

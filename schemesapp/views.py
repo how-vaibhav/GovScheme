@@ -10,6 +10,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
+from django.db.models import Q
 import json, requests
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -520,3 +521,175 @@ def mark_read(request):
     notif.is_read = True
     notif.save()
     return JsonResponse({'success': True})
+
+# ============ NEW FEATURES ============
+
+# Feature 1: Favorites/Bookmarks
+@login_required
+def favorites_list(request):
+    """Display user's favorite schemes"""
+    from .models import Favorite
+    favorites = Favorite.objects.filter(user=request.user).select_related('scheme').order_by('-created_at')
+    
+    context = {
+        'favorites': favorites,
+        'total_favorites': favorites.count(),
+    }
+    return render(request, 'favorites.html', context)
+
+
+@login_required
+def toggle_favorite(request, scheme_id):
+    """Add/Remove scheme from favorites"""
+    from .models import Favorite
+    scheme = get_object_or_404(Scheme, pk=scheme_id)
+    
+    favorite, created = Favorite.objects.get_or_create(user=request.user, scheme=scheme)
+    
+    if not created:
+        favorite.delete()
+        is_favorite = False
+        messages.success(request, f'Removed {scheme.name} from favorites')
+    else:
+        is_favorite = True
+        messages.success(request, f'Added {scheme.name} to favorites')
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'is_favorite': is_favorite, 'message': messages.get_messages(request).__str__()})
+    
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+
+# Feature 2: Scheme Comparison
+@login_required
+def comparison(request):
+    """Compare multiple schemes side by side"""
+    selected_ids = request.GET.getlist('schemes')
+    schemes_to_compare = []
+    
+    if selected_ids:
+        schemes_to_compare = Scheme.objects.filter(pk__in=selected_ids)
+    
+    all_schemes = Scheme.objects.all().order_by('name')
+    
+    context = {
+        'schemes_to_compare': schemes_to_compare,
+        'all_schemes': all_schemes,
+        'comparison_count': len(schemes_to_compare),
+    }
+    return render(request, 'comparison.html', context)
+
+
+# Feature 3: Advanced Search
+@login_required
+def advanced_search(request):
+    """Advanced search with multiple criteria"""
+    schemes = Scheme.objects.all()
+    categories = dict(Scheme.CATEGORY_CHOICES)
+    
+    # Filter by category
+    category = request.GET.get('category', '')
+    if category:
+        schemes = schemes.filter(category=category)
+    
+    # Filter by income
+    max_income = request.GET.get('max_income')
+    if max_income:
+        try:
+            max_income = int(max_income)
+            schemes = schemes.filter(Q(max_income__isnull=True) | Q(max_income__gte=max_income))
+        except ValueError:
+            pass
+    
+    # Filter by age
+    age = request.GET.get('age')
+    if age:
+        try:
+            age = int(age)
+            schemes = schemes.filter(Q(min_age__isnull=True) | Q(min_age__lte=age)).filter(
+                Q(max_age__isnull=True) | Q(max_age__gte=age)
+            )
+        except ValueError:
+            pass
+    
+    # Filter by location
+    location = request.GET.get('location', '')
+    if location:
+        schemes = schemes.filter(Q(location__isnull=True) | Q(location=location))
+    
+    # Filter by caste
+    caste = request.GET.get('caste', '')
+    if caste:
+        schemes = schemes.filter(Q(caste__isnull=True) | Q(caste=caste))
+    
+    # Filter by disability
+    disability = request.GET.get('disability', '')
+    if disability == 'yes':
+        schemes = schemes.filter(Q(disability__isnull=True) | Q(disability=True))
+    
+    # Filter by minority
+    minority = request.GET.get('minority', '')
+    if minority == 'yes':
+        schemes = schemes.filter(Q(minority__isnull=True) | Q(minority=True))
+    
+    # Filter by BPL
+    bpl = request.GET.get('bpl', '')
+    if bpl == 'yes':
+        schemes = schemes.filter(Q(below_poverty_line__isnull=True) | Q(below_poverty_line=True))
+    
+    context = {
+        'schemes': schemes,
+        'categories': categories,
+        'selected_category': category,
+        'selected_income': max_income,
+        'selected_age': age,
+        'selected_location': location,
+        'selected_caste': caste,
+        'total_results': schemes.count(),
+    }
+    return render(request, 'advanced_search.html', context)
+
+
+# Feature 4: Application Timeline
+@login_required
+def application_timeline(request, app_id):
+    """View timeline of application status changes"""
+    from .models import ApplicationTimeline
+    
+    application = get_object_or_404(Application, pk=app_id, user=request.user)
+    timeline_events = ApplicationTimeline.objects.filter(application=application).order_by('-created_at')
+    
+    context = {
+        'application': application,
+        'timeline_events': timeline_events,
+        'total_events': timeline_events.count(),
+    }
+    return render(request, 'timeline.html', context)
+
+
+# Feature 5: Notification Center
+@login_required
+def notification_center(request):
+    """View all notifications with filters"""
+    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+    
+    # Filter by read status
+    filter_type = request.GET.get('filter', 'all')
+    if filter_type == 'unread':
+        notifications = notifications.filter(is_read=False)
+    elif filter_type == 'read':
+        notifications = notifications.filter(is_read=True)
+    
+    # Mark all as read
+    if request.method == 'POST' and request.POST.get('action') == 'mark_all_read':
+        Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+        messages.success(request, 'All notifications marked as read')
+        return redirect('notification_center')
+    
+    context = {
+        'notifications': notifications,
+        'total_notifications': Notification.objects.filter(user=request.user).count(),
+        'unread_count': Notification.objects.filter(user=request.user, is_read=False).count(),
+        'filter_type': filter_type,
+    }
+    return render(request, 'notifications.html', context)

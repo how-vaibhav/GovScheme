@@ -1,24 +1,172 @@
 {% extends "base.html" %} {% load static %} {% block title %}Application
-Success{% endblock %} {% block extra_head %}
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-  rel="stylesheet"
-/>
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-  rel="stylesheet"
-/>
-<link rel="stylesheet" href="{% static 'css/success.css' %}" />
-{% endblock %} {% block content %}
-<div class="success-body">
-  <div class="success-container">
-    <i class="bi bi-check-circle-fill success-icon"></i>
-    <h2>Application Submitted Successfully!</h2>
-    <p><strong>Your Aadhaar Number:</strong> {{ aadhaar }}</p>
-    <p><strong>Applied Scheme:</strong> {{ scheme_name }}</p>
-    <a href="{% url 'apply_scheme' %}" class="btn-back">
-      <i class="bi bi-arrow-left-circle me-2"></i>Apply for Another Scheme
-    </a>
+Submitted - GovAid{% endblock %} {% block content %}
+<!-- Success Section -->
+<section
+  class="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-900 dark:to-gray-800 py-12 flex items-center"
+>
+  <div class="container mx-auto px-4 w-full">
+    <div class="max-w-2xl mx-auto">
+      <!-- Success Card -->
+      <div class="card p-12 md:p-16 text-center">
+        <!-- Success Animation -->
+        <div class="mb-8 flex justify-center">
+          <div
+            class="w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-2xl animate-scale-in"
+          >
+            <i class="fas fa-check text-5xl text-white"></i>
+          </div>
+        </div>
+
+        <!-- Main Message -->
+        <h1
+          class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4"
+        >
+          Application Submitted!
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+          Your application has been successfully submitted. We're processing it
+          and will notify you soon.
+        </p>
+
+        <!-- Application Details -->
+        <div
+          class="bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 rounded-lg p-6 mb-8 text-left"
+        >
+          <h3
+            class="text-lg font-bold text-green-900 dark:text-green-100 mb-4 flex items-center"
+          >
+            <i class="fas fa-info-circle mr-2"></i> Application Details
+          </h3>
+          <div class="space-y-3">
+            <div
+              class="flex justify-between items-center pb-3 border-b border-green-200 dark:border-green-800"
+            >
+              <span class="text-green-800 dark:text-green-200 font-medium"
+                >Scheme:</span
+              >
+              <span class="text-green-900 dark:text-green-100 font-bold"
+                >{{ scheme_name }}</span
+              >
+            </div>
+            <div
+              class="flex justify-between items-center pb-3 border-b border-green-200 dark:border-green-800"
+            >
+              <span class="text-green-800 dark:text-green-200 font-medium"
+                >Aadhaar (Last 4 digits):</span
+              >
+              <span class="text-green-900 dark:text-green-100 font-bold">
+                ********{{ aadhaar|slice:"-4:" }}
+              </span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-green-800 dark:text-green-200 font-medium"
+                >Status:</span
+              >
+              <span
+                class="px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full font-semibold text-sm"
+              >
+                <i class="fas fa-hourglass-half mr-1"></i> Pending Review
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div
+          class="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-lg p-6 mb-8 text-left"
+        >
+          <h3
+            class="text-lg font-bold text-blue-900 dark:text-blue-100 mb-4 flex items-center"
+          >
+            <i class="fas fa-flag-checkered mr-2"></i> What's Next?
+          </h3>
+          <ol class="space-y-3 text-blue-800 dark:text-blue-200">
+            <li class="flex gap-3">
+              <span
+                class="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold"
+                >1</span
+              >
+              <span>We'll verify your documents within 3-5 working days</span>
+            </li>
+            <li class="flex gap-3">
+              <span
+                class="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold"
+                >2</span
+              >
+              <span
+                >You'll receive SMS & email updates on your application
+                status</span
+              >
+            </li>
+            <li class="flex gap-3">
+              <span
+                class="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold"
+                >3</span
+              >
+              <span
+                >Once approved, benefits will be transferred to your
+                account</span
+              >
+            </li>
+          </ol>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <a
+            href="{% url 'view_applications' %}"
+            class="px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-folder-open"></i> View My Applications
+          </a>
+          <a
+            href="{% url 'apply_scheme' %}"
+            class="px-6 py-4 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-paper-plane"></i> Apply for Another Scheme
+          </a>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+          <a
+            href="{% url 'home' %}"
+            class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-home"></i> Back to Home
+          </a>
+        </div>
+      </div>
+
+      <!-- Info Box -->
+      <div
+        class="mt-8 p-6 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-center"
+      >
+        <p class="text-amber-900 dark:text-amber-200">
+          <i class="fas fa-lightbulb mr-2"></i>
+          <strong>Tip:</strong> Keep your application ID handy for future
+          reference.
+        </p>
+      </div>
+    </div>
   </div>
-</div>
+</section>
+
+<script>
+  // Dark mode
+  const savedTheme = localStorage.getItem("theme");
+  if (
+    savedTheme === "dark" ||
+    (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)
+  ) {
+    document.documentElement.classList.add("dark");
+  }
+
+  // Show success toast
+  setTimeout(() => {
+    if (window.showToast) {
+      window.showToast("Application submitted successfully!", "success");
+    }
+  }, 500);
+</script>
 {% endblock %}
