@@ -190,10 +190,50 @@ function scrollToElement(elementId) {
   }
 }
 
+// Scroll Reveal Animations
+function initScrollReveal() {
+  const prefersReduced = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  if (prefersReduced) return;
+
+  const elements = document.querySelectorAll(
+    "[data-animate], .card, .scheme-card, .scheme-item, .feature-card, .stat-card, .timeline-item, .form-card, .panel, table, .list-card",
+  );
+
+  if (!elements.length) return;
+
+  elements.forEach((el, index) => {
+    if (el.dataset.animateInitialized) return;
+    el.dataset.animateInitialized = "true";
+    el.classList.add("reveal");
+    el.style.setProperty("--reveal-delay", `${Math.min(index * 60, 360)}ms`);
+  });
+
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("reveal-active");
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.12,
+      rootMargin: "0px 0px -10% 0px",
+    },
+  );
+
+  elements.forEach((el) => observer.observe(el));
+}
+
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", function () {
   initDarkMode();
   handleAuthMessages();
+  initScrollReveal();
 
   // Add page transition effect
   document.body.classList.add("page-transition");

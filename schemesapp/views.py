@@ -565,17 +565,26 @@ def toggle_favorite(request, scheme_id):
 def comparison(request):
     """Compare multiple schemes side by side"""
     selected_ids = request.GET.getlist('schemes')
+    # Convert string IDs to integers for comparison
+    selected_ids_int = [int(id) for id in selected_ids if id.isdigit()]
     schemes_to_compare = []
     
-    if selected_ids:
-        schemes_to_compare = Scheme.objects.filter(pk__in=selected_ids)
+    if selected_ids_int:
+        schemes_to_compare = Scheme.objects.filter(pk__in=selected_ids_int)
     
     all_schemes = Scheme.objects.all().order_by('name')
+    
+    # Get notifications for base template
+    notifications = []
+    if request.user.is_authenticated:
+        notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-created_at')
     
     context = {
         'schemes_to_compare': schemes_to_compare,
         'all_schemes': all_schemes,
         'comparison_count': len(schemes_to_compare),
+        'selected_ids': selected_ids_int,
+        'notifications': notifications,
     }
     return render(request, 'comparison.html', context)
 
