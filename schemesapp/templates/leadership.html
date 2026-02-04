@@ -1,0 +1,171 @@
+{% extends "base.html" %} {% load static %} {% block title %}Leadership -
+GovAid{% endblock %} {% block content %}
+<!-- Hero Section -->
+<section
+  class="relative min-h-[400px] bg-gradient-to-br from-primary-600 via-primary-700 to-indigo-800 dark:from-gray-800 dark:via-gray-900 dark:to-black overflow-hidden"
+>
+  <div class="absolute inset-0 overflow-hidden">
+    <div
+      class="absolute -top-40 -right-40 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl animate-pulse"
+    ></div>
+    <div
+      class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl animate-pulse delay-1000"
+    ></div>
+  </div>
+
+  <div class="relative container mx-auto px-4 py-20">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center space-x-4 mb-8">
+        <a
+          href="{% url 'home' %}"
+          class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 text-white transition-all"
+        >
+          <i class="fas fa-arrow-left text-lg"></i>
+        </a>
+        <span class="text-primary-100 font-medium text-sm tracking-wide"
+          >Back to Home</span
+        >
+      </div>
+
+      <div class="space-y-4">
+        <span
+          class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-widest uppercase inline-block"
+          >Meet Our Team</span
+        >
+        <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight">
+          <span class="block">Leadership</span>
+          <span
+            class="bg-clip-text text-transparent bg-gradient-to-r from-white via-primary-200 to-white"
+            >Team</span
+          >
+        </h1>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Content Section -->
+<section
+  class="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900"
+>
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto">
+      <div
+        class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl p-8 md:p-12"
+      >
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            Dedicated to Your Service
+          </h2>
+          <p class="text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+            Our leadership team brings together years of experience in
+            government services, technology, and citizen engagement to drive
+            GovAid's mission forward.
+          </p>
+        </div>
+
+        <!-- Leadership Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Team Member 1 -->
+          <div
+            class="p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border border-blue-200/50 dark:border-blue-800/30"
+          >
+            <div class="flex items-center gap-4 mb-4">
+              <div
+                class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0"
+              >
+                <i class="fas fa-user-tie text-white text-2xl"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-gray-900 dark:text-white">
+                  Director
+                </h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                  Government Services
+                </p>
+              </div>
+            </div>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Leading the vision for transparent and accessible government
+              services across Sikkim.
+            </p>
+          </div>
+
+          <!-- Team Member 2 -->
+          <div
+            class="p-6 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200/50 dark:border-green-800/30"
+          >
+            <div class="flex items-center gap-4 mb-4">
+              <div
+                class="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center flex-shrink-0"
+              >
+                <i class="fas fa-laptop-code text-white text-2xl"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-gray-900 dark:text-white">CTO</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                  Technology & Innovation
+                </p>
+              </div>
+            </div>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Driving technological excellence to ensure seamless user
+              experience for all citizens.
+            </p>
+          </div>
+
+          <!-- Team Member 3 -->
+          <div
+            class="p-6 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border border-purple-200/50 dark:border-purple-800/30"
+          >
+            <div class="flex items-center gap-4 mb-4">
+              <div
+                class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0"
+              >
+                <i class="fas fa-chart-line text-white text-2xl"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-gray-900 dark:text-white">
+                  Head of Operations
+                </h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                  Strategic Planning & Growth
+                </p>
+              </div>
+            </div>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Ensuring operational excellence and continuous improvement across
+              all initiatives.
+            </p>
+          </div>
+
+          <!-- Team Member 4 -->
+          <div
+            class="p-6 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border border-amber-200/50 dark:border-amber-800/30"
+          >
+            <div class="flex items-center gap-4 mb-4">
+              <div
+                class="w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center flex-shrink-0"
+              >
+                <i class="fas fa-users text-white text-2xl"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-gray-900 dark:text-white">
+                  Head of Citizen Services
+                </h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                  Community Engagement
+                </p>
+              </div>
+            </div>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Building bridges between citizens and government services through
+              effective engagement.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

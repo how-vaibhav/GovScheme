@@ -1,0 +1,222 @@
+{% extends "base.html" %} {% load static %} {% block title %}Central Schemes -
+GovAid{% endblock %} {% block content %}
+<!-- Hero Section -->
+<section
+  class="relative min-h-[400px] bg-gradient-to-br from-primary-600 via-primary-700 to-indigo-800 dark:from-gray-800 dark:via-gray-900 dark:to-black overflow-hidden"
+>
+  <div class="absolute inset-0 overflow-hidden">
+    <div
+      class="absolute -top-40 -right-40 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl animate-pulse"
+    ></div>
+    <div
+      class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl animate-pulse delay-1000"
+    ></div>
+  </div>
+
+  <div class="relative container mx-auto px-4 py-20">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center space-x-4 mb-8">
+        <a
+          href="{% url 'home' %}"
+          class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 text-white transition-all"
+        >
+          <i class="fas fa-arrow-left text-lg"></i>
+        </a>
+        <span class="text-primary-100 font-medium text-sm tracking-wide"
+          >Back to Home</span
+        >
+      </div>
+
+      <div class="space-y-4">
+        <span
+          class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-widest uppercase inline-block"
+          >Pan-India Opportunities</span
+        >
+        <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight">
+          <span class="block">Central Government</span>
+          <span
+            class="bg-clip-text text-transparent bg-gradient-to-r from-white via-primary-200 to-white"
+            >Schemes</span
+          >
+        </h1>
+        <p class="text-lg text-primary-100/90">
+          Access schemes launched by the Central Government of India
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Content Section -->
+<section
+  class="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900"
+>
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto">
+      <div
+        class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl p-8 md:p-12 mb-8"
+      >
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+          Popular Central Schemes
+        </h2>
+
+        <div class="space-y-4">
+          <div
+            class="p-4 rounded-lg bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border border-blue-200 dark:border-blue-800"
+          >
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">
+              <i class="fas fa-home text-blue-600 mr-2"></i> PM Awas Yojana
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Affordable housing scheme to provide houses to economically weaker
+              sections and lower-income groups.
+            </p>
+          </div>
+
+          <div
+            class="p-4 rounded-lg bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800"
+          >
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">
+              <i class="fas fa-briefcase text-green-600 mr-2"></i> Prime
+              Minister MUDRA Yojana
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Micro-financing scheme to support small businesses and
+              entrepreneurs with affordable loans.
+            </p>
+          </div>
+
+          <div
+            class="p-4 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border border-purple-200 dark:border-purple-800"
+          >
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">
+              <i class="fas fa-graduation-cap text-purple-600 mr-2"></i> Pradhan
+              Mantri Scholarships
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Educational scholarships for meritorious students to pursue higher
+              education.
+            </p>
+          </div>
+
+          <div
+            class="p-4 rounded-lg bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border border-amber-200 dark:border-amber-800"
+          >
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">
+              <i class="fas fa-leaf text-amber-600 mr-2"></i> Pradhan Mantri
+              Krishi Sinchayee Yojana
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Agricultural scheme promoting sustainable irrigation practices and
+              crop productivity.
+            </p>
+          </div>
+
+          <div
+            class="p-4 rounded-lg bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 border border-red-200 dark:border-red-800"
+          >
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">
+              <i class="fas fa-heart text-red-600 mr-2"></i> Ayushman Bharat
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Health insurance scheme providing free medical treatment to
+              eligible families.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- More Information -->
+      <div
+        class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl p-8 md:p-12"
+      >
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+          How to Access Central Schemes
+        </h2>
+
+        <div class="space-y-4">
+          <div class="flex gap-4">
+            <div
+              class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold"
+            >
+              1
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900 dark:text-white">
+                Check Eligibility
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                Review the scheme eligibility criteria and requirements
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div
+              class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold"
+            >
+              2
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900 dark:text-white">
+                Gather Documents
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                Collect necessary documents and proofs required for application
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div
+              class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold"
+            >
+              3
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900 dark:text-white">
+                Apply Online or Offline
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                Submit your application through official government portals
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div
+              class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold"
+            >
+              4
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900 dark:text-white">
+                Track Status
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                Monitor your application status through the portal
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="mt-6 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800"
+        >
+          <p class="text-sm text-blue-800 dark:text-blue-300">
+            <i class="fas fa-info-circle mr-2"></i>
+            <strong>Note:</strong> For more information on central schemes,
+            visit
+            <a
+              href="https://www.india.gov.in"
+              target="_blank"
+              class="font-semibold hover:underline"
+              >india.gov.in</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

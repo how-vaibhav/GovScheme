@@ -1,0 +1,324 @@
+{% extends "base.html" %} {% load static %} {% block title %}FAQs - GovAid{%
+endblock %} {% block content %}
+<!-- Hero Section -->
+<section
+  class="relative min-h-[400px] bg-gradient-to-br from-primary-600 via-primary-700 to-indigo-800 dark:from-gray-800 dark:via-gray-900 dark:to-black overflow-hidden"
+>
+  <div class="absolute inset-0 overflow-hidden">
+    <div
+      class="absolute -top-40 -right-40 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl animate-pulse"
+    ></div>
+    <div
+      class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl animate-pulse delay-1000"
+    ></div>
+  </div>
+
+  <div class="relative container mx-auto px-4 py-20">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center space-x-4 mb-8">
+        <a
+          href="{% url 'home' %}"
+          class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 text-white transition-all"
+        >
+          <i class="fas fa-arrow-left text-lg"></i>
+        </a>
+        <span class="text-primary-100 font-medium text-sm tracking-wide"
+          >Back to Home</span
+        >
+      </div>
+
+      <div class="space-y-4">
+        <span
+          class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-widest uppercase inline-block"
+          >Help & Support</span
+        >
+        <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight">
+          <span class="block">Frequently Asked</span>
+          <span
+            class="bg-clip-text text-transparent bg-gradient-to-r from-white via-primary-200 to-white"
+            >Questions</span
+          >
+        </h1>
+        <p class="text-lg text-primary-100/90">
+          Find answers to common questions about GovAid and government schemes
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Content Section -->
+<section
+  class="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900"
+>
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto">
+      <!-- FAQ Items -->
+      <div class="space-y-4">
+        <!-- FAQ 1 -->
+        <div
+          class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all"
+        >
+          <button
+            class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            onclick="this.parentElement.classList.toggle('expanded')"
+          >
+            <div class="flex items-start gap-4">
+              <i
+                class="fas fa-question-circle text-primary-600 text-2xl flex-shrink-0 mt-1"
+              ></i>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                What is GovAid?
+              </h3>
+            </div>
+            <i
+              class="fas fa-chevron-down text-gray-400 transition-transform"
+            ></i>
+          </button>
+          <div
+            class="hidden px-6 pb-6 text-gray-700 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700"
+          >
+            <p>
+              GovAid is a comprehensive online portal that helps citizens of
+              Sikkim discover, understand, and apply for government schemes. We
+              provide up-to-date information on various schemes, eligibility
+              criteria, and application processes.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ 2 -->
+        <div
+          class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all"
+        >
+          <button
+            class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            onclick="this.parentElement.classList.toggle('expanded')"
+          >
+            <div class="flex items-start gap-4">
+              <i
+                class="fas fa-question-circle text-primary-600 text-2xl flex-shrink-0 mt-1"
+              ></i>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                How do I check my eligibility for schemes?
+              </h3>
+            </div>
+            <i
+              class="fas fa-chevron-down text-gray-400 transition-transform"
+            ></i>
+          </button>
+          <div
+            class="hidden px-6 pb-6 text-gray-700 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700"
+          >
+            <p>
+              First, complete your profile by filling in your personal and
+              financial details. Then use our eligibility checker to see which
+              schemes you qualify for based on your information.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ 3 -->
+        <div
+          class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all"
+        >
+          <button
+            class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            onclick="this.parentElement.classList.toggle('expanded')"
+          >
+            <div class="flex items-start gap-4">
+              <i
+                class="fas fa-question-circle text-primary-600 text-2xl flex-shrink-0 mt-1"
+              ></i>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                Is my personal information secure?
+              </h3>
+            </div>
+            <i
+              class="fas fa-chevron-down text-gray-400 transition-transform"
+            ></i>
+          </button>
+          <div
+            class="hidden px-6 pb-6 text-gray-700 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700"
+          >
+            <p>
+              Yes, we use industry-standard encryption and security protocols to
+              protect all personal information. Your data is never shared with
+              third parties without your consent.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ 4 -->
+        <div
+          class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all"
+        >
+          <button
+            class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            onclick="this.parentElement.classList.toggle('expanded')"
+          >
+            <div class="flex items-start gap-4">
+              <i
+                class="fas fa-question-circle text-primary-600 text-2xl flex-shrink-0 mt-1"
+              ></i>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                How long does it take to process an application?
+              </h3>
+            </div>
+            <i
+              class="fas fa-chevron-down text-gray-400 transition-transform"
+            ></i>
+          </button>
+          <div
+            class="hidden px-6 pb-6 text-gray-700 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700"
+          >
+            <p>
+              Processing time varies by scheme. Most applications are processed
+              within 7-15 days. You can track your application status on the
+              portal in real-time.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ 5 -->
+        <div
+          class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all"
+        >
+          <button
+            class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            onclick="this.parentElement.classList.toggle('expanded')"
+          >
+            <div class="flex items-start gap-4">
+              <i
+                class="fas fa-question-circle text-primary-600 text-2xl flex-shrink-0 mt-1"
+              ></i>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                What documents do I need to apply?
+              </h3>
+            </div>
+            <i
+              class="fas fa-chevron-down text-gray-400 transition-transform"
+            ></i>
+          </button>
+          <div
+            class="hidden px-6 pb-6 text-gray-700 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700"
+          >
+            <p>
+              Documents vary by scheme. Generally, you'll need identification
+              proof, income certificate, address proof, and caste certificate
+              (if applicable). Check the specific scheme page for detailed
+              requirements.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ 6 -->
+        <div
+          class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all"
+        >
+          <button
+            class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            onclick="this.parentElement.classList.toggle('expanded')"
+          >
+            <div class="flex items-start gap-4">
+              <i
+                class="fas fa-question-circle text-primary-600 text-2xl flex-shrink-0 mt-1"
+              ></i>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                Can I apply for multiple schemes?
+              </h3>
+            </div>
+            <i
+              class="fas fa-chevron-down text-gray-400 transition-transform"
+            ></i>
+          </button>
+          <div
+            class="hidden px-6 pb-6 text-gray-700 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700"
+          >
+            <p>
+              Yes, you can apply for multiple schemes if you meet their
+              eligibility criteria. Our platform allows you to track all your
+              applications in one place.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ 7 -->
+        <div
+          class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all"
+        >
+          <button
+            class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            onclick="this.parentElement.classList.toggle('expanded')"
+          >
+            <div class="flex items-start gap-4">
+              <i
+                class="fas fa-question-circle text-primary-600 text-2xl flex-shrink-0 mt-1"
+              ></i>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                How do I contact support?
+              </h3>
+            </div>
+            <i
+              class="fas fa-chevron-down text-gray-400 transition-transform"
+            ></i>
+          </button>
+          <div
+            class="hidden px-6 pb-6 text-gray-700 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700"
+          >
+            <p>
+              You can reach our support team via email at support@govaid.in or
+              call us at +91-9876543210. Our team is available 24/7 to help you.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Section -->
+      <div
+        class="mt-12 backdrop-blur-xl bg-gradient-to-r from-primary-50 to-indigo-50 dark:from-primary-900/20 dark:to-indigo-900/20 border border-primary-200 dark:border-primary-800 rounded-3xl p-8 md:p-12 text-center"
+      >
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+          Didn't find your answer?
+        </h2>
+        <p class="text-gray-700 dark:text-gray-300 mb-6">
+          Our support team is ready to help you with any questions or concerns.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="mailto:support@govaid.in"
+            class="px-6 py-3 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-semibold transition-colors"
+          >
+            <i class="fas fa-envelope mr-2"></i>Email Us
+          </a>
+          <a
+            href="tel:+919876543210"
+            class="px-6 py-3 rounded-lg bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400 font-semibold hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+          >
+            <i class="fas fa-phone mr-2"></i>Call Us
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .expanded > div:nth-child(2) {
+    display: block;
+  }
+
+  .expanded button i:last-child {
+    transform: rotate(180deg);
+  }
+</style>
+
+<script>
+  // Make FAQ items interactive
+  document.querySelectorAll('[onclick*="classList.toggle"]').forEach((btn) => {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+    });
+  });
+</script>
+{% endblock %}

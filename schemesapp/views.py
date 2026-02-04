@@ -563,12 +563,17 @@ def toggle_favorite(request, scheme_id):
 # Feature 2: Scheme Comparison
 @login_required
 def comparison(request):
-    """Compare multiple schemes side by side"""
+    """Compare multiple schemes side by side (max 5 schemes)"""
     selected_ids = request.GET.getlist('schemes')
     # Convert string IDs to integers for comparison
     selected_ids_int = [int(id) for id in selected_ids if id.isdigit()]
-    schemes_to_compare = []
     
+    # Limit to maximum 5 schemes
+    MAX_SCHEMES = 5
+    if len(selected_ids_int) > MAX_SCHEMES:
+        selected_ids_int = selected_ids_int[:MAX_SCHEMES]
+    
+    schemes_to_compare = []
     if selected_ids_int:
         schemes_to_compare = Scheme.objects.filter(pk__in=selected_ids_int)
     
@@ -585,6 +590,7 @@ def comparison(request):
         'comparison_count': len(schemes_to_compare),
         'selected_ids': selected_ids_int,
         'notifications': notifications,
+        'max_schemes': MAX_SCHEMES,
     }
     return render(request, 'comparison.html', context)
 
@@ -702,3 +708,49 @@ def notification_center(request):
         'filter_type': filter_type,
     }
     return render(request, 'notifications.html', context)
+
+
+# Footer Pages - Static Content Views
+def mission_vision(request):
+    """Mission and Vision page"""
+    return render(request, 'mission_vision.html')
+
+
+def leadership(request):
+    """Leadership team page"""
+    return render(request, 'leadership.html')
+
+
+def partnerships(request):
+    """Partnerships page"""
+    return render(request, 'partnerships.html')
+
+
+def transparency(request):
+    """Transparency and accountability page"""
+    return render(request, 'transparency.html')
+
+
+def central_schemes(request):
+    """Central government schemes page"""
+    return render(request, 'central_schemes.html')
+
+
+def downloads(request):
+    """Downloads and resources page"""
+    return render(request, 'downloads.html')
+
+
+def faq(request):
+    """Frequently asked questions page"""
+    return render(request, 'faq.html')
+
+
+def privacy_policy(request):
+    """Privacy policy page"""
+    return render(request, 'privacy_policy.html')
+
+
+def terms_of_service(request):
+    """Terms of service page"""
+    return render(request, 'terms_of_service.html')

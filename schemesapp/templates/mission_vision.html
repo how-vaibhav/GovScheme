@@ -1,0 +1,164 @@
+{% extends "base.html" %} {% load static %} {% block title %}Mission & Vision -
+GovAid{% endblock %} {% block content %}
+<!-- Hero Section -->
+<section
+  class="relative min-h-[400px] bg-gradient-to-br from-primary-600 via-primary-700 to-indigo-800 dark:from-gray-800 dark:via-gray-900 dark:to-black overflow-hidden"
+>
+  <!-- Animated Background Elements -->
+  <div class="absolute inset-0 overflow-hidden">
+    <div
+      class="absolute -top-40 -right-40 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl animate-pulse"
+    ></div>
+    <div
+      class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl animate-pulse delay-1000"
+    ></div>
+  </div>
+
+  <div class="relative container mx-auto px-4 py-20">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center space-x-4 mb-8">
+        <a
+          href="{% url 'home' %}"
+          class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 text-white transition-all duration-300 transform hover:scale-110"
+        >
+          <i class="fas fa-arrow-left text-lg"></i>
+        </a>
+        <span class="text-primary-100 font-medium text-sm tracking-wide"
+          >Back to Home</span
+        >
+      </div>
+
+      <div class="space-y-4">
+        <div class="inline-block">
+          <span
+            class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-widest uppercase"
+            >About GovAid</span
+          >
+        </div>
+        <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight">
+          <span class="block">Our Mission &</span>
+          <span
+            class="bg-clip-text text-transparent bg-gradient-to-r from-white via-primary-200 to-white"
+            >Vision</span
+          >
+        </h1>
+        <p class="text-lg text-primary-100/90 max-w-2xl leading-relaxed">
+          Empowering Sikkim citizens through seamless access to government
+          schemes
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Content Section -->
+<section
+  class="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900"
+>
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto">
+      <!-- Mission Card -->
+      <div
+        class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl p-8 md:p-12 mb-8"
+      >
+        <div class="flex items-start gap-4 mb-6">
+          <div
+            class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0"
+          >
+            <i class="fas fa-target text-white text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              Our Mission
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Dedicated to Your Success
+            </p>
+          </div>
+        </div>
+        <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+          Our mission is to empower every citizen of Sikkim by providing
+          transparent, easy-to-access information about government schemes. We
+          believe that every individual deserves to know about the benefits and
+          opportunities available to them, and we're committed to bridging the
+          gap between government initiatives and citizen awareness.
+        </p>
+        <ul class="mt-6 space-y-3">
+          <li class="flex items-start gap-3">
+            <i
+              class="fas fa-check-circle text-green-500 mt-1 flex-shrink-0"
+            ></i>
+            <span class="text-gray-700 dark:text-gray-300"
+              >Simplify access to government schemes</span
+            >
+          </li>
+          <li class="flex items-start gap-3">
+            <i
+              class="fas fa-check-circle text-green-500 mt-1 flex-shrink-0"
+            ></i>
+            <span class="text-gray-700 dark:text-gray-300"
+              >Provide accurate and up-to-date information</span
+            >
+          </li>
+          <li class="flex items-start gap-3">
+            <i
+              class="fas fa-check-circle text-green-500 mt-1 flex-shrink-0"
+            ></i>
+            <span class="text-gray-700 dark:text-gray-300"
+              >Empower citizens to make informed decisions</span
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Vision Card -->
+      <div
+        class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl p-8 md:p-12"
+      >
+        <div class="flex items-start gap-4 mb-6">
+          <div
+            class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0"
+          >
+            <i class="fas fa-eye text-white text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              Our Vision
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              A Future of Equal Opportunities
+            </p>
+          </div>
+        </div>
+        <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+          We envision a Sikkim where every citizen, regardless of background,
+          has equal access to government benefits and support. Through
+          technology, transparency, and community engagement, we aim to create a
+          digital platform that serves as the gateway to better opportunities
+          for all.
+        </p>
+        <ul class="mt-6 space-y-3">
+          <li class="flex items-start gap-3">
+            <i class="fas fa-star text-amber-500 mt-1 flex-shrink-0"></i>
+            <span class="text-gray-700 dark:text-gray-300"
+              >Inclusive and equitable access for all</span
+            >
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fas fa-star text-amber-500 mt-1 flex-shrink-0"></i>
+            <span class="text-gray-700 dark:text-gray-300"
+              >Technology-driven citizen empowerment</span
+            >
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fas fa-star text-amber-500 mt-1 flex-shrink-0"></i>
+            <span class="text-gray-700 dark:text-gray-300"
+              >Transforming lives through opportunities</span
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends "base.html" %} {% load static %} {% block title %}Transparency -
+GovAid{% endblock %} {% block content %}
+<!-- Hero Section -->
+<section
+  class="relative min-h-[400px] bg-gradient-to-br from-primary-600 via-primary-700 to-indigo-800 dark:from-gray-800 dark:via-gray-900 dark:to-black overflow-hidden"
+>
+  <div class="absolute inset-0 overflow-hidden">
+    <div
+      class="absolute -top-40 -right-40 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl animate-pulse"
+    ></div>
+    <div
+      class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl animate-pulse delay-1000"
+    ></div>
+  </div>
+
+  <div class="relative container mx-auto px-4 py-20">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center space-x-4 mb-8">
+        <a
+          href="{% url 'home' %}"
+          class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 text-white transition-all"
+        >
+          <i class="fas fa-arrow-left text-lg"></i>
+        </a>
+        <span class="text-primary-100 font-medium text-sm tracking-wide"
+          >Back to Home</span
+        >
+      </div>
+
+      <div class="space-y-4">
+        <span
+          class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-widest uppercase inline-block"
+          >Trust & Accountability</span
+        >
+        <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight">
+          <span class="block">Our Commitment to</span>
+          <span
+            class="bg-clip-text text-transparent bg-gradient-to-r from-white via-primary-200 to-white"
+            >Transparency</span
+          >
+        </h1>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Content Section -->
+<section
+  class="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900"
+>
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto">
+      <!-- Transparency Principles -->
+      <div
+        class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl p-8 md:p-12 mb-8"
+      >
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+          Our Transparency Principles
+        </h2>
+
+        <div class="space-y-4">
+          <div
+            class="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800"
+          >
+            <h3
+              class="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2"
+            >
+              <i class="fas fa-eye text-blue-600"></i> Open Data
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              All government scheme information is publicly available and
+              regularly updated to reflect the latest requirements and benefits.
+            </p>
+          </div>
+
+          <div
+            class="p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
+          >
+            <h3
+              class="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2"
+            >
+              <i class="fas fa-lock text-green-600"></i> Data Security
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Citizen data is protected with industry-standard encryption and
+              security protocols. We follow all data protection regulations.
+            </p>
+          </div>
+
+          <div
+            class="p-4 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800"
+          >
+            <h3
+              class="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2"
+            >
+              <i class="fas fa-chart-bar text-purple-600"></i> Performance
+              Reporting
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              We regularly publish reports on platform usage, scheme
+              applications, and citizen satisfaction metrics.
+            </p>
+          </div>
+
+          <div
+            class="p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800"
+          >
+            <h3
+              class="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2"
+            >
+              <i class="fas fa-comment text-amber-600"></i> Feedback
+              Responsiveness
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              We value citizen feedback and are committed to addressing concerns
+              and suggestions in a timely manner.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accountability Card -->
+      <div
+        class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl p-8 md:p-12"
+      >
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+          Accountability Measures
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">
+              <i class="fas fa-list-check text-green-600 mr-2"></i>Regular
+              Audits
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Independent audits ensure compliance with data protection laws and
+              service standards.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">
+              <i class="fas fa-comments text-blue-600 mr-2"></i>Citizen
+              Grievance Cell
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Dedicated support to address any concerns or complaints from
+              citizens.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">
+              <i class="fas fa-file-contract text-purple-600 mr-2"></i>Policy
+              Compliance
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Adherence to all government policies and regulations for public
+              services.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">
+              <i class="fas fa-refresh text-amber-600 mr-2"></i>Continuous
+              Improvement
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Regular feedback collection and implementation of improvements.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

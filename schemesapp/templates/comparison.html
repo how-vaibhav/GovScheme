@@ -1,98 +1,286 @@
 {% extends "base.html" %} {% load static %} {% block title %}Compare Schemes -
 GovAid{% endblock %} {% block content %}
-<!-- Header -->
-<section
-  class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12"
->
-  <div class="container mx-auto px-4">
+
+<style>
+  @keyframes slideInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes pulse-border {
+    0%, 100% {
+      border-color: rgba(59, 130, 246, 0.5);
+    }
+    50% {
+      border-color: rgba(59, 130, 246, 1);
+    }
+  }
+  
+  .scheme-checkbox:disabled + label {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .scheme-checkbox:checked + label {
+    border-color: #3b82f6 !important;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+  }
+  
+  .max-reached-warning {
+    animation: slideInDown 0.5s ease-out;
+  }
+  
+  .scheme-label:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .comparison-counter {
+    animation: pulse-border 2s infinite;
+  }
+</style>
+
+<!-- Enhanced Header with Gradient -->
+<section class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-purple-800 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-16 overflow-hidden">
+  <!-- Animated Background -->
+  <div class="absolute inset-0 overflow-hidden opacity-20">
+    <div class="absolute top-10 right-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+    <div class="absolute bottom-10 left-10 w-96 h-96 bg-purple-400 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div class="container mx-auto px-4 relative z-10">
     <div class="max-w-4xl mx-auto text-center">
-      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
-        <i class="fas fa-balance-scale mr-3"></i>Compare Schemes
+      <div class="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md rounded-full px-6 py-2 mb-6 border border-white/20">
+        <i class="fas fa-balance-scale text-yellow-300"></i>
+        <span class="text-white font-medium">Smart Comparison Tool</span>
+      </div>
+      
+      <h1 class="text-5xl md:text-6xl font-bold text-white mb-4">
+        Compare <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-300">Schemes</span>
       </h1>
-      <p class="text-lg text-primary-100 dark:text-gray-300">
-        Compare multiple schemes side-by-side to find the best fit
+      
+      <p class="text-xl text-primary-100 dark:text-gray-300 mb-8">
+        Compare up to 5 schemes side-by-side to find the perfect match
       </p>
+      
+      <!-- Live Counter -->
+      <div class="inline-flex items-center space-x-4 bg-white/10 backdrop-blur-md rounded-2xl px-8 py-4 border-2 border-white/30">
+        <div class="text-center">
+          <div class="text-4xl font-bold text-white" id="selectedCount">{{ comparison_count }}</div>
+          <div class="text-sm text-primary-100">Selected</div>
+        </div>
+        <div class="h-12 w-px bg-white/30"></div>
+        <div class="text-center">
+          <div class="text-4xl font-bold text-white">{{ max_schemes }}</div>
+          <div class="text-sm text-primary-100">Maximum</div>
+        </div>
+      </div>
     </div>
+  </div>
+  
+  <!-- Wave Divider -->
+  <div class="absolute bottom-0 left-0 right-0">
+    <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
+      <path d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,58.7C960,64,1056,64,1152,58.7C1248,53,1344,43,1392,37.3L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z" fill="rgb(249, 250, 251)" class="dark:fill-gray-900"/>
+    </svg>
   </div>
 </section>
 
-<!-- Comparison Content -->
+<!-- Enhanced Comparison Content -->
 <section class="py-12 bg-gray-50 dark:bg-gray-900">
   <div class="container mx-auto px-4">
-    <!-- Scheme Selector -->
-    <div class="max-w-6xl mx-auto mb-8">
-      <div class="card p-6 bg-white dark:bg-gray-800">
-        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">
-          <i class="fas fa-search mr-2"></i>Select Schemes to Compare
-        </h3>
+    <!-- Enhanced Scheme Selector -->
+    <div class="max-w-7xl mx-auto mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
+        <!-- Header with Counter -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              <i class="fas fa-list-check mr-3 text-primary-600"></i>Select Schemes to Compare
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Choose 2 to 5 schemes for detailed comparison
+            </p>
+          </div>
+          
+          <!-- Progress Indicator -->
+          <div class="flex items-center space-x-4">
+            <div class="text-right">
+              <div class="text-3xl font-bold text-primary-600 dark:text-primary-400" id="countDisplay">
+                {{ comparison_count }}/{{ max_schemes }}
+              </div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">Schemes</div>
+            </div>
+            <div class="relative w-20 h-20">
+              <svg class="transform -rotate-90 w-20 h-20">
+                <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="6" fill="transparent" class="text-gray-200 dark:text-gray-700"/>
+                <circle id="progressCircle" cx="40" cy="40" r="35" stroke="currentColor" stroke-width="6" fill="transparent" 
+                  class="text-primary-600 dark:text-primary-400 transition-all duration-500"
+                  stroke-dasharray="220" 
+                  stroke-dashoffset="220"
+                  stroke-linecap="round"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <i class="fas fa-chart-bar text-primary-600 dark:text-primary-400"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Warning Message -->
+        <div id="maxWarning" class="{% if comparison_count >= max_schemes %}max-reached-warning{% else %}hidden{% endif %} mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 rounded-lg">
+          <div class="flex items-start">
+            <i class="fas fa-exclamation-triangle text-amber-500 text-xl mr-3 mt-1"></i>
+            <div>
+              <h4 class="text-sm font-bold text-amber-800 dark:text-amber-300 mb-1">Maximum Limit Reached</h4>
+              <p class="text-sm text-amber-700 dark:text-amber-400">
+                You've selected the maximum of {{ max_schemes }} schemes. Uncheck a scheme to select another one.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Success Message -->
+        <div id="successMessage" class="{% if comparison_count >= 2 and comparison_count < max_schemes %}max-reached-warning{% else %}hidden{% endif %} mb-6 p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded-lg">
+          <div class="flex items-start">
+            <i class="fas fa-check-circle text-green-500 text-xl mr-3 mt-1"></i>
+            <div>
+              <h4 class="text-sm font-bold text-green-800 dark:text-green-300 mb-1">Ready to Compare</h4>
+              <p class="text-sm text-green-700 dark:text-green-400">
+                Great! You've selected {{ comparison_count }} scheme{{ comparison_count|pluralize }} for comparison.
+              </p>
+            </div>
+          </div>
+        </div>
+        
         <form method="GET" id="comparisonForm">
-          <div
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4"
-          >
+          <!-- Search Box -->
+          <div class="mb-6">
+            <div class="relative">
+              <input 
+                type="text" 
+                id="schemeSearch" 
+                placeholder="Search schemes by name..."
+                class="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-500 focus:bg-white dark:focus:bg-gray-800 transition-all duration-300 text-gray-900 dark:text-white"
+                onkeyup="filterSchemeList()"
+              />
+              <i class="fas fa-search absolute left-4 top-4 text-gray-400"></i>
+            </div>
+          </div>
+          
+          <!-- Scheme Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 max-h-[500px] overflow-y-auto pr-2" id="schemeList">
             {% for scheme in all_schemes %}
-            <label
-              class="flex items-center p-3 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-600 cursor-pointer transition-all {% if scheme.pk in selected_ids %}border-primary-500 bg-primary-50 dark:bg-primary-900/20{% endif %}"
-            >
+            <div class="scheme-item" data-name="{{ scheme.name|lower }}">
               <input
                 type="checkbox"
                 name="schemes"
                 value="{{ scheme.pk }}"
-                class="mr-3 w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
-                {%
-                if
-                scheme.pk
-                in
-                selected_ids
-                %}checked{%
-                endif
-                %}
-                onchange="this.form.submit()"
+                id="scheme_{{ scheme.pk }}"
+                class="scheme-checkbox hidden"
+                {% if scheme.pk in selected_ids %}checked{% endif %}
+                {% if comparison_count >= max_schemes and scheme.pk not in selected_ids %}disabled{% endif %}
+                onchange="handleCheckboxChange(this)"
               />
-              <span
-                class="text-sm text-gray-700 dark:text-gray-300 font-medium line-clamp-2"
-                >{{ scheme.name }}</span
+              <label
+                for="scheme_{{ scheme.pk }}"
+                class="scheme-label flex items-start p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 cursor-pointer transition-all duration-300 hover:border-primary-400 dark:hover:border-primary-600 {% if scheme.pk in selected_ids %}border-primary-500 bg-gradient-to-br from-primary-50 to-purple-50 dark:from-primary-900/30 dark:to-purple-900/30{% endif %}"
               >
-            </label>
+                <div class="flex-shrink-0 mr-3 mt-1">
+                  <div class="w-6 h-6 rounded-md border-2 border-gray-300 dark:border-gray-600 flex items-center justify-center transition-all duration-200
+                    {% if scheme.pk in selected_ids %}bg-primary-600 border-primary-600{% endif %}">
+                    {% if scheme.pk in selected_ids %}
+                    <i class="fas fa-check text-white text-xs"></i>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-start justify-between mb-2">
+                    <span class="text-sm font-semibold text-gray-900 dark:text-white line-clamp-2 flex-1">
+                      {{ scheme.name }}
+                    </span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                      {% if scheme.category == 'education' %}bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300
+                      {% elif scheme.category == 'health' %}bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300
+                      {% elif scheme.category == 'agriculture' %}bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300
+                      {% elif scheme.category == 'business' %}bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300
+                      {% else %}bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300{% endif %}">
+                      <i class="fas 
+                        {% if scheme.category == 'education' %}fa-graduation-cap
+                        {% elif scheme.category == 'health' %}fa-heartbeat
+                        {% elif scheme.category == 'agriculture' %}fa-leaf
+                        {% elif scheme.category == 'business' %}fa-briefcase
+                        {% else %}fa-tag{% endif %} mr-1 text-xs"></i>
+                      {{ scheme.get_category_display }}
+                    </span>
+                  </div>
+                </div>
+              </label>
+            </div>
             {% endfor %}
           </div>
-          <p class="text-xs text-gray-500 dark:text-gray-400">
-            <i class="fas fa-info-circle mr-1"></i>Select 2-3 schemes for best
-            comparison results
-          </p>
+          
+          <!-- Quick Actions -->
+          <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+            <button 
+              type="button" 
+              onclick="clearAll()" 
+              class="text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 font-medium transition-colors duration-200"
+            >
+              <i class="fas fa-times-circle mr-2"></i>Clear All
+            </button>
+            <button 
+              type="submit" 
+              class="btn-primary px-6 py-2.5 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              {% if comparison_count < 2 %}disabled style="opacity: 0.5; cursor: not-allowed;"{% endif %}
+            >
+              <i class="fas fa-balance-scale mr-2"></i>Compare Selected
+            </button>
+          </div>
         </form>
       </div>
     </div>
 
     {% if schemes_to_compare %}
-    <!-- Comparison Table -->
-    <div class="max-w-6xl mx-auto overflow-x-auto">
-      <table class="w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-        <thead>
-          <tr class="bg-gray-100 dark:bg-gray-700">
-            <th
-              class="px-4 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-300 sticky left-0 bg-gray-100 dark:bg-gray-700"
-            >
-              Attribute
-            </th>
-            {% for scheme in schemes_to_compare %}
-            <th
-              class="px-4 py-3 text-left text-sm font-bold text-gray-900 dark:text-white min-w-[250px]"
-            >
-              <div class="flex items-start justify-between">
-                <div class="flex-1">
-                  <p class="line-clamp-2 mb-2">{{ scheme.name }}</p>
-                  <span
-                    class="inline-block px-2 py-1 text-xs font-medium rounded-full bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300"
-                  >
-                    {{ scheme.get_category_display }}
-                  </span>
-                </div>
-              </div>
-            </th>
-            {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
+    <!-- Enhanced Comparison Table -->
+    <div class="max-w-7xl mx-auto">
+      <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gradient-to-r from-primary-600 to-purple-600 dark:from-gray-700 dark:to-gray-800">
+                <th class="px-6 py-4 text-left text-sm font-bold text-white sticky left-0 bg-gradient-to-r from-primary-600 to-primary-600 dark:from-gray-700 dark:to-gray-700 z-10">
+                  <i class="fas fa-list mr-2"></i>Attribute
+                </th>
+                {% for scheme in schemes_to_compare %}
+                <th class="px-6 py-4 text-left text-sm font-bold text-white min-w-[280px]">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                      <p class="line-clamp-2 mb-3 text-base">{{ scheme.name }}</p>
+                      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white/20 backdrop-blur-sm border border-white/30">
+                        <i class="fas 
+                          {% if scheme.category == 'education' %}fa-graduation-cap
+                          {% elif scheme.category == 'health' %}fa-heartbeat
+                          {% elif scheme.category == 'agriculture' %}fa-leaf
+                          {% elif scheme.category == 'business' %}fa-briefcase
+                          {% else %}fa-tag{% endif %} mr-1"></i>
+                        {{ scheme.get_category_display }}
+                      </span>
+                    </div>
+                  </div>
+                </th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
           <!-- Objective -->
           <tr class="border-t border-gray-200 dark:border-gray-700">
             <td
@@ -149,12 +337,7 @@ GovAid{% endblock %} {% block content %}
             </td>
             {% for scheme in schemes_to_compare %}
             <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
-              {% if scheme.min_age or scheme.max_age %} {% if scheme.min_age
-              %}{{ scheme.min_age }}{% else %}Any{% endif %} - {% if
-              scheme.max_age %}{{ scheme.max_age }}{% else %}Any{% endif %}
-              years {% else %}
-              <span class="text-green-600 dark:text-green-400">All ages</span>
-              {% endif %}
+              {% if scheme.min_age or scheme.max_age %}{% if scheme.min_age %}{{ scheme.min_age }}{% else %}Any{% endif %} - {% if scheme.max_age %}{{ scheme.max_age }}{% else %}Any{% endif %} years{% else %}<span class="text-green-600 dark:text-green-400">All ages</span>{% endif %}
             </td>
             {% endfor %}
           </tr>
@@ -168,10 +351,7 @@ GovAid{% endblock %} {% block content %}
             </td>
             {% for scheme in schemes_to_compare %}
             <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
-              {% if scheme.max_income %} ₹{{ scheme.max_income|floatformat:0 }}
-              {% else %}
-              <span class="text-green-600 dark:text-green-400">No limit</span>
-              {% endif %}
+              {% if scheme.max_income %}₹{{ scheme.max_income|floatformat:0 }}{% else %}<span class="text-green-600 dark:text-green-400">No limit</span>{% endif %}
             </td>
             {% endfor %}
           </tr>
@@ -187,12 +367,7 @@ GovAid{% endblock %} {% block content %}
             </td>
             {% for scheme in schemes_to_compare %}
             <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
-              {% if scheme.location %} {{ scheme.get_location_display }} {% else
-              %}
-              <span class="text-green-600 dark:text-green-400"
-                >All locations</span
-              >
-              {% endif %}
+              {% if scheme.location %}{{ scheme.get_location_display }}{% else %}<span class="text-green-600 dark:text-green-400">All locations</span>{% endif %}
             </td>
             {% endfor %}
           </tr>
@@ -226,12 +401,7 @@ GovAid{% endblock %} {% block content %}
             </td>
             {% for scheme in schemes_to_compare %}
             <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
-              {% if scheme.contact_phone or scheme.contact_email %} {% if
-              scheme.contact_phone %}
-              <div>{{ scheme.contact_phone }}</div>
-              {% endif %} {% if scheme.contact_email %}
-              <div>{{ scheme.contact_email }}</div>
-              {% endif %} {% else %} N/A {% endif %}
+              {% if scheme.contact_phone or scheme.contact_email %}{% if scheme.contact_phone %}<div>{{ scheme.contact_phone }}</div>{% endif %}{% if scheme.contact_email %}<div>{{ scheme.contact_email }}</div>{% endif %}{% else %}N/A{% endif %}
             </td>
             {% endfor %}
           </tr>
@@ -265,33 +435,180 @@ GovAid{% endblock %} {% block content %}
         </tbody>
       </table>
     </div>
-    {% else %}
-    <!-- Empty State -->
-    <div class="max-w-6xl mx-auto">
-      <div class="empty-state py-16">
-        <i
-          class="fas fa-balance-scale text-6xl text-gray-300 dark:text-gray-600 mb-4"
-        ></i>
-        <p class="text-gray-600 dark:text-gray-400 text-lg mb-2">
-          No schemes selected for comparison
-        </p>
-        <p class="text-gray-500 dark:text-gray-500 text-sm">
-          Select 2-3 schemes from the list above to start comparing
-        </p>
+  </div>
+</div>
+{% else %}
+<!-- Enhanced Empty State -->
+<div class="max-w-4xl mx-auto">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-16 text-center border border-gray-100 dark:border-gray-700">
+    <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-primary-100 to-purple-100 dark:from-primary-900/30 dark:to-purple-900/30 rounded-full mb-6">
+      <i class="fas fa-balance-scale text-5xl text-primary-600 dark:text-primary-400"></i>
+    </div>
+    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+      No Schemes Selected
+    </h3>
+    <p class="text-gray-600 dark:text-gray-400 text-lg mb-2">
+      Select at least 2 schemes from the list above to start comparing
+    </p>
+    <p class="text-gray-500 dark:text-gray-500 text-sm mb-8">
+      You can compare up to {{ max_schemes }} schemes side-by-side
+    </p>
+    <div class="flex items-center justify-center space-x-8 text-sm text-gray-600 dark:text-gray-400">
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-check-circle text-green-500"></i>
+        <span>Benefits</span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-check-circle text-green-500"></i>
+        <span>Eligibility</span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-check-circle text-green-500"></i>
+        <span>Requirements</span>
       </div>
     </div>
-    {% endif %}
+  </div>
+</div>
+{% endif %}
   </div>
 </section>
 
 <script>
-  // Dark mode
-  const savedTheme = localStorage.getItem("theme");
-  if (
-    savedTheme === "dark" ||
-    (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)
-  ) {
-    document.documentElement.classList.add("dark");
+  const MAX_SCHEMES = {{ max_schemes }};
+  let selectedCount = {{ comparison_count }};
+
+  // Handle checkbox change with validation
+  function handleCheckboxChange(checkbox) {
+    const allCheckboxes = document.querySelectorAll('.scheme-checkbox');
+    const checkedCount = document.querySelectorAll('.scheme-checkbox:checked').length;
+    
+    // Update selected count
+    selectedCount = checkedCount;
+    updateUI();
+    
+    // If max limit reached, disable unchecked boxes
+    if (checkedCount >= MAX_SCHEMES) {
+      allCheckboxes.forEach(cb => {
+        if (!cb.checked) {
+          cb.disabled = true;
+          const label = cb.nextElementSibling;
+          label.style.opacity = '0.5';
+          label.style.cursor = 'not-allowed';
+        }
+      });
+      showMaxWarning();
+    } else {
+      // Re-enable all checkboxes
+      allCheckboxes.forEach(cb => {
+        cb.disabled = false;
+        const label = cb.nextElementSibling;
+        label.style.opacity = '1';
+        label.style.cursor = 'pointer';
+      });
+      hideMaxWarning();
+    }
+    
+    // Submit form after a short delay
+    setTimeout(() => {
+      document.getElementById('comparisonForm').submit();
+    }, 300);
   }
+
+  // Update UI elements
+  function updateUI() {
+    // Update counter display
+    document.getElementById('selectedCount').textContent = selectedCount;
+    document.getElementById('countDisplay').textContent = `${selectedCount}/${MAX_SCHEMES}`;
+    
+    // Update progress circle
+    const progressCircle = document.getElementById('progressCircle');
+    const circumference = 220;
+    const offset = circumference - (selectedCount / MAX_SCHEMES) * circumference;
+    progressCircle.style.strokeDashoffset = offset;
+    
+    // Update messages
+    const maxWarning = document.getElementById('maxWarning');
+    const successMessage = document.getElementById('successMessage');
+    
+    if (selectedCount >= MAX_SCHEMES) {
+      maxWarning.classList.remove('hidden');
+      successMessage.classList.add('hidden');
+    } else if (selectedCount >= 2) {
+      maxWarning.classList.add('hidden');
+      successMessage.classList.remove('hidden');
+    } else {
+      maxWarning.classList.add('hidden');
+      successMessage.classList.add('hidden');
+    }
+  }
+
+  // Show maximum warning
+  function showMaxWarning() {
+    const warning = document.getElementById('maxWarning');
+    warning.classList.remove('hidden');
+    warning.classList.add('max-reached-warning');
+  }
+
+  // Hide maximum warning
+  function hideMaxWarning() {
+    const warning = document.getElementById('maxWarning');
+    const successMsg = document.getElementById('successMessage');
+    
+    warning.classList.add('hidden');
+    if (selectedCount >= 2) {
+      successMsg.classList.remove('hidden');
+    }
+  }
+
+  // Clear all selections
+  function clearAll() {
+    const checkboxes = document.querySelectorAll('.scheme-checkbox:checked');
+    checkboxes.forEach(cb => cb.checked = false);
+    selectedCount = 0;
+    updateUI();
+    
+    // Re-enable all checkboxes
+    document.querySelectorAll('.scheme-checkbox').forEach(cb => {
+      cb.disabled = false;
+      const label = cb.nextElementSibling;
+      label.style.opacity = '1';
+      label.style.cursor = 'pointer';
+    });
+    
+    // Redirect to clear URL
+    window.location.href = window.location.pathname;
+  }
+
+  // Filter scheme list
+  function filterSchemeList() {
+    const searchTerm = document.getElementById('schemeSearch').value.toLowerCase();
+    const schemeItems = document.querySelectorAll('.scheme-item');
+    
+    schemeItems.forEach(item => {
+      const schemeName = item.getAttribute('data-name');
+      if (schemeName.includes(searchTerm)) {
+        item.style.display = '';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  }
+
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    updateUI();
+    
+    // Disable unchecked checkboxes if max is reached
+    if (selectedCount >= MAX_SCHEMES) {
+      document.querySelectorAll('.scheme-checkbox').forEach(cb => {
+        if (!cb.checked) {
+          cb.disabled = true;
+          const label = cb.nextElementSibling;
+          label.style.opacity = '0.5';
+          label.style.cursor = 'not-allowed';
+        }
+      });
+    }
+  });
 </script>
 {% endblock %}

@@ -1,0 +1,197 @@
+{% extends "base.html" %} {% load static %} {% block title %}Partnerships -
+GovAid{% endblock %} {% block content %}
+<!-- Hero Section -->
+<section
+  class="relative min-h-[400px] bg-gradient-to-br from-primary-600 via-primary-700 to-indigo-800 dark:from-gray-800 dark:via-gray-900 dark:to-black overflow-hidden"
+>
+  <div class="absolute inset-0 overflow-hidden">
+    <div
+      class="absolute -top-40 -right-40 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl animate-pulse"
+    ></div>
+    <div
+      class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl animate-pulse delay-1000"
+    ></div>
+  </div>
+
+  <div class="relative container mx-auto px-4 py-20">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center space-x-4 mb-8">
+        <a
+          href="{% url 'home' %}"
+          class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 text-white transition-all"
+        >
+          <i class="fas fa-arrow-left text-lg"></i>
+        </a>
+        <span class="text-primary-100 font-medium text-sm tracking-wide"
+          >Back to Home</span
+        >
+      </div>
+
+      <div class="space-y-4">
+        <span
+          class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-widest uppercase inline-block"
+          >Strategic Collaborations</span
+        >
+        <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight">
+          <span class="block">Our</span>
+          <span
+            class="bg-clip-text text-transparent bg-gradient-to-r from-white via-primary-200 to-white"
+            >Partnerships</span
+          >
+        </h1>
+        <p class="text-lg text-primary-100/90 max-w-2xl">
+          Together, we're building a stronger ecosystem for citizen empowerment
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Content Section -->
+<section
+  class="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900"
+>
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto">
+      <div
+        class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl p-8 md:p-12 mb-8"
+      >
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          Strategic Partnerships
+        </h2>
+        <p class="text-gray-700 dark:text-gray-300 mb-6">
+          We collaborate with government agencies, NGOs, and technology partners
+          to enhance our services and reach more citizens.
+        </p>
+
+        <div class="space-y-4">
+          <div
+            class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600"
+          >
+            <h3
+              class="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2"
+            >
+              <i class="fas fa-building text-primary-600"></i> Government
+              Departments
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Working closely with various state government departments to
+              integrate schemes and provide comprehensive information.
+            </p>
+          </div>
+
+          <div
+            class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600"
+          >
+            <h3
+              class="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2"
+            >
+              <i class="fas fa-handshake text-green-600"></i> NGO Collaborations
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Partnering with NGOs to reach marginalized communities and ensure
+              inclusive access to government schemes.
+            </p>
+          </div>
+
+          <div
+            class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600"
+          >
+            <h3
+              class="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2"
+            >
+              <i class="fas fa-code text-blue-600"></i> Technology Partners
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Leveraging technology partnerships to continuously improve our
+              platform and user experience.
+            </p>
+          </div>
+
+          <div
+            class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600"
+          >
+            <h3
+              class="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2"
+            >
+              <i class="fas fa-graduation-cap text-purple-600"></i> Educational
+              Institutions
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Collaborating with schools and colleges to raise awareness about
+              government schemes among students and youth.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Partnership Benefits Card -->
+      <div
+        class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl p-8 md:p-12"
+      >
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+          Why Partner With Us?
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex gap-4">
+            <i
+              class="fas fa-check-circle text-green-500 flex-shrink-0 text-xl mt-1"
+            ></i>
+            <div>
+              <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+                Wide Reach
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                Access thousands of citizens searching for schemes
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <i
+              class="fas fa-check-circle text-green-500 flex-shrink-0 text-xl mt-1"
+            ></i>
+            <div>
+              <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+                Digital Presence
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                Showcase your programs on a modern digital platform
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <i
+              class="fas fa-check-circle text-green-500 flex-shrink-0 text-xl mt-1"
+            ></i>
+            <div>
+              <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+                Analytics & Insights
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                Get valuable data about citizen interest and engagement
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <i
+              class="fas fa-check-circle text-green-500 flex-shrink-0 text-xl mt-1"
+            ></i>
+            <div>
+              <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
+                Social Impact
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                Contribute to citizen empowerment and development
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

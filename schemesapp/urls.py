@@ -36,4 +36,15 @@ urlpatterns = [
       path('advanced-search/', views.advanced_search, name='advanced_search'),
       path('application/<int:app_id>/timeline/', views.application_timeline, name='application_timeline'),
       path('notifications/', views.notification_center, name='notification_center'),
+      
+      # Footer Pages
+      path('mission-vision/', views.mission_vision, name='mission_vision'),
+      path('leadership/', views.leadership, name='leadership'),
+      path('partnerships/', views.partnerships, name='partnerships'),
+      path('transparency/', views.transparency, name='transparency'),
+      path('central-schemes/', views.central_schemes, name='central_schemes'),
+      path('downloads/', views.downloads, name='downloads'),
+      path('faq/', views.faq, name='faq'),
+      path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
+      path('terms-of-service/', views.terms_of_service, name='terms_of_service'),
 ]

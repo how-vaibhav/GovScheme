@@ -1,0 +1,207 @@
+{% extends "base.html" %} {% load static %} {% block title %}Downloads -
+GovAid{% endblock %} {% block content %}
+<!-- Hero Section -->
+<section
+  class="relative min-h-[400px] bg-gradient-to-br from-primary-600 via-primary-700 to-indigo-800 dark:from-gray-800 dark:via-gray-900 dark:to-black overflow-hidden"
+>
+  <div class="absolute inset-0 overflow-hidden">
+    <div
+      class="absolute -top-40 -right-40 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl animate-pulse"
+    ></div>
+    <div
+      class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl animate-pulse delay-1000"
+    ></div>
+  </div>
+
+  <div class="relative container mx-auto px-4 py-20">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center space-x-4 mb-8">
+        <a
+          href="{% url 'home' %}"
+          class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 text-white transition-all"
+        >
+          <i class="fas fa-arrow-left text-lg"></i>
+        </a>
+        <span class="text-primary-100 font-medium text-sm tracking-wide"
+          >Back to Home</span
+        >
+      </div>
+
+      <div class="space-y-4">
+        <span
+          class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-widest uppercase inline-block"
+          >Resource Library</span
+        >
+        <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight">
+          <span class="block">Helpful</span>
+          <span
+            class="bg-clip-text text-transparent bg-gradient-to-r from-white via-primary-200 to-white"
+            >Downloads</span
+          >
+        </h1>
+        <p class="text-lg text-primary-100/90">
+          Forms, guides, and documents to help you navigate government schemes
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Content Section -->
+<section
+  class="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900"
+>
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto">
+      <!-- Forms Section -->
+      <div
+        class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl p-8 md:p-12 mb-8"
+      >
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+          <i class="fas fa-file-download mr-2 text-primary-600"></i>Forms &
+          Documents
+        </h2>
+
+        <div class="space-y-3">
+          <div
+            class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all cursor-pointer"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i class="fas fa-file-pdf text-red-600 text-2xl"></i>
+                <div>
+                  <h3 class="font-semibold text-gray-900 dark:text-white">
+                    General Application Form
+                  </h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    PDF • 2.5 MB
+                  </p>
+                </div>
+              </div>
+              <i class="fas fa-arrow-down text-gray-400"></i>
+            </div>
+          </div>
+
+          <div
+            class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all cursor-pointer"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i class="fas fa-file-pdf text-red-600 text-2xl"></i>
+                <div>
+                  <h3 class="font-semibold text-gray-900 dark:text-white">
+                    Income Certificate Application
+                  </h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    PDF • 1.8 MB
+                  </p>
+                </div>
+              </div>
+              <i class="fas fa-arrow-down text-gray-400"></i>
+            </div>
+          </div>
+
+          <div
+            class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all cursor-pointer"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i class="fas fa-file-pdf text-red-600 text-2xl"></i>
+                <div>
+                  <h3 class="font-semibold text-gray-900 dark:text-white">
+                    Required Documents Checklist
+                  </h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    PDF • 1.2 MB
+                  </p>
+                </div>
+              </div>
+              <i class="fas fa-arrow-down text-gray-400"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Guides Section -->
+      <div
+        class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl p-8 md:p-12 mb-8"
+      >
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+          <i class="fas fa-book mr-2 text-blue-600"></i>User Guides & Handbooks
+        </h2>
+
+        <div class="space-y-3">
+          <div
+            class="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 hover:shadow-lg transition-all cursor-pointer"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i class="fas fa-file-pdf text-blue-600 text-2xl"></i>
+                <div>
+                  <h3 class="font-semibold text-gray-900 dark:text-white">
+                    GovAid Portal User Guide
+                  </h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    PDF • 3.5 MB • 15 pages
+                  </p>
+                </div>
+              </div>
+              <i class="fas fa-arrow-down text-gray-400"></i>
+            </div>
+          </div>
+
+          <div
+            class="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 hover:shadow-lg transition-all cursor-pointer"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i class="fas fa-file-pdf text-blue-600 text-2xl"></i>
+                <div>
+                  <h3 class="font-semibold text-gray-900 dark:text-white">
+                    How to Apply for Schemes
+                  </h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    PDF • 2.2 MB • 8 pages
+                  </p>
+                </div>
+              </div>
+              <i class="fas fa-arrow-down text-gray-400"></i>
+            </div>
+          </div>
+
+          <div
+            class="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 hover:shadow-lg transition-all cursor-pointer"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i class="fas fa-file-pdf text-blue-600 text-2xl"></i>
+                <div>
+                  <h3 class="font-semibold text-gray-900 dark:text-white">
+                    Frequently Asked Questions
+                  </h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    PDF • 1.8 MB • 12 pages
+                  </p>
+                </div>
+              </div>
+              <i class="fas fa-arrow-down text-gray-400"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Section -->
+      <div
+        class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl p-8 md:p-12"
+      >
+        <p class="text-center text-gray-700 dark:text-gray-300">
+          <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+          <strong>Note:</strong> All downloads are available in PDF format. If
+          you need documents in other languages, please contact our support
+          team.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,184 +1,622 @@
 {% extends "base.html" %} {% load static %} {% block title %}Government Schemes
 - GovAid{% endblock %} {% block content %}
-<!-- Header Section -->
+
+<style>
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-slide-up {
+    animation: slideInUp 0.6s ease-out forwards;
+  }
+
+  .scheme-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scheme-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transition: left 0.5s;
+  }
+
+  .scheme-card:hover::before {
+    left: 100%;
+  }
+
+  .scheme-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .category-badge {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .category-badge::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition:
+      width 0.6s,
+      height 0.6s;
+  }
+
+  .category-badge:hover::after {
+    width: 300px;
+    height: 300px;
+  }
+
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stats-counter {
+    animation: slideInUp 0.8s ease-out;
+  }
+</style>
+
+<!-- Hero Section with Enhanced Design -->
 <section
-  class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12"
+  class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-purple-800 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-20 overflow-hidden"
 >
-  <div class="container mx-auto px-4">
-    <div class="max-w-4xl mx-auto text-center">
-      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
-        Government Schemes
+  <!-- Animated Background Elements -->
+  <div class="absolute inset-0 overflow-hidden">
+    <div
+      class="absolute top-10 left-10 w-72 h-72 bg-primary-400/20 rounded-full blur-3xl animate-float"
+    ></div>
+    <div
+      class="absolute bottom-10 right-10 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-float"
+      style="animation-delay: 2s"
+    ></div>
+    <div
+      class="absolute top-1/2 left-1/3 w-64 h-64 bg-pink-400/10 rounded-full blur-3xl animate-float"
+      style="animation-delay: 4s"
+    ></div>
+  </div>
+
+  <div class="container mx-auto px-4 relative z-10">
+    <div class="max-w-5xl mx-auto text-center">
+      <!-- Badge -->
+      <div
+        class="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md rounded-full px-6 py-2 mb-6 border border-white/20 animate-slide-up"
+      >
+        <i class="fas fa-sparkles text-yellow-300"></i>
+        <span class="text-white font-medium">Discover Your Opportunities</span>
+      </div>
+
+      <h1
+        class="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-slide-up"
+        style="animation-delay: 0.1s"
+      >
+        Government
+        <span
+          class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-300"
+          >Schemes</span
+        >
       </h1>
-      <p class="text-lg text-primary-100 dark:text-gray-300">
-        Explore all available schemes in Sikkim and find opportunities suited
-        for you
+
+      <p
+        class="text-xl md:text-2xl text-primary-100 dark:text-gray-300 mb-8 max-w-3xl mx-auto animate-slide-up"
+        style="animation-delay: 0.2s"
+      >
+        Explore {{ schemes.paginator.count|default:"all" }} welfare schemes
+        designed to empower citizens of Sikkim
       </p>
+
+      <!-- Quick Stats -->
+      <div
+        class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-4xl mx-auto"
+      >
+        <div
+          class="glass-effect rounded-2xl p-6 stats-counter"
+          style="animation-delay: 0.3s"
+        >
+          <div class="text-3xl md:text-4xl font-bold text-white mb-2">
+            {{ schemes.paginator.count|default:"50+" }}
+          </div>
+          <div class="text-primary-100 text-sm">Active Schemes</div>
+        </div>
+        <div
+          class="glass-effect rounded-2xl p-6 stats-counter"
+          style="animation-delay: 0.4s"
+        >
+          <div class="text-3xl md:text-4xl font-bold text-white mb-2">
+            ₹100Cr+
+          </div>
+          <div class="text-primary-100 text-sm">Benefits Disbursed</div>
+        </div>
+        <div
+          class="glass-effect rounded-2xl p-6 stats-counter"
+          style="animation-delay: 0.5s"
+        >
+          <div class="text-3xl md:text-4xl font-bold text-white mb-2">50K+</div>
+          <div class="text-primary-100 text-sm">Beneficiaries</div>
+        </div>
+        <div
+          class="glass-effect rounded-2xl p-6 stats-counter"
+          style="animation-delay: 0.6s"
+        >
+          <div class="text-3xl md:text-4xl font-bold text-white mb-2">24/7</div>
+          <div class="text-primary-100 text-sm">Support</div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- Wave Divider -->
+  <div class="absolute bottom-0 left-0 right-0">
+    <svg
+      viewBox="0 0 1440 120"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      class="w-full h-auto"
+    >
+      <path
+        d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,58.7C960,64,1056,64,1152,58.7C1248,53,1344,43,1392,37.3L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"
+        fill="rgb(249, 250, 251)"
+        class="dark:fill-gray-900"
+      />
+    </svg>
   </div>
 </section>
 
-<!-- Schemes Section -->
+<!-- Advanced Filters Section -->
 <section class="py-12 bg-gray-50 dark:bg-gray-900">
   <div class="container mx-auto px-4">
-    <!-- Filters -->
-    <div class="mb-8 flex flex-col md:flex-row gap-4 justify-center">
-      <div class="flex-1 max-w-xs">
-        <input
-          type="search"
-          placeholder="Search schemes..."
-          class="input w-full"
-          id="searchInput"
-          onkeyup="filterSchemes()"
-        />
-      </div>
-      <select
-        class="input max-w-xs dark:text-gray-300"
-        id="categoryFilter"
-        onchange="filterSchemes()"
-      >
-        <option value="">All Categories</option>
-        <option value="education">Education</option>
-        <option value="health">Health</option>
-        <option value="agriculture">Agriculture</option>
-        <option value="business">Business</option>
-        <option value="social">Social Welfare</option>
-      </select>
-    </div>
+    <!-- Enhanced Search and Filters -->
+    <div class="max-w-6xl mx-auto mb-12">
+      <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 md:p-8">
+        <div class="flex flex-col lg:flex-row gap-4 items-center">
+          <!-- Search Bar -->
+          <div class="flex-1 w-full relative group">
+            <div
+              class="absolute inset-y-0 left-4 flex items-center pointer-events-none"
+            >
+              <i
+                class="fas fa-search text-gray-400 group-focus-within:text-primary-500 transition-colors"
+              ></i>
+            </div>
+            <input
+              type="search"
+              placeholder="Search schemes by name, benefits, or keywords..."
+              class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-700 border-2 border-transparent rounded-xl focus:border-primary-500 focus:bg-white dark:focus:bg-gray-800 transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+              id="searchInput"
+              onkeyup="filterSchemes()"
+            />
+          </div>
 
-    <!-- Schemes Grid -->
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-      id="schemesContainer"
-    >
-      {% for scheme in schemes %}
-      <div
-        class="card p-6 group hover:shadow-xl transition-all duration-300 animate-fade-in scheme-item"
-        data-name="{{ scheme.name|lower }}"
-        data-category="{{ scheme.get_category_display|lower }}"
-      >
-        <!-- Icon -->
+          <!-- Category Filter -->
+          <div class="relative w-full lg:w-64">
+            <div
+              class="absolute inset-y-0 left-4 flex items-center pointer-events-none"
+            >
+              <i class="fas fa-filter text-gray-400"></i>
+            </div>
+            <select
+              class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-700 border-2 border-transparent rounded-xl focus:border-primary-500 transition-all duration-300 text-gray-900 dark:text-white appearance-none cursor-pointer"
+              id="categoryFilter"
+              onchange="filterSchemes()"
+            >
+              <option value="">All Categories</option>
+              <option value="education">🎓 Education</option>
+              <option value="health">🏥 Health</option>
+              <option value="agriculture">🌾 Agriculture</option>
+              <option value="business">💼 Business</option>
+              <option value="social">🤝 Social Welfare</option>
+              <option value="housing">🏠 Housing</option>
+              <option value="employment">💼 Employment</option>
+            </select>
+            <div
+              class="absolute inset-y-0 right-4 flex items-center pointer-events-none"
+            >
+              <i class="fas fa-chevron-down text-gray-400"></i>
+            </div>
+          </div>
+
+          <!-- Advanced Search Button -->
+          <a
+            href="{% url 'advanced_search' %}"
+            class="btn-outline px-6 py-4 rounded-xl whitespace-nowrap hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-300"
+          >
+            <i class="fas fa-sliders-h mr-2"></i>Advanced
+          </a>
+        </div>
+
+        <!-- Quick Filter Tags -->
         <div
-          class="w-14 h-14 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300"
+          class="flex flex-wrap gap-2 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700"
         >
-          <i
-            class="fas fa-landmark text-2xl text-primary-600 dark:text-primary-400"
-          ></i>
-        </div>
-
-        <!-- Content -->
-        <h3
-          class="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2"
-        >
-          {{ scheme.name }}
-        </h3>
-
-        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
-          {{ scheme.objective }}
-        </p>
-
-        <!-- Badge -->
-        <div class="mb-4">
-          <span class="badge badge-primary text-xs">
-            <i class="fas fa-check-circle mr-1"></i>Active
-          </span>
-        </div>
-
-        <!-- Benefits Preview -->
-        {% if scheme.benefits %}
-        <p
-          class="text-xs text-gray-500 dark:text-gray-400 mb-4 pb-4 border-b border-gray-200 dark:border-gray-700"
-        >
-          <span class="font-medium text-gray-700 dark:text-gray-300"
-            >Benefits:</span
+          <button
+            onclick="quickFilter('all')"
+            class="category-badge px-4 py-2 rounded-full text-sm font-medium bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800 transition-all duration-300"
           >
-          {{ scheme.benefits|truncatewords:15 }}...
-        </p>
-        {% endif %}
-
-        <!-- Action Buttons -->
-        <div class="flex gap-2">
-          <a
-            href="{% url 'scheme_detail' scheme.pk %}"
-            class="flex-1 btn-outline py-2 text-sm rounded-lg text-center font-medium"
+            <i class="fas fa-th mr-1"></i> All Schemes
+          </button>
+          <button
+            onclick="quickFilter('trending')"
+            class="category-badge px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300"
           >
-            <i class="fas fa-info-circle mr-1"></i> Details
-          </a>
-          <a
-            href="{% url 'user_eligibility' scheme.pk %}"
-            class="flex-1 btn-primary py-2 text-sm rounded-lg text-center font-medium"
+            <i class="fas fa-fire text-orange-500 mr-1"></i> Trending
+          </button>
+          <button
+            onclick="quickFilter('new')"
+            class="category-badge px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300"
           >
-            <i class="fas fa-check mr-1"></i> Check
-          </a>
+            <i class="fas fa-star text-yellow-500 mr-1"></i> New
+          </button>
+          <button
+            onclick="quickFilter('popular')"
+            class="category-badge px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300"
+          >
+            <i class="fas fa-heart text-red-500 mr-1"></i> Popular
+          </button>
         </div>
       </div>
-      {% empty %}
-      <div class="col-span-full empty-state">
-        <i
-          class="fas fa-inbox text-6xl text-gray-300 dark:text-gray-600 mb-4"
-        ></i>
-        <p class="text-gray-600 dark:text-gray-400 text-lg">No schemes found</p>
-        <p class="text-gray-500 dark:text-gray-500 text-sm mt-2">
-          Try adjusting your search or filters
-        </p>
-      </div>
-      {% endfor %}
     </div>
 
-    <!-- Load More Button -->
-    {% if schemes.paginator.num_pages > 1 %}
-    <div class="mt-12 text-center">
-      <div class="flex justify-center gap-2 flex-wrap">
-        {% for page_num in schemes.paginator.page_range %}
-        <a
-          href="?page={{ page_num }}"
-          class="px-4 py-2 rounded-lg font-medium transition-all {% if page_num == schemes.number %}btn-primary{% else %}bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-primary-500{% endif %}"
+    <!-- Enhanced Schemes Grid -->
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+          <span id="schemeCount">{{ schemes|length }}</span> Schemes Available
+        </h2>
+        <div class="flex items-center space-x-4">
+          <button
+            onclick="toggleView('grid')"
+            id="gridViewBtn"
+            class="p-2 rounded-lg bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300"
+          >
+            <i class="fas fa-th-large"></i>
+          </button>
+          <button
+            onclick="toggleView('list')"
+            id="listViewBtn"
+            class="p-2 rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+          >
+            <i class="fas fa-list"></i>
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        id="schemesContainer"
+      >
+        {% for scheme in schemes %}
+        <div
+          class="scheme-card bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl p-6 group scheme-item border border-gray-100 dark:border-gray-700"
+          data-name="{{ scheme.name|lower }}"
+          data-category="{{ scheme.get_category_display|lower }}"
+          style="animation-delay: {{ forloop.counter0|add:0 }}00ms;"
         >
-          {{ page_num }}
-        </a>
+          <!-- Category Badge with Icon -->
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex-1">
+              {% if scheme.category %}
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {% if scheme.category == 'education' %}bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 {% elif scheme.category == 'health' %}bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 {% elif scheme.category == 'agriculture' %}bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300 {% elif scheme.category == 'business' %}bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300 {% elif scheme.category == 'social' %}bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-300 {% else %}bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 {% endif %}"
+              >
+                <i
+                  class="fas {% if scheme.category == 'education' %}fa-graduation-cap {% elif scheme.category == 'health' %}fa-heartbeat {% elif scheme.category == 'agriculture' %}fa-leaf {% elif scheme.category == 'business' %}fa-briefcase {% elif scheme.category == 'social' %}fa-hands-helping {% else %}fa-tag {% endif %} mr-1"
+                ></i>
+                {{ scheme.get_category_display }}
+              </span>
+              {% endif %}
+            </div>
+
+            <!-- Favorite Toggle -->
+            <button
+              onclick="toggleFavorite({{ scheme.pk }})"
+              class="ml-2 text-gray-400 hover:text-red-500 transition-colors duration-300"
+            >
+              <i class="far fa-heart text-xl"></i>
+            </button>
+          </div>
+
+          <!-- Icon with Gradient Background -->
+          <div class="mb-4 relative">
+            <div
+              class="w-16 h-16 rounded-2xl bg-gradient-to-br {% if scheme.category == 'education' %}from-blue-400 to-blue-600 {% elif scheme.category == 'health' %}from-green-400 to-green-600 {% elif scheme.category == 'agriculture' %}from-yellow-400 to-yellow-600 {% elif scheme.category == 'business' %}from-purple-400 to-purple-600 {% elif scheme.category == 'social' %}from-pink-400 to-pink-600 {% else %}from-gray-400 to-gray-600 {% endif %} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300"
+            >
+              <i
+                class="fas {% if scheme.category == 'education' %}fa-book-reader {% elif scheme.category == 'health' %}fa-hospital {% elif scheme.category == 'agriculture' %}fa-tractor {% elif scheme.category == 'business' %}fa-chart-line {% elif scheme.category == 'social' %}fa-users {% else %}fa-landmark {% endif %} text-2xl text-white"
+              ></i>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <h3
+            class="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300"
+          >
+            {{ scheme.name }}
+          </h3>
+
+          <p
+            class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3 leading-relaxed"
+          >
+            {{ scheme.objective }}
+          </p>
+
+          <!-- Status Badge -->
+          <div class="flex items-center space-x-2 mb-4">
+            <span
+              class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+            >
+              <span
+                class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"
+              ></span>
+              Active
+            </span>
+            {% if scheme.application_deadline %}
+            <span
+              class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300"
+            >
+              <i class="far fa-clock mr-1"></i>
+              Deadline Soon
+            </span>
+            {% endif %}
+          </div>
+
+          <!-- Benefits Preview with Icon -->
+          {% if scheme.benefits %}
+          <div class="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-gift text-primary-500 mt-1"></i>
+              <div>
+                <p
+                  class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
+                  Key Benefits:
+                </p>
+                <p
+                  class="text-xs text-gray-600 dark:text-gray-400 line-clamp-2"
+                >
+                  {{ scheme.benefits|truncatewords:12 }}
+                </p>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Action Buttons with Enhanced Design -->
+          <div class="flex gap-3">
+            <a
+              href="{% url 'scheme_detail' scheme.pk %}"
+              class="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 py-3 px-4 text-sm rounded-xl text-center font-medium transition-all duration-300 hover:scale-105"
+            >
+              <i class="fas fa-info-circle mr-2"></i>Details
+            </a>
+            <a
+              href="{% url 'user_eligibility' scheme.pk %}"
+              class="flex-1 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white py-3 px-4 text-sm rounded-xl text-center font-medium transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
+            >
+              <i class="fas fa-check-circle mr-2"></i>Check
+            </a>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full empty-state text-center py-16">
+          <div
+            class="inline-block p-8 bg-gray-100 dark:bg-gray-800 rounded-3xl"
+          >
+            <i
+              class="fas fa-inbox text-6xl text-gray-300 dark:text-gray-600 mb-4"
+            ></i>
+            <p class="text-gray-600 dark:text-gray-400 text-lg font-semibold">
+              No schemes found
+            </p>
+            <p class="text-gray-500 dark:text-gray-500 text-sm mt-2">
+              Try adjusting your search or filters
+            </p>
+          </div>
+        </div>
         {% endfor %}
       </div>
     </div>
+
+    <!-- Enhanced Pagination -->
+    {% if schemes.paginator.num_pages > 1 %}
+    <div class="mt-16 flex justify-center">
+      <nav class="flex items-center space-x-2">
+        {% if schemes.has_previous %}
+        <a
+          href="?page={{ schemes.previous_page_number }}"
+          class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-500 transition-all duration-300"
+        >
+          <i class="fas fa-chevron-left"></i>
+        </a>
+        {% endif %} {% for page_num in schemes.paginator.page_range %}
+        <a
+          href="?page={{ page_num }}"
+          class="px-5 py-3 rounded-xl font-medium transition-all duration-300 {% if page_num == schemes.number %} bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg scale-110 {% else %} bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-500 hover:scale-105 {% endif %}"
+        >
+          {{ page_num }}
+        </a>
+        {% endfor %} {% if schemes.has_next %}
+        <a
+          href="?page={{ schemes.next_page_number }}"
+          class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-500 transition-all duration-300"
+        >
+          <i class="fas fa-chevron-right"></i>
+        </a>
+        {% endif %}
+      </nav>
+    </div>
     {% endif %}
   </div>
 </section>
 
-<!-- CTA Section -->
-<section class="py-16 bg-white dark:bg-gray-800">
-  <div class="container mx-auto px-4 text-center">
-    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-      Found a Scheme You Like?
-    </h2>
-    <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
-      Apply now and start receiving benefits. Our process is simple and quick.
-    </p>
-    {% if user.is_authenticated %}
-    <a
-      href="{% url 'check_all_eligibility' %}"
-      class="btn-primary inline-flex items-center space-x-2 px-8 py-3 rounded-lg"
-    >
-      <span>Check My Eligibility</span>
-      <i class="fas fa-arrow-right"></i>
-    </a>
-    {% else %}
-    <a
-      href="{% url 'register' %}"
-      class="btn-primary inline-flex items-center space-x-2 px-8 py-3 rounded-lg"
-    >
-      <span>Create Account & Apply</span>
-      <i class="fas fa-arrow-right"></i>
-    </a>
-    {% endif %}
+<!-- Enhanced CTA Section -->
+<section
+  class="py-20 bg-gradient-to-br from-primary-600 via-primary-700 to-purple-800 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 relative overflow-hidden"
+>
+  <!-- Background Pattern -->
+  <div class="absolute inset-0 opacity-10">
+    <div
+      class="absolute inset-0"
+      style="
+        background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;1&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+      "
+    ></div>
+  </div>
+
+  <div class="container mx-auto px-4 relative z-10">
+    <div class="max-w-4xl mx-auto text-center">
+      <!-- Icon -->
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-md rounded-full mb-6 animate-float"
+      >
+        <i class="fas fa-rocket text-4xl text-white"></i>
+      </div>
+
+      <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
+        Found a Scheme You Like?
+      </h2>
+
+      <p
+        class="text-xl text-primary-100 dark:text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed"
+      >
+        Apply now and start receiving benefits. Our process is simple, secure,
+        and quick. Join thousands of beneficiaries today!
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        {% if user.is_authenticated %}
+        <a
+          href="{% url 'check_all_eligibility' %}"
+          class="group inline-flex items-center space-x-3 bg-white text-primary-600 hover:bg-primary-50 px-8 py-4 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+        >
+          <span>Check My Eligibility</span>
+          <i
+            class="fas fa-arrow-right group-hover:translate-x-1 transition-transform duration-300"
+          ></i>
+        </a>
+        <a
+          href="{% url 'comparison' %}"
+          class="group inline-flex items-center space-x-3 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white hover:bg-white/20 px-8 py-4 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+        >
+          <span>Compare Schemes</span>
+          <i
+            class="fas fa-balance-scale group-hover:rotate-12 transition-transform duration-300"
+          ></i>
+        </a>
+        {% else %}
+        <a
+          href="{% url 'register' %}"
+          class="group inline-flex items-center space-x-3 bg-white text-primary-600 hover:bg-primary-50 px-8 py-4 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+        >
+          <span>Create Account & Apply</span>
+          <i
+            class="fas fa-arrow-right group-hover:translate-x-1 transition-transform duration-300"
+          ></i>
+        </a>
+        <a
+          href="{% url 'login' %}"
+          class="group inline-flex items-center space-x-3 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white hover:bg-white/20 px-8 py-4 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+        >
+          <span>Sign In</span>
+          <i class="fas fa-sign-in-alt"></i>
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- Trust Indicators -->
+      <div class="mt-12 flex flex-wrap justify-center gap-8 text-white/80">
+        <div class="flex items-center space-x-2">
+          <i class="fas fa-shield-alt text-2xl"></i>
+          <span class="text-sm">Secure & Safe</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <i class="fas fa-clock text-2xl"></i>
+          <span class="text-sm">Quick Process</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <i class="fas fa-headset text-2xl"></i>
+          <span class="text-sm">24/7 Support</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <i class="fas fa-users text-2xl"></i>
+          <span class="text-sm">50K+ Users</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <script>
+  // Animate scheme cards on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.scheme-card');
+    cards.forEach((card, index) => {
+      setTimeout(() => {
+        card.classList.add('animate-slide-up');
+      }, index * 50);
+    });
+  });
+
+  // Enhanced filter function
   function filterSchemes() {
-    const searchTerm = document
-      .getElementById("searchInput")
-      .value.toLowerCase();
-    const selectedCategory = document
-      .getElementById("categoryFilter")
-      .value.toLowerCase();
+    const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+    const selectedCategory = document.getElementById("categoryFilter").value.toLowerCase();
     const schemes = document.querySelectorAll(".scheme-item");
     let visibleCount = 0;
 
@@ -187,33 +625,112 @@
       const category = scheme.getAttribute("data-category");
 
       const matchesSearch = name.includes(searchTerm);
-      const matchesCategory =
-        selectedCategory === "" || category === selectedCategory;
+      const matchesCategory = selectedCategory === "" || category.includes(selectedCategory);
 
       if (matchesSearch && matchesCategory) {
         scheme.style.display = "";
-        scheme.classList.add("animate-fade-in");
+        scheme.classList.add("animate-slide-up");
         visibleCount++;
       } else {
         scheme.style.display = "none";
+        scheme.classList.remove("animate-slide-up");
       }
     });
 
-    // Show empty state if no schemes match
+    // Update count
+    document.getElementById('schemeCount').textContent = visibleCount;
+
+    // Handle empty state
     const container = document.getElementById("schemesContainer");
-    const emptyState = container.querySelector(".empty-state");
-    if (visibleCount === 0 && !emptyState) {
-      const noResults = document.createElement("div");
-      noResults.className = "col-span-full empty-state";
-      noResults.innerHTML = `
-        <i class="fas fa-search text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
-        <p class="text-gray-600 dark:text-gray-400 text-lg">No schemes found</p>
-        <p class="text-gray-500 dark:text-gray-500 text-sm mt-2">Try adjusting your search or filters</p>
-      `;
-      container.appendChild(noResults);
-    } else if (visibleCount > 0 && emptyState) {
+    let emptyState = container.querySelector(".empty-state");
+
+    if (visibleCount === 0) {
+      if (!emptyState) {
+        emptyState = document.createElement("div");
+        emptyState.className = "col-span-full empty-state text-center py-16 animate-slide-up";
+        emptyState.innerHTML = `
+          <div class="inline-block p-8 bg-gray-100 dark:bg-gray-800 rounded-3xl">
+            <i class="fas fa-search text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+            <p class="text-gray-600 dark:text-gray-400 text-lg font-semibold">No schemes found</p>
+            <p class="text-gray-500 dark:text-gray-500 text-sm mt-2">Try adjusting your search or filters</p>
+            <button onclick="resetFilters()" class="mt-4 px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors duration-300">
+              <i class="fas fa-redo mr-2"></i>Reset Filters
+            </button>
+          </div>
+        `;
+        container.appendChild(emptyState);
+      }
+    } else if (emptyState) {
       emptyState.remove();
     }
+  }
+
+  // Quick filter function
+  function quickFilter(type) {
+    const searchInput = document.getElementById("searchInput");
+    const categoryFilter = document.getElementById("categoryFilter");
+
+    // Reset filters
+    searchInput.value = "";
+    categoryFilter.value = "";
+
+    // Apply quick filter logic here based on type
+    // For now, just trigger the filter
+    filterSchemes();
+  }
+
+  // Reset filters function
+  function resetFilters() {
+    document.getElementById("searchInput").value = "";
+    document.getElementById("categoryFilter").value = "";
+    filterSchemes();
+  }
+
+  // View toggle function
+  let currentView = 'grid';
+  function toggleView(view) {
+    const container = document.getElementById('schemesContainer');
+    const gridBtn = document.getElementById('gridViewBtn');
+    const listBtn = document.getElementById('listViewBtn');
+
+    if (view === 'grid') {
+      container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8';
+      gridBtn.className = 'p-2 rounded-lg bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300';
+      listBtn.className = 'p-2 rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700';
+    } else {
+      container.className = 'grid grid-cols-1 gap-4';
+      listBtn.className = 'p-2 rounded-lg bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300';
+      gridBtn.className = 'p-2 rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700';
+    }
+    currentView = view;
+  }
+
+  // Toggle favorite function
+  function toggleFavorite(schemeId) {
+    // Check if user is authenticated
+    {% if not user.is_authenticated %}
+      window.location.href = "{% url 'login' %}?next=" + window.location.pathname;
+      return;
+    {% endif %}
+
+    fetch(`/favorites/toggle/${schemeId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCSRFToken(),
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Update heart icon
+      const heartIcon = event.target.closest('button').querySelector('i');
+      if (data.favorited) {
+        heartIcon.className = 'fas fa-heart text-xl text-red-500';
+      } else {
+        heartIcon.className = 'far fa-heart text-xl';
+      }
+    })
+    .catch(error => console.error('Error:', error));
   }
 </script>
 {% endblock %}
