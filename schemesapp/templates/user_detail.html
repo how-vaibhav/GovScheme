@@ -4,8 +4,20 @@
 {% block title %}User Details - GovAid{% endblock %}
 
 {% block content %}
+<style>
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
+  .animate-fade-in-down { animation: fadeInDown 0.6s ease-out forwards; opacity: 0; }
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .hover-lift { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  .hover-lift:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
+</style>
+
 <!-- Animated Hero Section with Blur Background -->
-<section class="relative min-h-[450px] bg-gradient-to-br from-primary-600 via-primary-700 to-indigo-800 dark:from-gray-800 dark:via-gray-900 dark:to-black overflow-hidden">
+<section class="relative min-h-[450px] bg-gradient-to-br from-primary-600 via-primary-700 to-indigo-800 dark:from-gray-800 dark:via-gray-900 dark:to-black overflow-hidden animate-fade-in-down">
   <!-- Animated Background Elements -->
   <div class="absolute inset-0 overflow-hidden">
     <div class="absolute -top-40 -right-40 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl animate-pulse"></div>
@@ -15,14 +27,14 @@
   <!-- Content -->
   <div class="relative container mx-auto px-4 py-20">
     <div class="max-w-4xl mx-auto">
-      <div class="flex items-center space-x-4 mb-8 group cursor-pointer">
+      <div class="flex items-center space-x-4 mb-8 group cursor-pointer animate-fade-in-up stagger-1">
         <a href="{% url 'home' %}" class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 text-white transition-all duration-300 transform hover:scale-110">
           <i class="fas fa-arrow-left text-lg"></i>
         </a>
         <span class="text-primary-100 font-medium text-sm tracking-wide">Back to Home</span>
       </div>
       
-      <div class="space-y-4">
+      <div class="space-y-4 animate-fade-in-up stagger-2">
         <div class="inline-block">
           <span class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-widest uppercase">Complete Your Profile</span>
         </div>

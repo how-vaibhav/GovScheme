@@ -1,0 +1,592 @@
+<!-- Category Dialog -->
+<div id="category-dialog" class="hidden fixed inset-0 z-50">
+  <div
+    class="dialog-overlay fixed inset-0"
+    onclick="closeSelectionDialog('category')"
+  ></div>
+  <div class="dialog-content" role="dialog" aria-labelledby="category-title">
+    <div
+      class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 rounded-t-xl"
+    >
+      <h3
+        id="category-title"
+        class="font-bold text-lg text-gray-900 dark:text-white"
+      >
+        Select Category
+      </h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        Choose the scheme category you're interested in
+      </p>
+    </div>
+    <div class="p-6 space-y-2">
+      <!-- All Categories Option -->
+      <button
+        type="button"
+        onclick="selectOption('category', '', 'All Categories')"
+        class="dialog-option"
+        role="option"
+        aria-selected="false"
+      >
+        <div>
+          <div class="font-medium text-gray-900 dark:text-white">
+            All Categories
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            View schemes from all categories
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      {% for key, value in categories.items %}
+      <button
+        type="button"
+        onclick="selectOption('category', '{{ key }}', '{{ value }}')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_category == key %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div class="font-medium text-gray-900 dark:text-white">
+            {{ value }}
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Age Dialog -->
+<div id="age-dialog" class="hidden fixed inset-0 z-50">
+  <div
+    class="dialog-overlay fixed inset-0"
+    onclick="closeSelectionDialog('age')"
+  ></div>
+  <div class="dialog-content" role="dialog" aria-labelledby="age-title">
+    <div
+      class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 rounded-t-xl"
+    >
+      <h3
+        id="age-title"
+        class="font-bold text-lg text-gray-900 dark:text-white"
+      >
+        Select Your Age Range
+      </h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        Choose the age range that applies to you
+      </p>
+    </div>
+    <div class="p-6 space-y-2">
+      <!-- Any Age Option -->
+      <button
+        type="button"
+        onclick="selectOption('age', '', 'Select Age Range')"
+        class="dialog-option"
+        role="option"
+        aria-selected="false"
+      >
+        <div>
+          <div class="font-medium text-gray-900 dark:text-white">Any Age</div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Don't filter by age
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('age', '18-25', '18-25')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_age == '18-25' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div
+            class="font-medium text-gray-900 dark:text-white flex items-center gap-2"
+          >
+            <i class="fas fa-user-graduate text-primary-500"></i>
+            18-25 years
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Young adults, students & early career
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('age', '26-35', '26-35')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_age == '26-35' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div
+            class="font-medium text-gray-900 dark:text-white flex items-center gap-2"
+          >
+            <i class="fas fa-briefcase text-blue-500"></i>
+            26-35 years
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Professionals & growing families
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('age', '36-45', '36-45')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_age == '36-45' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div
+            class="font-medium text-gray-900 dark:text-white flex items-center gap-2"
+          >
+            <i class="fas fa-user-tie text-green-500"></i>
+            36-45 years
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Mid-career professionals
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('age', '46-55', '46-55')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_age == '46-55' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div
+            class="font-medium text-gray-900 dark:text-white flex items-center gap-2"
+          >
+            <i class="fas fa-user-clock text-orange-500"></i>
+            46-55 years
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Experienced professionals
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('age', '56-65', '56-65')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_age == '56-65' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div
+            class="font-medium text-gray-900 dark:text-white flex items-center gap-2"
+          >
+            <i class="fas fa-user-shield text-purple-500"></i>
+            56-65 years
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Pre-retirement years
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('age', '65+', '65+')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_age == '65+' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div
+            class="font-medium text-gray-900 dark:text-white flex items-center gap-2"
+          >
+            <i class="fas fa-user-check text-red-500"></i>
+            65+ years
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Senior citizens
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Income Dialog -->
+<div id="income-dialog" class="hidden fixed inset-0 z-50">
+  <div
+    class="dialog-overlay fixed inset-0"
+    onclick="closeSelectionDialog('income')"
+  ></div>
+  <div class="dialog-content" role="dialog" aria-labelledby="income-title">
+    <div
+      class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 rounded-t-xl"
+    >
+      <h3
+        id="income-title"
+        class="font-bold text-lg text-gray-900 dark:text-white"
+      >
+        Select Income Range
+      </h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        Choose your annual income bracket
+      </p>
+    </div>
+    <div class="p-6 space-y-2">
+      <!-- Any Income Option -->
+      <button
+        type="button"
+        onclick="selectOption('income', '', 'Any Income')"
+        class="dialog-option"
+        role="option"
+        aria-selected="false"
+      >
+        <div>
+          <div class="font-medium text-gray-900 dark:text-white">
+            Any Income
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Don't filter by income
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('income', '100000', '₹0 - ₹1 Lakh')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_income == '100000' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div
+            class="font-medium text-gray-900 dark:text-white flex items-center gap-2"
+          >
+            <i class="fas fa-rupee-sign text-green-500"></i>
+            ₹0 - ₹1 Lakh
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Low income bracket
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('income', '300000', '₹1 Lakh - ₹3 Lakh')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_income == '300000' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div
+            class="font-medium text-gray-900 dark:text-white flex items-center gap-2"
+          >
+            <i class="fas fa-rupee-sign text-blue-500"></i>
+            ₹1 Lakh - ₹3 Lakh
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Lower-middle income
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('income', '500000', '₹3 Lakh - ₹5 Lakh')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_income == '500000' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div
+            class="font-medium text-gray-900 dark:text-white flex items-center gap-2"
+          >
+            <i class="fas fa-rupee-sign text-yellow-500"></i>
+            ₹3 Lakh - ₹5 Lakh
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Middle income bracket
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('income', '1000000', '₹5 Lakh - ₹10 Lakh')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_income == '1000000' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div
+            class="font-medium text-gray-900 dark:text-white flex items-center gap-2"
+          >
+            <i class="fas fa-rupee-sign text-orange-500"></i>
+            ₹5 Lakh - ₹10 Lakh
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Upper-middle income
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('income', '9999999', 'Above ₹10 Lakh')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_income == '9999999' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div
+            class="font-medium text-gray-900 dark:text-white flex items-center gap-2"
+          >
+            <i class="fas fa-rupee-sign text-red-500"></i>
+            Above ₹10 Lakh
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            High income bracket
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Location Dialog -->
+<div id="location-dialog" class="hidden fixed inset-0 z-50">
+  <div
+    class="dialog-overlay fixed inset-0"
+    onclick="closeSelectionDialog('location')"
+  ></div>
+  <div class="dialog-content" role="dialog" aria-labelledby="location-title">
+    <div
+      class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 rounded-t-xl"
+    >
+      <h3
+        id="location-title"
+        class="font-bold text-lg text-gray-900 dark:text-white"
+      >
+        Select Location Type
+      </h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        Choose your residential area type
+      </p>
+    </div>
+    <div class="p-6 space-y-2">
+      <!-- All Locations Option -->
+      <button
+        type="button"
+        onclick="selectOption('location', '', 'All Locations')"
+        class="dialog-option"
+        role="option"
+        aria-selected="false"
+      >
+        <div>
+          <div class="font-medium text-gray-900 dark:text-white">
+            All Locations
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Don't filter by location
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('location', 'rural', 'Rural')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_location == 'rural' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div
+            class="font-medium text-gray-900 dark:text-white flex items-center gap-2"
+          >
+            <i class="fas fa-tree text-green-500"></i>
+            Rural
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Villages, countryside, and non-urban areas
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('location', 'urban', 'Urban')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_location == 'urban' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div
+            class="font-medium text-gray-900 dark:text-white flex items-center gap-2"
+          >
+            <i class="fas fa-city text-blue-500"></i>
+            Urban
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Cities, towns, and metropolitan areas
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Caste Dialog -->
+<div id="caste-dialog" class="hidden fixed inset-0 z-50">
+  <div
+    class="dialog-overlay fixed inset-0"
+    onclick="closeSelectionDialog('caste')"
+  ></div>
+  <div class="dialog-content" role="dialog" aria-labelledby="caste-title">
+    <div
+      class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 rounded-t-xl"
+    >
+      <h3
+        id="caste-title"
+        class="font-bold text-lg text-gray-900 dark:text-white"
+      >
+        Select Caste Category
+      </h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        Choose your caste category (as per government records)
+      </p>
+    </div>
+    <div class="p-6 space-y-2">
+      <!-- All Option -->
+      <button
+        type="button"
+        onclick="selectOption('caste', '', 'All')"
+        class="dialog-option"
+        role="option"
+        aria-selected="false"
+      >
+        <div>
+          <div class="font-medium text-gray-900 dark:text-white">
+            All Categories
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Don't filter by caste
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('caste', 'G', 'General')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_caste == 'G' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div class="font-medium text-gray-900 dark:text-white">
+            General (G)
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            General category
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('caste', 'OBC', 'OBC')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_caste == 'OBC' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div class="font-medium text-gray-900 dark:text-white">
+            Other Backward Caste (OBC)
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            OBC category as per government classification
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('caste', 'SC', 'SC')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_caste == 'SC' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div class="font-medium text-gray-900 dark:text-white">
+            Scheduled Caste (SC)
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            SC category as per government classification
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('caste', 'ST', 'ST')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_caste == 'ST' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div class="font-medium text-gray-900 dark:text-white">
+            Scheduled Tribe (ST)
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            ST category as per government classification
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+
+      <button
+        type="button"
+        onclick="selectOption('caste', 'PVTG', 'PVTG')"
+        class="dialog-option"
+        role="option"
+        aria-selected="{% if selected_caste == 'PVTG' %}true{% else %}false{% endif %}"
+      >
+        <div>
+          <div class="font-medium text-gray-900 dark:text-white">
+            Particularly Vulnerable Tribal Group (PVTG)
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            PVTG category as per government classification
+          </div>
+        </div>
+        <i class="fas fa-check dialog-option-check"></i>
+      </button>
+    </div>
+  </div>
+</div>

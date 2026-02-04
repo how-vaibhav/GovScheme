@@ -1,0 +1,824 @@
+{% extends "base.html" %} {% load static %} {% block title %}Advanced Search -
+GovAid{% endblock %} {% block content %}
+<style>
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translate(-50%, calc(-50% + 20px));
+      opacity: 0;
+    }
+    to {
+      transform: translate(-50%, -50%);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUpMobile {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-fade-in-down {
+    animation: fadeInDown 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .stagger-1 {
+    animation-delay: 0.1s;
+  }
+  .stagger-2 {
+    animation-delay: 0.2s;
+  }
+  .stagger-3 {
+    animation-delay: 0.3s;
+  }
+  .stagger-4 {
+    animation-delay: 0.4s;
+  }
+
+  .hover-lift {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Selection Dialog Styles */
+  .dialog-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .dialog-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 90%;
+    max-width: 32rem;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease-out;
+    z-index: 1001;
+  }
+
+  .dark .dialog-content {
+    background: #1f2937;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Mobile: Bottom Sheet */
+  @media (max-width: 640px) {
+    .dialog-content {
+      top: auto;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      max-width: 100%;
+      max-height: 85vh;
+      transform: none;
+      border-radius: 1.5rem 1.5rem 0 0;
+      animation: slideUpMobile 0.3s ease-out;
+    }
+  }
+
+  /* Selection Button Styles */
+  .selection-button {
+    @apply w-full px-4 py-3 text-left bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg;
+    @apply flex items-center justify-between cursor-pointer transition-all duration-200;
+    @apply hover:border-primary-400 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    min-height: 44px;
+  }
+
+  .selection-button.has-value {
+    @apply border-primary-400 dark:border-primary-500 bg-primary-50 dark:bg-primary-900/20;
+  }
+
+  .selection-button-text {
+    @apply text-sm text-gray-600 dark:text-gray-400;
+  }
+
+  .selection-button.has-value .selection-button-text {
+    @apply text-gray-900 dark:text-white font-medium;
+  }
+
+  /* Dialog Option Styles */
+  .dialog-option {
+    @apply w-full p-4 text-left rounded-lg border-2 border-gray-200 dark:border-gray-700;
+    @apply transition-all duration-200 flex items-center justify-between group cursor-pointer;
+    @apply hover:border-primary-400 hover:shadow-md;
+  }
+
+  .dialog-option:focus {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  }
+
+  .dialog-option-check {
+    @apply text-primary-600 opacity-0 transition-opacity duration-150;
+    @apply group-hover:opacity-100;
+  }
+
+  /* Filter Chip */
+  .filter-chip {
+    @apply inline-flex items-center gap-2 px-3 py-1 bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300;
+    @apply rounded-full text-sm font-medium transition-all duration-200 hover:bg-primary-200 dark:hover:bg-primary-800;
+  }
+
+  .filter-chip-remove {
+    @apply cursor-pointer hover:text-primary-900 dark:hover:text-primary-100;
+  }
+
+  /* Loading State */
+  .loading-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .loading-shimmer::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    animation: shimmer 2s infinite;
+  }
+</style>
+
+<!-- Header -->
+<section
+  class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12 animate-fade-in-down"
+>
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1
+        class="text-4xl md:text-5xl font-bold text-white mb-4 animate-fade-in-up stagger-1"
+      >
+        <i class="fas fa-search-plus mr-3"></i>Advanced Search
+      </h1>
+      <p
+        class="text-lg text-primary-100 dark:text-gray-300 animate-fade-in-up stagger-2"
+      >
+        Find schemes using multiple criteria and filters
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Search Content -->
+<section class="py-12 bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <div class="max-w-6xl mx-auto">
+      <!-- Active Filters Display -->
+      {% if request.GET and request.GET.urlencode %}
+      <div class="card p-4 mb-6 animate-fade-in-up stagger-1">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <i class="fas fa-filter mr-1"></i>Active Filters:
+            </span>
+            <div id="active-filters" class="flex flex-wrap gap-2"></div>
+          </div>
+          <a
+            href="{% url 'advanced_search' %}"
+            class="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
+          >
+            <i class="fas fa-times-circle mr-1"></i>Clear All
+          </a>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Search Form -->
+      <div class="card p-6 mb-8 animate-fade-in-up stagger-2 hover-lift">
+        <h3
+          class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2"
+        >
+          <div
+            class="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center"
+          >
+            <i class="fas fa-filter text-primary-600 dark:text-primary-400"></i>
+          </div>
+          <span>Search Filters</span>
+        </h3>
+
+        <form id="search-form" method="GET" class="space-y-6">
+          <!-- Primary Filters Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Category -->
+            <div>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                <i class="fas fa-tag mr-2 text-primary-500"></i>Category
+              </label>
+              <input
+                type="hidden"
+                id="category-input"
+                name="category"
+                value="{{ selected_category|default:'' }}"
+              />
+              <button
+                type="button"
+                id="category-display"
+                class="selection-button {% if selected_category %}has-value{% endif %}"
+                onclick="openSelectionDialog('category')"
+                aria-haspopup="dialog"
+              >
+                <span class="selection-button-text">
+                  {% if selected_category %} {% for key, value in
+                  categories.items %} {% if key == selected_category %}{{ value
+                  }}{% endif %} {% endfor %} {% else %} All Categories {% endif
+                  %}
+                </span>
+                <i class="fas fa-chevron-down text-gray-400"></i>
+              </button>
+            </div>
+
+            <!-- Age -->
+            <div>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                <i class="fas fa-birthday-cake mr-2 text-primary-500"></i>Your
+                Age
+              </label>
+              <input
+                type="hidden"
+                id="age-input"
+                name="age"
+                value="{{ selected_age|default:'' }}"
+              />
+              <button
+                type="button"
+                id="age-display"
+                class="selection-button {% if selected_age %}has-value{% endif %}"
+                onclick="openSelectionDialog('age')"
+                aria-haspopup="dialog"
+              >
+                <span class="selection-button-text">
+                  {% if selected_age %}{{ selected_age }} years{% else %}Select
+                  Age Range{% endif %}
+                </span>
+                <i class="fas fa-chevron-down text-gray-400"></i>
+              </button>
+            </div>
+
+            <!-- Income -->
+            <div>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                <i class="fas fa-rupee-sign mr-2 text-primary-500"></i>Annual
+                Income
+              </label>
+              <input
+                type="hidden"
+                id="income-input"
+                name="max_income"
+                value="{{ selected_income|default:'' }}"
+              />
+              <button
+                type="button"
+                id="income-display"
+                class="selection-button {% if selected_income %}has-value{% endif %}"
+                onclick="openSelectionDialog('income')"
+                aria-haspopup="dialog"
+              >
+                <span class="selection-button-text">
+                  {% if selected_income == "100000" %}₹0 - ₹1 Lakh {% elif
+                  selected_income == "300000" %}₹1 Lakh - ₹3 Lakh {% elif
+                  selected_income == "500000" %}₹3 Lakh - ₹5 Lakh {% elif
+                  selected_income == "1000000" %}₹5 Lakh - ₹10 Lakh {% elif
+                  selected_income == "9999999" %}Above ₹10 Lakh {% else %}Any
+                  Income {% endif %}
+                </span>
+                <i class="fas fa-chevron-down text-gray-400"></i>
+              </button>
+            </div>
+
+            <!-- Location -->
+            <div>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                <i class="fas fa-map-marker-alt mr-2 text-primary-500"></i
+                >Location
+              </label>
+              <input
+                type="hidden"
+                id="location-input"
+                name="location"
+                value="{{ selected_location|default:'' }}"
+              />
+              <button
+                type="button"
+                id="location-display"
+                class="selection-button {% if selected_location %}has-value{% endif %}"
+                onclick="openSelectionDialog('location')"
+                aria-haspopup="dialog"
+              >
+                <span class="selection-button-text">
+                  {% if selected_location == "rural" %}Rural {% elif
+                  selected_location == "urban" %}Urban {% else %}All Locations
+                  {% endif %}
+                </span>
+                <i class="fas fa-chevron-down text-gray-400"></i>
+              </button>
+            </div>
+
+            <!-- Caste -->
+            <div>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                <i class="fas fa-users mr-2 text-primary-500"></i>Caste
+              </label>
+              <input
+                type="hidden"
+                id="caste-input"
+                name="caste"
+                value="{{ selected_caste|default:'' }}"
+              />
+              <button
+                type="button"
+                id="caste-display"
+                class="selection-button {% if selected_caste %}has-value{% endif %}"
+                onclick="openSelectionDialog('caste')"
+                aria-haspopup="dialog"
+              >
+                <span class="selection-button-text">
+                  {% if selected_caste == "G" %}General {% elif selected_caste
+                  == "OBC" %}OBC {% elif selected_caste == "SC" %}SC {% elif
+                  selected_caste == "ST" %}ST {% elif selected_caste == "PVTG"
+                  %}PVTG {% else %}All {% endif %}
+                </span>
+                <i class="fas fa-chevron-down text-gray-400"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Secondary Filters Section -->
+          <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+            <h4
+              class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2"
+            >
+              <i class="fas fa-user-check text-primary-500"></i>
+              <span>Eligibility Criteria</span>
+            </h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Disability Checkbox -->
+              <label
+                class="flex items-start gap-3 p-3 border-2 border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer transition-all hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/10"
+              >
+                <input
+                  type="checkbox"
+                  name="disability"
+                  value="yes"
+                  {%
+                  if
+                  request.GET.disability=""
+                  ="yes"
+                  %}checked{%
+                  endif
+                  %}
+                  class="mt-1 w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                />
+                <div>
+                  <div
+                    class="font-medium text-sm text-gray-900 dark:text-white flex items-center gap-2"
+                  >
+                    <i class="fas fa-wheelchair text-primary-500"></i>
+                    Person with Disability
+                  </div>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    For schemes supporting PWD
+                  </p>
+                </div>
+              </label>
+
+              <!-- Minority Checkbox -->
+              <label
+                class="flex items-start gap-3 p-3 border-2 border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer transition-all hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/10"
+              >
+                <input
+                  type="checkbox"
+                  name="minority"
+                  value="yes"
+                  {%
+                  if
+                  request.GET.minority=""
+                  ="yes"
+                  %}checked{%
+                  endif
+                  %}
+                  class="mt-1 w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                />
+                <div>
+                  <div
+                    class="font-medium text-sm text-gray-900 dark:text-white flex items-center gap-2"
+                  >
+                    <i class="fas fa-user-friends text-primary-500"></i>
+                    Minority Community
+                  </div>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    For minority group schemes
+                  </p>
+                </div>
+              </label>
+
+              <!-- BPL Checkbox -->
+              <label
+                class="flex items-start gap-3 p-3 border-2 border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer transition-all hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/10"
+              >
+                <input
+                  type="checkbox"
+                  name="bpl"
+                  value="yes"
+                  {%
+                  if
+                  request.GET.bpl=""
+                  ="yes"
+                  %}checked{%
+                  endif
+                  %}
+                  class="mt-1 w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                />
+                <div>
+                  <div
+                    class="font-medium text-sm text-gray-900 dark:text-white flex items-center gap-2"
+                  >
+                    <i class="fas fa-hand-holding-heart text-primary-500"></i>
+                    Below Poverty Line
+                  </div>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    For BPL beneficiaries
+                  </p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div
+            class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-gray-700"
+          >
+            <button
+              type="submit"
+              id="search-button"
+              class="btn-primary flex items-center justify-center gap-2 min-h-[44px]"
+            >
+              <i class="fas fa-search"></i>
+              <span>Search Schemes</span>
+            </button>
+            <a
+              href="{% url 'advanced_search' %}"
+              class="btn-outline flex items-center justify-center gap-2 min-h-[44px]"
+            >
+              <i class="fas fa-redo"></i>
+              <span>Reset Filters</span>
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Results -->
+      {% if request.GET %}
+      <div
+        class="mb-6 flex items-center justify-between animate-fade-in-up stagger-3"
+      >
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+          <i class="fas fa-list mr-2"></i>Search Results
+          <span class="text-primary-600 dark:text-primary-400"
+            >({{ total_results }})</span
+          >
+        </h3>
+      </div>
+
+      {% if schemes %}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for scheme in schemes %}
+        <div
+          class="card p-6 group hover:shadow-xl transition-all duration-300 animate-fade-in-up stagger-4"
+        >
+          <!-- Category Badge -->
+          <span
+            class="inline-block px-3 py-1 mb-3 text-xs font-medium rounded-full bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300"
+          >
+            <i class="fas fa-tag mr-1"></i>{{ scheme.get_category_display }}
+          </span>
+
+          <!-- Icon -->
+          <div
+            class="w-14 h-14 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300"
+          >
+            <i
+              class="fas fa-landmark text-2xl text-primary-600 dark:text-primary-400"
+            ></i>
+          </div>
+
+          <!-- Name -->
+          <h3
+            class="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2"
+          >
+            {{ scheme.name }}
+          </h3>
+
+          <!-- Objective -->
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+            {{ scheme.objective }}
+          </p>
+
+          <!-- Agency -->
+          <div class="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+            <p class="text-xs text-gray-500 dark:text-gray-500">
+              <i class="fas fa-building mr-1"></i>{{ scheme.agency }}
+            </p>
+          </div>
+
+          <!-- Benefits -->
+          <div class="mb-4">
+            <p
+              class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              Benefits:
+            </p>
+            <p class="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
+              {{ scheme.benefits|truncatewords:12 }}
+            </p>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex gap-2">
+            <a
+              href="{% url 'scheme_detail' scheme.pk %}"
+              class="flex-1 btn-outline py-2 text-sm rounded-lg text-center font-medium"
+            >
+              <i class="fas fa-info-circle mr-1"></i> Details
+            </a>
+            <a
+              href="{% url 'user_eligibility' scheme.pk %}"
+              class="flex-1 btn-primary py-2 text-sm rounded-lg text-center font-medium"
+            >
+              <i class="fas fa-check mr-1"></i> Check
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state py-16 animate-fade-in-up">
+        <i
+          class="fas fa-search text-6xl text-gray-300 dark:text-gray-600 mb-4"
+        ></i>
+        <p class="text-gray-600 dark:text-gray-400 text-lg mb-2">
+          No schemes found
+        </p>
+        <p class="text-gray-500 dark:text-gray-500 text-sm">
+          Try adjusting your search criteria
+        </p>
+      </div>
+      {% endif %} {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Selection Dialogs -->
+{% include 'dialogs/advanced_search_dialogs.html' %}
+
+<script>
+  // Dialog Management
+  function openSelectionDialog(fieldId) {
+    const dialog = document.getElementById(fieldId + "-dialog");
+    if (dialog) {
+      dialog.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+
+      // Focus first option
+      const firstOption = dialog.querySelector('[role="option"]');
+      if (firstOption) {
+        setTimeout(() => firstOption.focus(), 100);
+      }
+    }
+  }
+
+  function closeSelectionDialog(fieldId) {
+    const dialog = document.getElementById(fieldId + "-dialog");
+    if (dialog) {
+      dialog.classList.add("hidden");
+      document.body.style.overflow = "";
+
+      // Return focus to trigger button
+      const button = document.getElementById(fieldId + "-display");
+      if (button) button.focus();
+    }
+  }
+
+  function selectOption(fieldId, value, text) {
+    // Update hidden input
+    const input = document.getElementById(fieldId + "-input");
+    if (input) input.value = value;
+
+    // Update display button
+    const display = document.getElementById(fieldId + "-display");
+    if (display) {
+      const textSpan = display.querySelector(".selection-button-text");
+      if (textSpan) textSpan.textContent = text;
+
+      // Add has-value class
+      if (value) {
+        display.classList.add("has-value");
+      } else {
+        display.classList.remove("has-value");
+      }
+    }
+
+    // Close dialog
+    closeSelectionDialog(fieldId);
+
+    // Show success feedback
+    showFieldSuccess(fieldId);
+  }
+
+  function showFieldSuccess(fieldId) {
+    const button = document.getElementById(fieldId + "-display");
+    if (button) {
+      button.classList.add("ring-2", "ring-green-500");
+      setTimeout(() => {
+        button.classList.remove("ring-2", "ring-green-500");
+      }, 600);
+    }
+  }
+
+  // Keyboard Navigation
+  document.addEventListener("keydown", function (e) {
+    // Close dialog on ESC
+    if (e.key === "Escape") {
+      const openDialogs = document.querySelectorAll(
+        '[id*="-dialog"]:not(.hidden)',
+      );
+      openDialogs.forEach((dialog) => {
+        const fieldId = dialog.id.replace("-dialog", "");
+        closeSelectionDialog(fieldId);
+      });
+    }
+
+    // Navigate options with arrow keys
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      const focused = document.activeElement;
+      if (focused.getAttribute("role") === "option") {
+        e.preventDefault();
+        const options = Array.from(
+          focused
+            .closest(".dialog-content")
+            .querySelectorAll('[role="option"]'),
+        );
+        const currentIndex = options.indexOf(focused);
+
+        let nextIndex;
+        if (e.key === "ArrowDown") {
+          nextIndex = (currentIndex + 1) % options.length;
+        } else {
+          nextIndex = (currentIndex - 1 + options.length) % options.length;
+        }
+
+        options[nextIndex].focus();
+      }
+    }
+
+    // Select with Enter
+    if (
+      e.key === "Enter" &&
+      document.activeElement.getAttribute("role") === "option"
+    ) {
+      e.preventDefault();
+      document.activeElement.click();
+    }
+  });
+
+  // Display Active Filters
+  function displayActiveFilters() {
+    const container = document.getElementById("active-filters");
+    if (!container) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const filterLabels = {
+      category: "Category",
+      age: "Age",
+      max_income: "Income",
+      location: "Location",
+      caste: "Caste",
+      disability: "PWD",
+      minority: "Minority",
+      bpl: "BPL",
+    };
+
+    container.innerHTML = "";
+
+    params.forEach((value, key) => {
+      if (value && filterLabels[key]) {
+        const chip = document.createElement("span");
+        chip.className = "filter-chip";
+        chip.innerHTML = `
+          <span>${filterLabels[key]}</span>
+          <i class="fas fa-times filter-chip-remove" onclick="removeFilter('${key}')"></i>
+        `;
+        container.appendChild(chip);
+      }
+    });
+  }
+
+  function removeFilter(key) {
+    const params = new URLSearchParams(window.location.search);
+    params.delete(key);
+    window.location.search = params.toString();
+  }
+
+  // Form Submission Loading State
+  document
+    .getElementById("search-form")
+    .addEventListener("submit", function () {
+      const button = document.getElementById("search-button");
+      button.disabled = true;
+      button.classList.add("loading-shimmer");
+      button.innerHTML =
+        '<i class="fas fa-spinner fa-spin mr-2"></i> Searching...';
+    });
+
+  // Initialize
+  document.addEventListener("DOMContentLoaded", function () {
+    displayActiveFilters();
+  });
+
+  // Dark mode
+  const savedTheme = localStorage.getItem("theme");
+  if (
+    savedTheme === "dark" ||
+    (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)
+  ) {
+    document.documentElement.classList.add("dark");
+  }
+</script>
+{% endblock %}

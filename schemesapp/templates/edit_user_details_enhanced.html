@@ -1,0 +1,751 @@
+{% extends "base.html" %} {% load static %} {% block title %}Edit Profile -
+GovAid{% endblock %} {% block content %}
+<!-- Include Advanced Form Components -->
+<div style="display: none">{% include "form_components.html" %}</div>
+
+<style>
+  /* Page-specific animations */
+  @keyframes pageEnter {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .profile-form {
+    animation: pageEnter 0.5s ease-out;
+  }
+
+  .section-divider {
+    @apply relative my-8;
+  }
+
+  .section-divider::before {
+    @apply absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent;
+    content: "";
+  }
+
+  /* Form section styling */
+  .form-section {
+    @apply transition-all duration-300;
+  }
+
+  .form-section:hover {
+    @apply transform scale-[1.001];
+  }
+</style>
+
+<!-- Header -->
+<section
+  class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12"
+>
+  <div class="container mx-auto px-4">
+    <div class="flex items-center space-x-4 mb-4 animate-fade-in-up stagger-1">
+      <a
+        href="{% url 'view_user_details' %}"
+        class="text-primary-100 hover:text-white transition-colors flex items-center gap-2 group"
+      >
+        <i
+          class="fas fa-arrow-left transform group-hover:-translate-x-1 transition-transform"
+        ></i>
+        <span>Back to Profile</span>
+      </a>
+    </div>
+    <h1
+      class="text-4xl md:text-5xl font-bold text-white mb-3 animate-fade-in-up stagger-2"
+    >
+      <i class="fas fa-pen-to-square mr-3"></i>Edit Your Profile
+    </h1>
+    <p
+      class="text-lg text-primary-100 dark:text-gray-300 animate-fade-in-up stagger-3"
+    >
+      Keep your information updated to get better scheme recommendations
+    </p>
+  </div>
+</section>
+
+<!-- Form Section -->
+<section class="py-12 bg-gray-50 dark:bg-gray-900 min-h-[calc(100vh-200px)]">
+  <div class="container mx-auto px-4">
+    <div class="max-w-3xl mx-auto">
+      <!-- Success Message -->
+      {% if messages %}
+      <div
+        class="mb-6 animate-fade-in-up bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded-lg p-4 flex gap-4"
+      >
+        <div class="flex-shrink-0">
+          <i
+            class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl"
+          ></i>
+        </div>
+        <div>
+          {% for message in messages %}
+          <p class="text-sm text-green-800 dark:text-green-300 font-medium">
+            {{ message }}
+          </p>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Main Form Card -->
+      <div class="card p-8 md:p-10 profile-form">
+        <form method="post" id="editForm" class="space-y-0">
+          {% csrf_token %}
+
+          <!-- ============================================ -->
+          <!-- PERSONAL INFORMATION SECTION -->
+          <!-- ============================================ -->
+          <div class="form-section space-y-6 pb-8">
+            <div
+              class="flex items-center gap-3 pb-4 border-b-2 border-primary-200 dark:border-primary-900"
+            >
+              <div
+                class="w-12 h-12 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center"
+              >
+                <i
+                  class="fas fa-user text-primary-600 dark:text-primary-400 text-xl"
+                ></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                  Personal Information
+                </h3>
+                <p class="text-xs text-gray-600 dark:text-gray-400">
+                  Your basic details
+                </p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <!-- Name Field -->
+              <div class="form-group">
+                <div class="floating-label-group relative">
+                  <input
+                    type="text"
+                    id="{{ form.name.id_for_label }}"
+                    name="{{ form.name.name }}"
+                    value="{{ form.name.value|default:'' }}"
+                    placeholder="Full Name"
+                    required
+                    class="form-input peer"
+                    aria-label="Full Name"
+                  />
+                  <label
+                    for="{{ form.name.id_for_label }}"
+                    class="floating-label"
+                  >
+                    <i class="fas fa-user text-primary-600 mr-2"></i>Full Name
+                    <span class="text-red-600">*</span>
+                  </label>
+                </div>
+                {% if form.name.errors %}
+                <div class="form-error-message" role="alert">
+                  {{ form.name.errors.0 }}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Email Field -->
+              <div class="form-group">
+                <div class="floating-label-group relative">
+                  <input
+                    type="email"
+                    id="{{ form.email.id_for_label }}"
+                    name="{{ form.email.name }}"
+                    value="{{ form.email.value|default:'' }}"
+                    placeholder="your@email.com"
+                    required
+                    class="form-input peer"
+                    aria-label="Email Address"
+                  />
+                  <label
+                    for="{{ form.email.id_for_label }}"
+                    class="floating-label"
+                  >
+                    <i class="fas fa-envelope text-primary-600 mr-2"></i>Email
+                    Address <span class="text-red-600">*</span>
+                  </label>
+                </div>
+                {% if form.email.errors %}
+                <div class="form-error-message" role="alert">
+                  {{ form.email.errors.0 }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Divider -->
+          <div class="section-divider"></div>
+
+          <!-- ============================================ -->
+          <!-- DEMOGRAPHIC SECTION -->
+          <!-- ============================================ -->
+          <div class="form-section space-y-6 pb-8">
+            <div
+              class="flex items-center gap-3 pb-4 border-b-2 border-blue-200 dark:border-blue-900"
+            >
+              <div
+                class="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center"
+              >
+                <i
+                  class="fas fa-users text-blue-600 dark:text-blue-400 text-xl"
+                ></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                  Demographics
+                </h3>
+                <p class="text-xs text-gray-600 dark:text-gray-400">
+                  Your personal details
+                </p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <!-- Gender Selection Dialog -->
+              <div class="form-group">
+                <button
+                  type="button"
+                  onclick="openSelectionDialog('gender')"
+                  class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-left flex items-center justify-between hover:border-primary-400 dark:hover:border-primary-600 transition-colors focus:outline-none focus:ring-4 focus:ring-primary-100 dark:focus:ring-primary-900/30"
+                  aria-haspopup="dialog"
+                >
+                  <div class="flex items-center gap-3 flex-1">
+                    <i class="fas fa-person text-primary-600"></i>
+                    <div>
+                      <div class="text-xs text-gray-600 dark:text-gray-400">
+                        Gender
+                      </div>
+                      <div id="gender-display" class="font-medium">
+                        {% if form.gender.value %} {% for value, text in
+                        form.gender.field.choices %} {% if value ==
+                        form.gender.value %}{{ text }}{% endif %} {% endfor %}
+                        {% else %}Select Gender{% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  <i
+                    class="fas fa-chevron-down text-gray-600 dark:text-gray-400"
+                  ></i>
+                </button>
+                <input
+                  type="hidden"
+                  id="gender-input"
+                  name="{{ form.gender.name }}"
+                  value="{{ form.gender.value|default:'' }}"
+                />
+              </div>
+
+              <!-- Location Selection Dialog -->
+              <div class="form-group">
+                <button
+                  type="button"
+                  onclick="openSelectionDialog('location')"
+                  class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-left flex items-center justify-between hover:border-primary-400 dark:hover:border-primary-600 transition-colors focus:outline-none focus:ring-4 focus:ring-primary-100 dark:focus:ring-primary-900/30"
+                  aria-haspopup="dialog"
+                >
+                  <div class="flex items-center gap-3 flex-1">
+                    <i class="fas fa-map-marker-alt text-primary-600"></i>
+                    <div>
+                      <div class="text-xs text-gray-600 dark:text-gray-400">
+                        Location Type
+                      </div>
+                      <div id="location-display" class="font-medium">
+                        {% if form.location.value %} {% for value, text in
+                        form.location.field.choices %} {% if value ==
+                        form.location.value %}{{ text }}{% endif %} {% endfor %}
+                        {% else %}Select Location{% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  <i
+                    class="fas fa-chevron-down text-gray-600 dark:text-gray-400"
+                  ></i>
+                </button>
+                <input
+                  type="hidden"
+                  id="location-input"
+                  name="{{ form.location.name }}"
+                  value="{{ form.location.value|default:'' }}"
+                />
+              </div>
+
+              <!-- Age Selection Dialog -->
+              <div class="form-group">
+                <button
+                  type="button"
+                  onclick="openSelectionDialog('age')"
+                  class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-left flex items-center justify-between hover:border-primary-400 dark:hover:border-primary-600 transition-colors focus:outline-none focus:ring-4 focus:ring-primary-100 dark:focus:ring-primary-900/30"
+                  aria-haspopup="dialog"
+                >
+                  <div class="flex items-center gap-3 flex-1">
+                    <i class="fas fa-birthday-cake text-primary-600"></i>
+                    <div>
+                      <div class="text-xs text-gray-600 dark:text-gray-400">
+                        Age Range
+                      </div>
+                      <div id="age-display" class="font-medium">
+                        {% if form.age.value %} {% for value, text in
+                        form.age.field.choices %} {% if value == form.age.value
+                        %}{{ text }}{% endif %} {% endfor %} {% else %}Select
+                        Age{% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  <i
+                    class="fas fa-chevron-down text-gray-600 dark:text-gray-400"
+                  ></i>
+                </button>
+                <input
+                  type="hidden"
+                  id="age-input"
+                  name="{{ form.age.name }}"
+                  value="{{ form.age.value|default:'' }}"
+                />
+              </div>
+
+              <!-- Caste Selection Dialog -->
+              <div class="form-group">
+                <button
+                  type="button"
+                  onclick="openSelectionDialog('caste')"
+                  class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-left flex items-center justify-between hover:border-primary-400 dark:hover:border-primary-600 transition-colors focus:outline-none focus:ring-4 focus:ring-primary-100 dark:focus:ring-primary-900/30"
+                  aria-haspopup="dialog"
+                >
+                  <div class="flex items-center gap-3 flex-1">
+                    <i class="fas fa-sitemap text-primary-600"></i>
+                    <div>
+                      <div class="text-xs text-gray-600 dark:text-gray-400">
+                        Caste Category
+                      </div>
+                      <div id="caste-display" class="font-medium">
+                        {% if form.caste.value %} {% for value, text in
+                        form.caste.field.choices %} {% if value ==
+                        form.caste.value %}{{ text }}{% endif %} {% endfor %} {%
+                        else %}Select Caste{% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  <i
+                    class="fas fa-chevron-down text-gray-600 dark:text-gray-400"
+                  ></i>
+                </button>
+                <input
+                  type="hidden"
+                  id="caste-input"
+                  name="{{ form.caste.name }}"
+                  value="{{ form.caste.value|default:'' }}"
+                />
+              </div>
+
+              <!-- Marital Status Selection Dialog -->
+              <div class="form-group">
+                <button
+                  type="button"
+                  onclick="openSelectionDialog('maritial_status')"
+                  class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-left flex items-center justify-between hover:border-primary-400 dark:hover:border-primary-600 transition-colors focus:outline-none focus:ring-4 focus:ring-primary-100 dark:focus:ring-primary-900/30"
+                  aria-haspopup="dialog"
+                >
+                  <div class="flex items-center gap-3 flex-1">
+                    <i class="fas fa-heart text-primary-600"></i>
+                    <div>
+                      <div class="text-xs text-gray-600 dark:text-gray-400">
+                        Marital Status
+                      </div>
+                      <div id="maritial_status-display" class="font-medium">
+                        {% if form.maritial_status.value %} {% for value, text
+                        in form.maritial_status.field.choices %} {% if value ==
+                        form.maritial_status.value %}{{ text }}{% endif %} {%
+                        endfor %} {% else %}Select Status{% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  <i
+                    class="fas fa-chevron-down text-gray-600 dark:text-gray-400"
+                  ></i>
+                </button>
+                <input
+                  type="hidden"
+                  id="maritial_status-input"
+                  name="{{ form.maritial_status.name }}"
+                  value="{{ form.maritial_status.value|default:'' }}"
+                />
+              </div>
+
+              <!-- Income Field -->
+              <div class="form-group">
+                <div class="floating-label-group relative">
+                  <input
+                    type="number"
+                    id="{{ form.income.id_for_label }}"
+                    name="{{ form.income.name }}"
+                    value="{{ form.income.value|default:'' }}"
+                    placeholder="Annual income"
+                    min="0"
+                    step="10000"
+                    class="form-input peer"
+                    aria-label="Annual Income"
+                  />
+                  <label
+                    for="{{ form.income.id_for_label }}"
+                    class="floating-label"
+                  >
+                    <i class="fas fa-rupee-sign text-primary-600 mr-2"></i
+                    >Annual Income <span class="text-red-600">*</span>
+                  </label>
+                </div>
+                <div class="form-helper-text">
+                  <i class="fas fa-info-circle"></i>
+                  Enter your annual income in rupees (e.g., 500000)
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Divider -->
+          <div class="section-divider"></div>
+
+          <!-- ============================================ -->
+          <!-- ELIGIBILITY CRITERIA SECTION -->
+          <!-- ============================================ -->
+          <div class="form-section space-y-6 pb-8">
+            <div
+              class="flex items-center gap-3 pb-4 border-b-2 border-amber-200 dark:border-amber-900"
+            >
+              <div
+                class="w-12 h-12 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center"
+              >
+                <i
+                  class="fas fa-certificate text-amber-600 dark:text-amber-400 text-xl"
+                ></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                  Eligibility Status
+                </h3>
+                <p class="text-xs text-gray-600 dark:text-gray-400">
+                  Your special circumstances
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-4 mt-6">
+              <!-- Disability Status -->
+              <label
+                class="flex items-start gap-4 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 cursor-pointer transition-all group"
+              >
+                <div class="flex items-center pt-1">
+                  <input
+                    type="checkbox"
+                    id="{{ form.disability.id_for_label }}"
+                    name="{{ form.disability.name }}"
+                    value="true"
+                    {%
+                    if
+                    form.disability.value=""
+                    ="true"
+                    or
+                    form.disability.value=""
+                    ="True"
+                    %}checked{%
+                    endif
+                    %}
+                    class="w-6 h-6 rounded-lg border-primary-300 dark:border-primary-700 accent-primary-600 cursor-pointer transition-all"
+                  />
+                </div>
+                <div class="flex-1">
+                  <div
+                    class="font-medium text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors"
+                  >
+                    <i class="fas fa-wheelchair text-amber-600 mr-2"></i>Person
+                    with Disability
+                  </div>
+                  <div class="text-sm text-gray-600 dark:text-gray-400">
+                    Check if you qualify as a person with disability
+                  </div>
+                </div>
+              </label>
+
+              <!-- Minority Status -->
+              <label
+                class="flex items-start gap-4 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 cursor-pointer transition-all group"
+              >
+                <div class="flex items-center pt-1">
+                  <input
+                    type="checkbox"
+                    id="{{ form.minority.id_for_label }}"
+                    name="{{ form.minority.name }}"
+                    value="true"
+                    {%
+                    if
+                    form.minority.value=""
+                    ="true"
+                    or
+                    form.minority.value=""
+                    ="True"
+                    %}checked{%
+                    endif
+                    %}
+                    class="w-6 h-6 rounded-lg border-primary-300 dark:border-primary-700 accent-primary-600 cursor-pointer transition-all"
+                  />
+                </div>
+                <div class="flex-1">
+                  <div
+                    class="font-medium text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors"
+                  >
+                    <i class="fas fa-flag text-amber-600 mr-2"></i>Minority
+                    Community Member
+                  </div>
+                  <div class="text-sm text-gray-600 dark:text-gray-400">
+                    Check if you belong to a recognized minority community
+                  </div>
+                </div>
+              </label>
+
+              <!-- BPL Status -->
+              <label
+                class="flex items-start gap-4 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 cursor-pointer transition-all group"
+              >
+                <div class="flex items-center pt-1">
+                  <input
+                    type="checkbox"
+                    id="{{ form.below_poverty_line.id_for_label }}"
+                    name="{{ form.below_poverty_line.name }}"
+                    value="true"
+                    {%
+                    if
+                    form.below_poverty_line.value=""
+                    ="true"
+                    or
+                    form.below_poverty_line.value=""
+                    ="True"
+                    %}checked{%
+                    endif
+                    %}
+                    class="w-6 h-6 rounded-lg border-primary-300 dark:border-primary-700 accent-primary-600 cursor-pointer transition-all"
+                  />
+                </div>
+                <div class="flex-1">
+                  <div
+                    class="font-medium text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors"
+                  >
+                    <i class="fas fa-coins text-amber-600 mr-2"></i>Below
+                    Poverty Line (BPL)
+                  </div>
+                  <div class="text-sm text-gray-600 dark:text-gray-400">
+                    Check if your household is classified as BPL
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Section Divider -->
+          <div class="section-divider"></div>
+
+          <!-- ============================================ -->
+          <!-- ACTION BUTTONS -->
+          <!-- ============================================ -->
+          <div class="pt-8 space-y-3">
+            <div class="flex flex-col sm:flex-row gap-4">
+              <button
+                type="submit"
+                class="btn-primary flex-1 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 hover:shadow-lg active:scale-95"
+                id="submitBtn"
+              >
+                <i class="fas fa-save"></i>
+                <span id="submitText">Save Changes</span>
+              </button>
+              <a
+                href="{% url 'view_user_details' %}"
+                class="flex-1 px-6 py-3 rounded-lg font-medium bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center gap-2 text-center"
+              >
+                <i class="fas fa-times"></i> Cancel
+              </a>
+            </div>
+
+            <div class="text-center text-xs text-gray-500 dark:text-gray-400">
+              <i class="fas fa-lock mr-1"></i>Your information is secure and
+              encrypted
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Info Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+        <div
+          class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4"
+        >
+          <div class="flex gap-3">
+            <i
+              class="fas fa-lightbulb text-blue-600 dark:text-blue-400 text-lg flex-shrink-0 mt-0.5"
+            ></i>
+            <div>
+              <h4
+                class="font-semibold text-blue-900 dark:text-blue-100 text-sm"
+              >
+                Pro Tip
+              </h4>
+              <p class="text-xs text-blue-800 dark:text-blue-300 mt-1">
+                Accurate information helps us recommend schemes that match your
+                profile perfectly.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4"
+        >
+          <div class="flex gap-3">
+            <i
+              class="fas fa-check-circle text-green-600 dark:text-green-400 text-lg flex-shrink-0 mt-0.5"
+            ></i>
+            <div>
+              <h4
+                class="font-semibold text-green-900 dark:text-green-100 text-sm"
+              >
+                Updated Regularly
+              </h4>
+              <p class="text-xs text-green-800 dark:text-green-300 mt-1">
+                Remember to update your profile if your circumstances change.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4"
+        >
+          <div class="flex gap-3">
+            <i
+              class="fas fa-shield text-purple-600 dark:text-purple-400 text-lg flex-shrink-0 mt-0.5"
+            ></i>
+            <div>
+              <h4
+                class="font-semibold text-purple-900 dark:text-purple-100 text-sm"
+              >
+                Privacy First
+              </h4>
+              <p class="text-xs text-purple-800 dark:text-purple-300 mt-1">
+                Your data is never shared without your consent.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Selection Dialogs -->
+{% include "dialogs/selection_dialogs.html" %}
+
+<!-- Scripts for Dialog Management -->
+<script>
+  function openSelectionDialog(fieldId) {
+    const dialog = document.getElementById(fieldId + "-dialog");
+    if (dialog) {
+      dialog.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+      // Focus management for accessibility
+      const firstOption = dialog.querySelector('[role="option"]');
+      if (firstOption) setTimeout(() => firstOption.focus(), 100);
+    }
+  }
+
+  function closeSelectionDialog(fieldId) {
+    const dialog = document.getElementById(fieldId + "-dialog");
+    if (dialog) {
+      dialog.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+  }
+
+  function selectOption(fieldId, value, text) {
+    document.getElementById(fieldId + "-input").value = value;
+    document.getElementById(fieldId + "-display").textContent = text;
+    closeSelectionDialog(fieldId);
+    // Add success feedback
+    showFieldSuccess(fieldId);
+  }
+
+  function showFieldSuccess(fieldId) {
+    const button = document.getElementById(
+      fieldId + "-input",
+    ).previousElementSibling;
+    if (button) {
+      button.classList.add("ring-2", "ring-green-500");
+      setTimeout(
+        () => button.classList.remove("ring-2", "ring-green-500"),
+        300,
+      );
+    }
+  }
+
+  // Keyboard Navigation
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      document
+        .querySelectorAll('[id*="-dialog"]:not(.hidden)')
+        .forEach((dialog) => {
+          const fieldId = dialog.id.replace("-dialog", "");
+          closeSelectionDialog(fieldId);
+        });
+    }
+
+    // Arrow Key Navigation in Dialogs
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      const focused = document.activeElement;
+      const options = document.querySelectorAll('[role="option"]');
+      const currentIndex = Array.from(options).indexOf(focused);
+
+      if (currentIndex !== -1) {
+        e.preventDefault();
+        let nextIndex = currentIndex;
+        if (e.key === "ArrowDown")
+          nextIndex = (currentIndex + 1) % options.length;
+        if (e.key === "ArrowUp")
+          nextIndex = (currentIndex - 1 + options.length) % options.length;
+        options[nextIndex].focus();
+      }
+    }
+
+    // Enter Key for selection
+    if (
+      e.key === "Enter" &&
+      document.activeElement.hasAttribute("role") &&
+      document.activeElement.getAttribute("role") === "option"
+    ) {
+      document.activeElement.click();
+    }
+  });
+
+  // Form Submission
+  document.getElementById("editForm").addEventListener("submit", function (e) {
+    const btn = document.getElementById("submitBtn");
+    const text = document.getElementById("submitText");
+    btn.disabled = true;
+    btn.classList.add("opacity-60", "pointer-events-none");
+    text.innerHTML =
+      '<span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>Saving...';
+  });
+
+  // Apply input styling dynamically
+  document
+    .querySelectorAll('input:not([type="hidden"]), textarea')
+    .forEach((el) => {
+      if (!el.classList.contains("form-input")) {
+        el.classList.add("form-input");
+      }
+    });
+</script>
+
+{% endblock %}

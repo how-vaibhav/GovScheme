@@ -18,15 +18,76 @@ from bs4 import BeautifulSoup
 from django.views.decorators.http import require_POST
 # Create your views here.
 
+def get_smart_recommendations(user):
+    """
+    Get personalized scheme recommendations based on user profile.
+    Uses eligibility criteria and user details to recommend schemes.
+    """
+    try:
+        user_details = UserDetails.objects.get(user=user)
+    except UserDetails.DoesNotExist:
+        return []
+    
+    recommendations = []
+    all_schemes = Scheme.objects.all()
+    
+    # Get numeric age for comparison
+    age_map = {
+        '18-25': 21.5,
+        '26-35': 30.5,
+        '36-45': 40.5,
+        '46-55': 50.5,
+        '56-65': 60.5,
+        '65+': 70,
+    }
+    user_age = age_map.get(user_details.age, 30)
+    
+    for scheme in all_schemes:
+        if scheme.is_user_eligible(user_details):
+            # Calculate a recommendation score based on eligibility criteria
+            score = 0
+            if scheme.min_age and scheme.max_age and user_age >= scheme.min_age and user_age <= scheme.max_age:
+                score += 1
+            if scheme.max_income and user_details.income <= scheme.max_income:
+                score += 1
+            if scheme.caste == user_details.caste:
+                score += 2
+            if scheme.below_poverty_line and user_details.below_poverty_line:
+                score += 1
+            if scheme.disability and user_details.disability:
+                score += 1
+            if scheme.minority and user_details.minority:
+                score += 1
+            
+            recommendations.append({
+                'scheme': scheme,
+                'score': score,
+                'match_percentage': min(100, (score / 5) * 100)
+            })
+    
+    # Sort by score in descending order and return top 5
+    recommendations.sort(key=lambda x: x['score'], reverse=True)
+    return recommendations[:5]
+
 #Home page view, that sends username of user and their notifications if they have logged in
 def home(request):
     notifications = []
+    recommended_schemes = []
 
     if request.user.is_authenticated:
         notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-created_at')
+        recommended_schemes = get_smart_recommendations(request.user)
         print("User:", request.user)
         print("Notifications:", notifications)
-    return render(request, 'home.html', {'notifications': notifications})
+    
+    # Get popular/trending schemes for unauthenticated users
+    all_schemes = Scheme.objects.all()[:6]
+    
+    return render(request, 'home.html', {
+        'notifications': notifications,
+        'recommended_schemes': recommended_schemes,
+        'popular_schemes': all_schemes
+    })
 
 
 #view for feedback submission, it requires the user to be signed in to give feedbakcs

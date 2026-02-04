@@ -49,24 +49,37 @@
             </h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {% for field in form %}
-                {% if field.name in "first_name,last_name,email,phone" %}
-                <div>
-                  <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    {{ field.label }}
-                    {% if field.field.required %}<span class="text-red-600 dark:text-red-400">*</span>{% endif %}
-                  </label>
-                  {{ field }}
-                  {% if field.errors %}
-                  <div class="mt-1.5 text-sm text-red-600 dark:text-red-400 space-y-1">
-                    {% for error in field.errors %}
-                    <p>{{ error }}</p>
-                    {% endfor %}
-                  </div>
-                  {% endif %}
+              <!-- Name Field -->
+              <div>
+                <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <i class="fas fa-user mr-2"></i>{{ form.name.label }}
+                  {% if form.name.field.required %}<span class="text-red-600 dark:text-red-400">*</span>{% endif %}
+                </label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <div class="mt-1.5 text-sm text-red-600 dark:text-red-400 space-y-1">
+                  {% for error in form.name.errors %}
+                  <p>{{ error }}</p>
+                  {% endfor %}
                 </div>
                 {% endif %}
-              {% endfor %}
+              </div>
+
+              <!-- Email Field -->
+              <div>
+                <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <i class="fas fa-envelope mr-2"></i>{{ form.email.label }}
+                  {% if form.email.field.required %}<span class="text-red-600 dark:text-red-400">*</span>{% endif %}
+                </label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                <div class="mt-1.5 text-sm text-red-600 dark:text-red-400 space-y-1">
+                  {% for error in form.email.errors %}
+                  <p>{{ error }}</p>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
             </div>
           </div>
 
@@ -77,24 +90,69 @@
             </h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {% for field in form %}
-                {% if field.name in "age,income,caste,maritial_status" %}
-                <div>
-                  <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    {{ field.label }}
-                    {% if field.field.required %}<span class="text-red-600 dark:text-red-400">*</span>{% endif %}
-                  </label>
-                  {{ field }}
-                  {% if field.errors %}
-                  <div class="mt-1.5 text-sm text-red-600 dark:text-red-400 space-y-1">
-                    {% for error in field.errors %}
-                    <p>{{ error }}</p>
-                    {% endfor %}
-                  </div>
-                  {% endif %}
+              <!-- Age Field -->
+              <div>
+                <label for="{{ form.age.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <i class="fas fa-birthday-cake mr-2"></i>{{ form.age.label }}
+                  {% if form.age.field.required %}<span class="text-red-600 dark:text-red-400">*</span>{% endif %}
+                </label>
+                {{ form.age }}
+                {% if form.age.errors %}
+                <div class="mt-1.5 text-sm text-red-600 dark:text-red-400 space-y-1">
+                  {% for error in form.age.errors %}
+                  <p>{{ error }}</p>
+                  {% endfor %}
                 </div>
                 {% endif %}
-              {% endfor %}
+              </div>
+
+              <!-- Income Field -->
+              <div>
+                <label for="{{ form.income.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <i class="fas fa-rupee-sign mr-2"></i>{{ form.income.label }}
+                  {% if form.income.field.required %}<span class="text-red-600 dark:text-red-400">*</span>{% endif %}
+                </label>
+                {{ form.income }}
+                {% if form.income.errors %}
+                <div class="mt-1.5 text-sm text-red-600 dark:text-red-400 space-y-1">
+                  {% for error in form.income.errors %}
+                  <p>{{ error }}</p>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Caste Field -->
+              <div>
+                <label for="{{ form.caste.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <i class="fas fa-users mr-2"></i>{{ form.caste.label }}
+                  {% if form.caste.field.required %}<span class="text-red-600 dark:text-red-400">*</span>{% endif %}
+                </label>
+                {{ form.caste }}
+                {% if form.caste.errors %}
+                <div class="mt-1.5 text-sm text-red-600 dark:text-red-400 space-y-1">
+                  {% for error in form.caste.errors %}
+                  <p>{{ error }}</p>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Marital Status Field -->
+              <div>
+                <label for="{{ form.maritial_status.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <i class="fas fa-heart mr-2"></i>{{ form.maritial_status.label }}
+                  {% if form.maritial_status.field.required %}<span class="text-red-600 dark:text-red-400">*</span>{% endif %}
+                </label>
+                {{ form.maritial_status }}
+                {% if form.maritial_status.errors %}
+                <div class="mt-1.5 text-sm text-red-600 dark:text-red-400 space-y-1">
+                  {% for error in form.maritial_status.errors %}
+                  <p>{{ error }}</p>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
             </div>
           </div>
 
@@ -105,16 +163,88 @@
             </h3>
             
             <div class="space-y-4">
-              {% for field in form %}
-                {% if field.name in "below_poverty_line,disable" %}
-                <div class="flex items-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-colors">
-                  {{ field }}
-                  <label for="{{ field.id_for_label }}" class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
-                    {{ field.label }}
-                  </label>
+              <!-- Gender -->
+              <div>
+                <label for="{{ form.gender.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <i class="fas fa-person mr-2"></i>{{ form.gender.label }}
+                  {% if form.gender.field.required %}<span class="text-red-600 dark:text-red-400">*</span>{% endif %}
+                </label>
+                {{ form.gender }}
+                {% if form.gender.errors %}
+                <div class="mt-1.5 text-sm text-red-600 dark:text-red-400 space-y-1">
+                  {% for error in form.gender.errors %}
+                  <p>{{ error }}</p>
+                  {% endfor %}
                 </div>
                 {% endif %}
-              {% endfor %}
+              </div>
+
+              <!-- Location -->
+              <div>
+                <label for="{{ form.location.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <i class="fas fa-map-marker-alt mr-2"></i>{{ form.location.label }}
+                  {% if form.location.field.required %}<span class="text-red-600 dark:text-red-400">*</span>{% endif %}
+                </label>
+                {{ form.location }}
+                {% if form.location.errors %}
+                <div class="mt-1.5 text-sm text-red-600 dark:text-red-400 space-y-1">
+                  {% for error in form.location.errors %}
+                  <p>{{ error }}</p>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Disability -->
+              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-colors">
+                <div class="flex items-center">
+                  {{ form.disability }}
+                  <label for="{{ form.disability.id_for_label }}" class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+                    <i class="fas fa-wheelchair mr-2"></i>{{ form.disability.label }}
+                  </label>
+                </div>
+                {% if form.disability.errors %}
+                <div class="mt-2 text-sm text-red-600 dark:text-red-400 space-y-1">
+                  {% for error in form.disability.errors %}
+                  <p>{{ error }}</p>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Minority -->
+              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-colors">
+                <div class="flex items-center">
+                  {{ form.minority }}
+                  <label for="{{ form.minority.id_for_label }}" class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+                    <i class="fas fa-flag mr-2"></i>{{ form.minority.label }}
+                  </label>
+                </div>
+                {% if form.minority.errors %}
+                <div class="mt-2 text-sm text-red-600 dark:text-red-400 space-y-1">
+                  {% for error in form.minority.errors %}
+                  <p>{{ error }}</p>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Below Poverty Line -->
+              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-colors">
+                <div class="flex items-center">
+                  {{ form.below_poverty_line }}
+                  <label for="{{ form.below_poverty_line.id_for_label }}" class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+                    <i class="fas fa-coins mr-2"></i>{{ form.below_poverty_line.label }}
+                  </label>
+                </div>
+                {% if form.below_poverty_line.errors %}
+                <div class="mt-2 text-sm text-red-600 dark:text-red-400 space-y-1">
+                  {% for error in form.below_poverty_line.errors %}
+                  <p>{{ error }}</p>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
             </div>
           </div>
 

@@ -1,22 +1,427 @@
 {% extends "base.html" %} {% load static %} {% block title %}Apply for Scheme -
 GovAid{% endblock %} {% block content %}
+
+<style>
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translate(-50%, calc(-50% + 20px));
+      opacity: 0;
+    }
+    to {
+      transform: translate(-50%, -50%);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUpMobile {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+      transform: translateX(-5px);
+    }
+    20%,
+    40%,
+    60%,
+    80% {
+      transform: translateX(5px);
+    }
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes inputGlow {
+    0%,
+    100% {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0);
+    }
+    50% {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-fade-in-down {
+    animation: fadeInDown 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .stagger-1 {
+    animation-delay: 0.1s;
+  }
+  .stagger-2 {
+    animation-delay: 0.2s;
+  }
+  .stagger-3 {
+    animation-delay: 0.3s;
+  }
+
+  .hover-lift {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Floating Label Input */
+  .input-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 1rem 1rem 0.5rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    background: white;
+    color: #1f2937;
+  }
+
+  .dark .input-field {
+    background: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+  }
+
+  .input-field:focus {
+    outline: none;
+    border-color: #3b82f6;
+    animation: inputGlow 2s ease-in-out infinite;
+  }
+
+  .dark .input-field:focus {
+    border-color: #60a5fa;
+  }
+
+  .input-field.error {
+    border-color: #ef4444;
+    animation: shake 0.5s ease;
+  }
+
+  .dark .input-field.error {
+    border-color: #f87171;
+  }
+
+  .input-field.success {
+    border-color: #10b981;
+  }
+
+  .dark .input-field.success {
+    border-color: #34d399;
+  }
+
+  .input-label {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.875rem;
+    color: #6b7280;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    background: white;
+    padding: 0 0.25rem;
+  }
+
+  .dark .input-label {
+    color: #9ca3af;
+    background: #1f2937;
+  }
+
+  .input-field:focus + .input-label,
+  .input-field:not(:placeholder-shown) + .input-label {
+    top: 0;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    color: #3b82f6;
+    font-weight: 500;
+  }
+
+  .dark .input-field:focus + .input-label,
+  .dark .input-field:not(:placeholder-shown) + .input-label {
+    color: #60a5fa;
+  }
+
+  .input-field.error + .input-label {
+    color: #ef4444;
+  }
+
+  .dark .input-field.error + .input-label {
+    color: #f87171;
+  }
+
+  .input-field.success + .input-label {
+    color: #10b981;
+  }
+
+  .dark .input-field.success + .input-label {
+    color: #34d399;
+  }
+
+  /* Selection Button */
+  .selection-button {
+    width: 100%;
+    padding: 1rem;
+    text-align: left;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 56px;
+  }
+
+  .dark .selection-button {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .selection-button:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .selection-button:focus {
+    outline: none;
+    border-color: #3b82f6;
+    ring: 2px;
+    ring-color: #3b82f6;
+  }
+
+  .selection-button.has-value {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
+  }
+
+  .dark .selection-button.has-value {
+    border-color: #60a5fa;
+    background: rgba(96, 165, 250, 0.1);
+  }
+
+  /* Dialog Styles */
+  .dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .dialog-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 90%;
+    max-width: 40rem;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease-out;
+    z-index: 1001;
+  }
+
+  .dark .dialog-content {
+    background: #1f2937;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  }
+
+  @media (max-width: 640px) {
+    .dialog-content {
+      top: auto;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      max-width: 100%;
+      max-height: 85vh;
+      transform: none;
+      border-radius: 1.5rem 1.5rem 0 0;
+      animation: slideUpMobile 0.3s ease-out;
+    }
+  }
+
+  /* Scheme Option */
+  .scheme-option {
+    padding: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 0.75rem;
+  }
+
+  .dark .scheme-option {
+    border-color: #374151;
+  }
+
+  .scheme-option:hover {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
+    transform: translateX(4px);
+  }
+
+  .dark .scheme-option:hover {
+    background: rgba(96, 165, 250, 0.1);
+  }
+
+  .scheme-option:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #3b82f6;
+  }
+
+  /* Search Input */
+  .search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .dark .search-input {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+  }
+
+  /* Confirmation Modal */
+  .confirmation-modal {
+    padding: 2rem;
+  }
+
+  /* Loading Spinner */
+  .spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  /* Field Message */
+  .field-message {
+    display: flex;
+    align-items: start;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .error-message {
+    color: #dc2626;
+  }
+
+  .dark .error-message {
+    color: #f87171;
+  }
+
+  .success-message {
+    color: #059669;
+  }
+
+  .dark .success-message {
+    color: #34d399;
+  }
+</style>
+
 <!-- Header -->
 <section
-  class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12"
+  class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12 animate-fade-in-down"
 >
   <div class="container mx-auto px-4">
-    <div class="flex items-center space-x-4 mb-4">
+    <div class="flex items-center space-x-4 mb-4 animate-fade-in-up stagger-1">
       <a
         href="{% url 'home' %}"
-        class="text-primary-100 hover:text-white transition-colors flex items-center gap-1"
+        class="text-primary-100 hover:text-white transition-colors flex items-center gap-2"
       >
         <i class="fas fa-arrow-left"></i> Home
       </a>
     </div>
-    <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">
+    <h1
+      class="text-4xl md:text-5xl font-bold text-white mb-3 animate-fade-in-up stagger-2"
+    >
       <i class="fas fa-file-circle-check mr-3"></i>Apply for Scheme
     </h1>
-    <p class="text-lg text-primary-100 dark:text-gray-300">
+    <p
+      class="text-lg text-primary-100 dark:text-gray-300 animate-fade-in-up stagger-3"
+    >
       Submit your application for government benefits
     </p>
   </div>
@@ -26,162 +431,532 @@ GovAid{% endblock %} {% block content %}
 <section class="py-12 bg-gray-50 dark:bg-gray-900">
   <div class="container mx-auto px-4">
     <div class="max-w-2xl mx-auto">
-      <div class="card p-8 md:p-10">
+      <div class="card p-8 md:p-10 hover-lift animate-fade-in-up stagger-1">
         <!-- Error Messages -->
         {% if form.non_field_errors %}
         <div
-          class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6 flex gap-3"
+          class="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-xl p-4 mb-6 flex gap-3"
+          role="alert"
         >
           <i
             class="fas fa-exclamation-circle text-red-600 dark:text-red-400 text-xl flex-shrink-0 mt-0.5"
           ></i>
           <div>
             {% for error in form.non_field_errors %}
-            <p class="text-sm text-red-800 dark:text-red-300">{{ error }}</p>
+            <p class="text-sm font-semibold text-red-800 dark:text-red-300">
+              {{ error }}
+            </p>
             {% endfor %}
           </div>
         </div>
         {% endif %}
 
-        <form method="post" action="{% url 'apply_scheme' %}" class="space-y-6">
+        <form
+          method="post"
+          action="{% url 'apply_scheme' %}"
+          id="applicationForm"
+          novalidate
+        >
           {% csrf_token %}
 
           <!-- Scheme Selection -->
-          <div>
+          <div class="mb-6">
             <label
-              for="scheme"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
             >
               <i class="fas fa-building mr-2 text-primary-600"></i>Select Scheme
               <span class="text-red-600 dark:text-red-400">*</span>
             </label>
-            <select name="scheme" id="scheme" class="input w-full" required>
-              <option value="" disabled selected>
-                Choose a scheme to apply for
-              </option>
-              {% for scheme in schemes %}
-              <option value="{{ scheme.id }}">
-                {{ scheme.name }} - {{ scheme.agency }}
-              </option>
-              {% endfor %}
-            </select>
+            <input type="hidden" id="scheme-input" name="scheme" value="" />
+            <button
+              type="button"
+              id="scheme-display"
+              class="selection-button"
+              onclick="openSchemeDialog()"
+              aria-haspopup="dialog"
+            >
+              <span id="scheme-text" class="text-gray-500 dark:text-gray-400"
+                >Choose a scheme to apply for</span
+              >
+              <i class="fas fa-chevron-down text-gray-400"></i>
+            </button>
             {% if form.scheme.errors %}
-            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">
-              {{ form.scheme.errors.0 }}
-            </p>
+            <div class="field-message error-message" role="alert">
+              <i class="fas fa-circle-xmark"></i>
+              <span>{{ form.scheme.errors.0 }}</span>
+            </div>
             {% endif %}
+            <div
+              id="scheme-error"
+              class="field-message error-message hidden"
+              role="alert"
+            >
+              <i class="fas fa-circle-xmark"></i>
+              <span>Please select a scheme</span>
+            </div>
           </div>
 
           <!-- Aadhaar Number -->
-          <div>
-            <label
-              for="aadhaar"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-            >
-              <i class="fas fa-id-card mr-2 text-primary-600"></i>Aadhaar Number
-              <span class="text-red-600 dark:text-red-400">*</span>
-            </label>
+          <div class="input-group">
             <input
               type="text"
               name="aadhaar"
               id="aadhaar"
-              maxlength="12"
-              pattern="\d{12}"
-              placeholder="Enter your 12-digit Aadhaar number"
-              class="input w-full"
+              class="input-field"
+              placeholder=" "
+              maxlength="14"
               required
+              autocomplete="off"
+              aria-label="Aadhaar Number"
+              aria-describedby="aadhaar-help aadhaar-error"
             />
+            <label for="aadhaar" class="input-label">
+              <i class="fas fa-id-card mr-1"></i>Aadhaar Number *
+            </label>
+            <div id="aadhaar-help" class="field-message success-message hidden">
+              <i class="fas fa-check-circle"></i>
+              <span>Valid Aadhaar number</span>
+            </div>
+            <div
+              id="aadhaar-error"
+              class="field-message error-message hidden"
+              role="alert"
+            >
+              <i class="fas fa-circle-xmark"></i>
+              <span></span>
+            </div>
             {% if form.aadhaar.errors %}
-            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">
-              {{ form.aadhaar.errors.0 }}
-            </p>
+            <div class="field-message error-message" role="alert">
+              <i class="fas fa-circle-xmark"></i>
+              <span>{{ form.aadhaar.errors.0 }}</span>
+            </div>
             {% endif %}
-            <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
-              <i class="fas fa-info-circle mr-1"></i> Your Aadhaar is secure and
-              used only for verification
-            </p>
           </div>
+
+          <p
+            class="text-xs text-gray-500 dark:text-gray-400 -mt-4 mb-6 flex items-center gap-2"
+          >
+            <i class="fas fa-shield-alt text-green-500"></i>
+            <span
+              >Your Aadhaar is encrypted and used only for verification
+              purposes</span
+            >
+          </p>
 
           <!-- Submit Button -->
           <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
-            <button type="submit" 
-                    id="submitBtn"
-                    class="btn-primary w-full py-3 rounded-lg font-medium text-base transition-all flex items-center justify-center gap-2">
-              <span id="submitText"><i class="fas fa-paper-plane"></i> Submit Application</span>
+            <button
+              type="button"
+              id="submitBtn"
+              onclick="showConfirmationModal()"
+              class="btn-primary w-full py-3.5 rounded-xl font-semibold text-base transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+            >
+              <i class="fas fa-paper-plane"></i>
+              <span>Submit Application</span>
             </button>
           </div>
         </form>
 
         <!-- Info Box -->
-        <div class="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <p class="text-sm text-blue-800 dark:text-blue-200 mb-3">
-            <i class="fas fa-info-circle mr-2"></i>
-            <strong>Important Information:</strong>
+        <div
+          class="mt-8 p-5 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-xl"
+        >
+          <p
+            class="text-sm font-semibold text-blue-900 dark:text-blue-200 mb-3 flex items-center gap-2"
+          >
+            <i class="fas fa-info-circle text-lg"></i>
+            <span>Important Information</span>
           </p>
-          <ul class="text-sm text-blue-700 dark:text-blue-300 space-y-1 ml-5">
-            <li>• Your application will be verified within 3-5 working days</li>
-            <li>• Keep your Aadhaar handy for quick verification</li>
-            <li>• You can track your application status in "My Applications"</li>
-            <li>• All information provided is secure and confidential</li>
+          <ul class="text-sm text-blue-800 dark:text-blue-300 space-y-2 ml-1">
+            <li class="flex items-start gap-2">
+              <i
+                class="fas fa-check text-blue-600 dark:text-blue-400 mt-0.5"
+              ></i>
+              <span
+                >Applications are verified within
+                <strong>3-5 working days</strong></span
+              >
+            </li>
+            <li class="flex items-start gap-2">
+              <i
+                class="fas fa-check text-blue-600 dark:text-blue-400 mt-0.5"
+              ></i>
+              <span
+                >Track your application status in
+                <strong>"My Applications"</strong></span
+              >
+            </li>
+            <li class="flex items-start gap-2">
+              <i
+                class="fas fa-check text-blue-600 dark:text-blue-400 mt-0.5"
+              ></i>
+              <span
+                >All information is
+                <strong>secure and confidential</strong></span
+              >
+            </li>
           </ul>
         </div>
       </div>
 
-      <!-- Already Applied Card -->
-      <div class="mt-8 card p-6 bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800">
-        <p class="text-sm text-amber-900 dark:text-amber-200">
-          <i class="fas fa-lightbulb mr-2"></i>
-          <strong>Tip:</strong> Check your eligibility before applying to increase your chances of approval.
-          <a href="{% url 'check_all_eligibility' %}" class="font-semibold underline hover:no-underline">Check eligibility</a>
+      <!-- Eligibility Tip Card -->
+      <div
+        class="mt-6 card p-5 bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800 animate-fade-in-up stagger-2"
+      >
+        <p
+          class="text-sm text-amber-900 dark:text-amber-200 flex items-start gap-3"
+        >
+          <i
+            class="fas fa-lightbulb text-amber-600 dark:text-amber-400 text-lg mt-0.5"
+          ></i>
+          <span>
+            <strong class="block mb-1">Pro Tip:</strong>
+            Check your eligibility before applying to increase approval chances.
+            <a
+              href="{% url 'check_all_eligibility' %}"
+              class="font-semibold underline hover:no-underline ml-1"
+            >
+              Check eligibility <i class="fas fa-arrow-right text-xs"></i>
+            </a>
+          </span>
         </p>
       </div>
     </div>
   </div>
 </section>
 
+<!-- Scheme Selection Dialog -->
+<div id="scheme-dialog" class="hidden fixed inset-0 z-50">
+  <div class="dialog-overlay" onclick="closeSchemeDialog()"></div>
+  <div
+    class="dialog-content"
+    role="dialog"
+    aria-labelledby="scheme-dialog-title"
+  >
+    <div
+      class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 rounded-t-xl z-10"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <h3
+          id="scheme-dialog-title"
+          class="font-bold text-xl text-gray-900 dark:text-white"
+        >
+          Select a Scheme
+        </h3>
+        <button
+          type="button"
+          onclick="closeSchemeDialog()"
+          class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+          aria-label="Close dialog"
+        >
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Search -->
+      <div class="relative">
+        <i
+          class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+        ></i>
+        <input
+          type="text"
+          id="scheme-search"
+          class="search-input"
+          placeholder="Search schemes..."
+          onkeyup="filterSchemes()"
+        />
+      </div>
+    </div>
+
+    <div class="p-6" id="scheme-options">
+      {% for scheme in schemes %}
+      <button
+        type="button"
+        class="scheme-option w-full"
+        onclick="selectScheme('{{ scheme.id }}', '{{ scheme.name|escapejs }}', '{{ scheme.agency|escapejs }}')"
+        data-name="{{ scheme.name|lower }}"
+        data-agency="{{ scheme.agency|lower }}"
+        role="option"
+      >
+        <div class="flex items-start gap-3">
+          <div
+            class="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center flex-shrink-0"
+          >
+            <i
+              class="fas fa-landmark text-primary-600 dark:text-primary-400 text-lg"
+            ></i>
+          </div>
+          <div class="flex-1 text-left">
+            <h4 class="font-semibold text-gray-900 dark:text-white mb-1">
+              {{ scheme.name }}
+            </h4>
+            <p
+              class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1"
+            >
+              <i class="fas fa-building text-xs"></i>
+              <span>{{ scheme.agency }}</span>
+            </p>
+            {% if scheme.category %}
+            <span
+              class="inline-block mt-2 px-2 py-0.5 text-xs font-medium bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-full"
+            >
+              {{ scheme.get_category_display }}
+            </span>
+            {% endif %}
+          </div>
+          <i class="fas fa-chevron-right text-gray-400 mt-3"></i>
+        </div>
+      </button>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div id="confirmation-modal" class="hidden fixed inset-0 z-50">
+  <div class="dialog-overlay" onclick="closeConfirmationModal()"></div>
+  <div
+    class="confirmation-modal dialog-content max-w-lg"
+    role="dialog"
+    aria-labelledby="confirmation-title"
+  >
+    <div class="text-center mb-6">
+      <div
+        class="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+      >
+        <i
+          class="fas fa-exclamation-triangle text-amber-600 dark:text-amber-400 text-3xl"
+        ></i>
+      </div>
+      <h3
+        id="confirmation-title"
+        class="text-xl font-bold text-gray-900 dark:text-white mb-2"
+      >
+        Confirm Your Application
+      </h3>
+      <p class="text-gray-600 dark:text-gray-400">
+        Please review your details before submitting
+      </p>
+    </div>
+
+    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 mb-6 space-y-3">
+      <div class="flex justify-between items-start">
+        <span class="text-sm text-gray-600 dark:text-gray-400">Scheme:</span>
+        <span
+          id="confirm-scheme"
+          class="text-sm font-semibold text-gray-900 dark:text-white text-right max-w-xs"
+        ></span>
+      </div>
+      <div class="flex justify-between items-start">
+        <span class="text-sm text-gray-600 dark:text-gray-400">Aadhaar:</span>
+        <span
+          id="confirm-aadhaar"
+          class="text-sm font-semibold text-gray-900 dark:text-white"
+        ></span>
+      </div>
+    </div>
+
+    <div class="flex gap-3">
+      <button
+        type="button"
+        onclick="closeConfirmationModal()"
+        class="flex-1 btn-outline py-3 rounded-xl font-semibold"
+      >
+        <i class="fas fa-times mr-2"></i>Cancel
+      </button>
+      <button
+        type="button"
+        onclick="submitApplication()"
+        id="confirm-submit-btn"
+        class="flex-1 btn-primary py-3 rounded-xl font-semibold"
+      >
+        <span id="confirm-btn-text">
+          <i class="fas fa-check mr-2"></i>Confirm & Submit
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
   // Dark mode
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.add('dark');
+  const savedTheme = localStorage.getItem("theme");
+  if (
+    savedTheme === "dark" ||
+    (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)
+  ) {
+    document.documentElement.classList.add("dark");
   }
 
-  // Apply input styling
-  document.querySelectorAll('input:not([type="checkbox"]), select').forEach(el => {
-    if (!el.classList.contains('input')) {
-      el.className = 'input w-full';
+  // Scheme Dialog Functions
+  function openSchemeDialog() {
+    document.getElementById("scheme-dialog").classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+    document.getElementById("scheme-search").focus();
+  }
+
+  function closeSchemeDialog() {
+    document.getElementById("scheme-dialog").classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  function selectScheme(id, name, agency) {
+    document.getElementById("scheme-input").value = id;
+    document.getElementById("scheme-text").textContent = name + " - " + agency;
+    document.getElementById("scheme-display").classList.add("has-value");
+    document.getElementById("scheme-error").classList.add("hidden");
+    closeSchemeDialog();
+
+    // Success feedback
+    const btn = document.getElementById("scheme-display");
+    btn.classList.add("ring-2", "ring-green-500");
+    setTimeout(() => {
+      btn.classList.remove("ring-2", "ring-green-500");
+    }, 600);
+  }
+
+  function filterSchemes() {
+    const searchTerm = document
+      .getElementById("scheme-search")
+      .value.toLowerCase();
+    const options = document.querySelectorAll(".scheme-option");
+
+    options.forEach((option) => {
+      const name = option.getAttribute("data-name");
+      const agency = option.getAttribute("data-agency");
+
+      if (name.includes(searchTerm) || agency.includes(searchTerm)) {
+        option.style.display = "block";
+      } else {
+        option.style.display = "none";
+      }
+    });
+  }
+
+  // Aadhaar Validation and Formatting
+  const aadhaarInput = document.getElementById("aadhaar");
+
+  aadhaarInput.addEventListener("input", function (e) {
+    // Remove all non-digits
+    let value = this.value.replace(/\D/g, "");
+
+    // Limit to 12 digits
+    value = value.substring(0, 12);
+
+    // Format as XXXX-XXXX-XXXX
+    if (value.length > 4) {
+      value = value.substring(0, 4) + "-" + value.substring(4);
     }
+    if (value.length > 9) {
+      value = value.substring(0, 9) + "-" + value.substring(9);
+    }
+
+    this.value = value;
+
+    // Validate
+    validateAadhaar();
   });
 
-  // Form submission
-  document.querySelector('form').addEventListener('submit', function(e) {
-    const btn = document.getElementById('submitBtn');
-    const text = document.getElementById('submitText');
+  function validateAadhaar() {
+    const aadhaar = aadhaarInput.value.replace(/-/g, "");
+    const errorDiv = document.getElementById("aadhaar-error");
+    const helpDiv = document.getElementById("aadhaar-help");
+    const errorSpan = errorDiv.querySelector("span");
+
+    if (aadhaar.length === 0) {
+      aadhaarInput.classList.remove("error", "success");
+      errorDiv.classList.add("hidden");
+      helpDiv.classList.add("hidden");
+      return false;
+    }
+
+    if (aadhaar.length !== 12) {
+      aadhaarInput.classList.add("error");
+      aadhaarInput.classList.remove("success");
+      errorSpan.textContent = "Aadhaar must be exactly 12 digits";
+      errorDiv.classList.remove("hidden");
+      helpDiv.classList.add("hidden");
+      return false;
+    }
+
+    if (!/^\d{12}$/.test(aadhaar)) {
+      aadhaarInput.classList.add("error");
+      aadhaarInput.classList.remove("success");
+      errorSpan.textContent = "Aadhaar must contain only digits";
+      errorDiv.classList.remove("hidden");
+      helpDiv.classList.add("hidden");
+      return false;
+    }
+
+    aadhaarInput.classList.remove("error");
+    aadhaarInput.classList.add("success");
+    errorDiv.classList.add("hidden");
+    helpDiv.classList.remove("hidden");
+    return true;
+  }
+
+  aadhaarInput.addEventListener("blur", validateAadhaar);
+
+  // Confirmation Modal
+  function showConfirmationModal() {
+    const schemeId = document.getElementById("scheme-input").value;
+    const schemeText = document.getElementById("scheme-text").textContent;
+    const aadhaar = aadhaarInput.value;
+
+    // Validate
+    let isValid = true;
+
+    if (!schemeId) {
+      document.getElementById("scheme-error").classList.remove("hidden");
+      isValid = false;
+    }
+
+    if (!validateAadhaar()) {
+      isValid = false;
+    }
+
+    if (!isValid) return;
+
+    // Show confirmation modal
+    document.getElementById("confirm-scheme").textContent = schemeText;
+    document.getElementById("confirm-aadhaar").textContent = aadhaar;
+    document.getElementById("confirmation-modal").classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeConfirmationModal() {
+    document.getElementById("confirmation-modal").classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  function submitApplication() {
+    const btn = document.getElementById("confirm-submit-btn");
+    const btnText = document.getElementById("confirm-btn-text");
+
     btn.disabled = true;
-    text.innerHTML = '<span class="spinner"></span> Submitting...';
+    btnText.innerHTML =
+      '<span class=\"spinner\"></span><span class=\"ml-2\">Submitting...</span>';
+
+    // Submit the actual form
+    document.getElementById("applicationForm").submit();
+  }
+
+  // Keyboard shortcuts
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      if (
+        !document.getElementById("scheme-dialog").classList.contains("hidden")
+      ) {
+        closeSchemeDialog();
+      }
+      if (
+        !document
+          .getElementById("confirmation-modal")
+          .classList.contains("hidden")
+      ) {
+        closeConfirmationModal();
+      }
+    }
   });
 </script>
 {% endblock %}
-              },
-              false,
-            );
-          });
-        })();
-
-        // Show spinner on submit
-        function startLoading() {
-          const button = document.getElementById("submit-btn");
-          const spinner = document.getElementById("loading-spinner");
-          const text = document.getElementById("btn-text");
-
-          if (button && spinner && text) {
-            spinner.style.display = "inline-block";
-            text.textContent = "Submitting...";
-            button.disabled = true;
-          }
-        }
-      </script>
-      {% endblock %}
-    </div>
-  </div>
-</section>

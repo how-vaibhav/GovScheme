@@ -1,5 +1,141 @@
 {% extends "base.html" %} {% load static %} {% block title %}Home - Government
 Schemes Portal{% endblock %} {% block content %}
+
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(60px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-fade-in-down {
+    animation: fadeInDown 0.8s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-fade-in-left {
+    animation: fadeInLeft 0.8s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-fade-in-right {
+    animation: fadeInRight 0.8s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.8s ease-out forwards;
+    opacity: 0;
+  }
+
+  .stagger-1 {
+    animation-delay: 0.1s;
+  }
+  .stagger-2 {
+    animation-delay: 0.2s;
+  }
+  .stagger-3 {
+    animation-delay: 0.3s;
+  }
+  .stagger-4 {
+    animation-delay: 0.4s;
+  }
+  .stagger-5 {
+    animation-delay: 0.5s;
+  }
+  .stagger-6 {
+    animation-delay: 0.6s;
+  }
+  .stagger-7 {
+    animation-delay: 0.7s;
+  }
+  .stagger-8 {
+    animation-delay: 0.8s;
+  }
+  .stagger-9 {
+    animation-delay: 0.9s;
+  }
+
+  .hover-lift {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+</style>
+
 <!-- Hero Section with Parallax Effect -->
 <section
   class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 dark:from-gray-800 dark:via-gray-900 dark:to-black overflow-hidden"
@@ -15,24 +151,26 @@ Schemes Portal{% endblock %} {% block content %}
   </div>
 
   <div class="container mx-auto px-4 py-20 relative z-10">
-    <div class="max-w-4xl mx-auto text-center animate-fade-in">
+    <div class="max-w-4xl mx-auto text-center">
       <h1
-        class="text-4xl md:text-6xl font-display font-bold text-white mb-6 leading-tight"
+        class="text-4xl md:text-6xl font-display font-bold text-white mb-6 leading-tight animate-fade-in-down"
       >
         Welcome to <span class="text-yellow-300">GovAid</span>
       </h1>
       <p
-        class="text-xl md:text-2xl text-primary-100 dark:text-gray-300 mb-8 leading-relaxed"
+        class="text-xl md:text-2xl text-primary-100 dark:text-gray-300 mb-8 leading-relaxed animate-fade-in-up stagger-1"
       >
         Your Gateway to Government Schemes in Sikkim
       </p>
       <p
-        class="text-lg text-primary-50 dark:text-gray-400 mb-10 max-w-3xl mx-auto"
+        class="text-lg text-primary-50 dark:text-gray-400 mb-10 max-w-3xl mx-auto animate-fade-in-up stagger-2"
       >
         Empowering citizens with seamless access to schemes across education,
         healthcare, agriculture, entrepreneurship, and social welfare.
       </p>
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <div
+        class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up stagger-3"
+      >
         <a
           href="{% url 'scheme_list' %}"
           class="btn-primary inline-flex items-center space-x-2 px-8 py-4 text-lg group"
@@ -84,9 +222,7 @@ Schemes Portal{% endblock %} {% block content %}
 <section class="py-12 bg-gray-50 dark:bg-gray-900">
   <div class="container mx-auto px-4">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-      <div
-        class="card p-6 text-center transform hover:scale-105 transition-all duration-300"
-      >
+      <div class="card p-6 text-center hover-lift animate-scale-in stagger-1">
         <div
           class="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mx-auto mb-4"
         >
@@ -99,9 +235,7 @@ Schemes Portal{% endblock %} {% block content %}
         </h3>
         <p class="text-gray-600 dark:text-gray-400">Active Schemes</p>
       </div>
-      <div
-        class="card p-6 text-center transform hover:scale-105 transition-all duration-300"
-      >
+      <div class="card p-6 text-center hover-lift animate-scale-in stagger-2">
         <div
           class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4"
         >
@@ -114,9 +248,7 @@ Schemes Portal{% endblock %} {% block content %}
         </h3>
         <p class="text-gray-600 dark:text-gray-400">Beneficiaries</p>
       </div>
-      <div
-        class="card p-6 text-center transform hover:scale-105 transition-all duration-300"
-      >
+      <div class="card p-6 text-center hover-lift animate-scale-in stagger-3">
         <div
           class="w-16 h-16 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center mx-auto mb-4"
         >
@@ -127,9 +259,7 @@ Schemes Portal{% endblock %} {% block content %}
         <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">8</h3>
         <p class="text-gray-600 dark:text-gray-400">Departments</p>
       </div>
-      <div
-        class="card p-6 text-center transform hover:scale-105 transition-all duration-300"
-      >
+      <div class="card p-6 text-center hover-lift animate-scale-in stagger-4">
         <div
           class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4"
         >
@@ -149,20 +279,22 @@ Schemes Portal{% endblock %} {% block content %}
 <!-- Vision Section -->
 <section class="py-16 bg-white dark:bg-gray-800">
   <div class="container mx-auto px-4">
-    <div class="max-w-4xl mx-auto text-center animate-slide-up">
+    <div class="max-w-4xl mx-auto text-center">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-primary-100 dark:bg-primary-900 rounded-full mb-6"
+        class="inline-flex items-center justify-center w-20 h-20 bg-primary-100 dark:bg-primary-900 rounded-full mb-6 animate-scale-in"
       >
         <i
           class="fas fa-eye text-4xl text-primary-600 dark:text-primary-400"
         ></i>
       </div>
       <h2
-        class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6"
+        class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6 animate-fade-in-up stagger-1"
       >
         Our Vision
       </h2>
-      <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+      <p
+        class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed animate-fade-in-up stagger-2"
+      >
         At GovAid, our vision is to empower the people of Sikkim with seamless
         access to government schemes across all sectors. We aim to bridge the
         gap between citizens and essential opportunities by providing timely,
@@ -170,7 +302,9 @@ Schemes Portal{% endblock %} {% block content %}
         information readily available, ensuring that no one misses out on the
         benefits designed to improve their lives.
       </p>
-      <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mt-4">
+      <p
+        class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mt-4 animate-fade-in-up stagger-3"
+      >
         Whether it's education, healthcare, agriculture, entrepreneurship, or
         social welfare, GovAid ensures that every resident stays informed,
         engaged, and ready to benefit from the resources meant for their growth
@@ -180,10 +314,160 @@ Schemes Portal{% endblock %} {% block content %}
   </div>
 </section>
 
+<!-- Smart Recommendations Section (Only for Logged In Users) -->
+{% if user.is_authenticated and recommended_schemes %}
+<section
+  class="py-16 bg-gradient-to-r from-primary-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 border-t border-primary-200 dark:border-gray-700"
+>
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12 animate-fade-in-down">
+      <div
+        class="inline-flex items-center justify-center w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full mb-4"
+      >
+        <i
+          class="fas fa-sparkles text-3xl text-primary-600 dark:text-primary-400"
+        ></i>
+      </div>
+      <h2
+        class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 animate-fade-in-up stagger-1"
+      >
+        <i class="fas fa-heart mr-2 text-red-500"></i>Schemes Recommended for
+        You
+      </h2>
+      <p
+        class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto animate-fade-in-up stagger-2"
+      >
+        Based on your profile, we've selected schemes that match your
+        eligibility and needs
+      </p>
+    </div>
+
+    <!-- Recommendations Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for rec in recommended_schemes %}
+      <div
+        class="group card p-6 hover-lift animate-fade-in-up stagger-{{ forloop.counter }} transform transition-all duration-300 hover:shadow-2xl dark:hover:shadow-2xl cursor-pointer"
+        onclick="window.location.href='{% url 'scheme_detail' rec.scheme.id %}'"
+      >
+        <!-- Category Badge -->
+        <div class="flex items-start justify-between mb-4">
+          <span
+            class="inline-flex items-center gap-2 bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 px-3 py-1.5 rounded-full text-xs font-semibold"
+          >
+            <i class="fas fa-tag"></i>{{ rec.scheme.get_category_display }}
+          </span>
+          <div class="text-right">
+            <div
+              class="text-2xl font-bold text-primary-600 dark:text-primary-400"
+            >
+              {{ rec.match_percentage|floatformat:0 }}%
+            </div>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Match Score</p>
+          </div>
+        </div>
+
+        <!-- Scheme Name -->
+        <h3
+          class="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+        >
+          {{ rec.scheme.name }}
+        </h3>
+
+        <!-- Match Indicator -->
+        <div class="mb-4">
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div
+              class="bg-gradient-to-r from-primary-500 to-blue-500 h-2 rounded-full transition-all duration-300"
+              style="width: {{ rec.match_percentage }}%"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
+          {{ rec.scheme.description|truncatewords:15 }}
+        </p>
+
+        <!-- Why Recommended -->
+        <div
+          class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 mb-4 border border-blue-200 dark:border-blue-800"
+        >
+          <p
+            class="text-xs font-semibold text-blue-900 dark:text-blue-300 mb-2 flex items-center"
+          >
+            <i class="fas fa-check-circle mr-1.5 text-green-500"></i>Why
+            Recommended
+          </p>
+          <ul class="text-xs text-blue-800 dark:text-blue-200 space-y-1">
+            {% if rec.scheme.age %}
+            <li>
+              <i class="fas fa-check-circle text-green-500 mr-1.5"></i>Age
+              eligibility matches
+            </li>
+            {% endif %} {% if rec.scheme.max_income %}
+            <li>
+              <i class="fas fa-check-circle text-green-500 mr-1.5"></i>Income
+              criteria satisfied
+            </li>
+            {% endif %} {% if rec.score >= 2 %}
+            <li>
+              <i class="fas fa-check-circle text-green-500 mr-1.5"></i>Primary
+              criteria met
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+
+        <!-- CTA Button -->
+        <button
+          class="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-medium py-2.5 rounded-lg transition-all duration-200 group-hover:shadow-lg flex items-center justify-center gap-2"
+        >
+          <i class="fas fa-arrow-right"></i>View Details
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- View All Recommendations -->
+    <div class="text-center mt-10">
+      <a
+        href="{% url 'check_all_eligibility' %}"
+        class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold"
+      >
+        View all {{ recommended_schemes|length }} recommended schemes
+        <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+</section>
+{% elif user.is_authenticated and not recommended_schemes %}
+<!-- No Recommendations Message -->
+<section
+  class="py-12 bg-blue-50 dark:bg-blue-900/20 border-t border-blue-200 dark:border-blue-800"
+>
+  <div class="container mx-auto px-4 text-center">
+    <i
+      class="fas fa-info-circle text-blue-600 dark:text-blue-400 text-3xl mb-3"
+    ></i>
+    <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-2">
+      Complete Your Profile
+    </h3>
+    <p class="text-blue-800 dark:text-blue-200 mb-4">
+      Fill in your details to get personalized scheme recommendations
+    </p>
+    <a
+      href="{% url 'edit_user_details' %}"
+      class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-all"
+      >Update Profile</a
+    >
+  </div>
+</section>
+{% endif %}
+
 <!-- Features Section -->
 <section class="py-16 bg-gray-50 dark:bg-gray-900">
   <div class="container mx-auto px-4">
-    <div class="text-center mb-12">
+    <div class="text-center mb-12 animate-fade-in-down">
       <h2
         class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4"
       >
@@ -196,7 +480,7 @@ Schemes Portal{% endblock %} {% block content %}
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       <!-- Feature 1 -->
-      <div class="card p-8 group">
+      <div class="card p-8 group hover-lift animate-fade-in-up stagger-1">
         <div
           class="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
         >
@@ -214,7 +498,7 @@ Schemes Portal{% endblock %} {% block content %}
       </div>
 
       <!-- Feature 2 -->
-      <div class="card p-8 group">
+      <div class="card p-8 group hover-lift animate-fade-in-up stagger-2">
         <div
           class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
         >
@@ -232,7 +516,7 @@ Schemes Portal{% endblock %} {% block content %}
       </div>
 
       <!-- Feature 3 -->
-      <div class="card p-8 group">
+      <div class="card p-8 group hover-lift animate-fade-in-up stagger-3">
         <div
           class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
         >
@@ -250,7 +534,7 @@ Schemes Portal{% endblock %} {% block content %}
       </div>
 
       <!-- Feature 4 -->
-      <div class="card p-8 group">
+      <div class="card p-8 group hover-lift animate-fade-in-up stagger-4">
         <div
           class="w-16 h-16 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
         >
@@ -268,7 +552,7 @@ Schemes Portal{% endblock %} {% block content %}
       </div>
 
       <!-- Feature 5 -->
-      <div class="card p-8 group">
+      <div class="card p-8 group hover-lift animate-fade-in-up stagger-5">
         <div
           class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
         >
@@ -286,7 +570,7 @@ Schemes Portal{% endblock %} {% block content %}
       </div>
 
       <!-- Feature 6 -->
-      <div class="card p-8 group">
+      <div class="card p-8 group hover-lift animate-fade-in-up stagger-6">
         <div
           class="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
         >
@@ -307,7 +591,7 @@ Schemes Portal{% endblock %} {% block content %}
 <!-- Gallery Section with Modern Carousel -->
 <section class="py-16 bg-white dark:bg-gray-800">
   <div class="container mx-auto px-4">
-    <div class="text-center mb-12">
+    <div class="text-center mb-12 animate-fade-in-down">
       <h2
         class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4"
       >

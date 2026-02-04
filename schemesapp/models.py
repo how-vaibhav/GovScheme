@@ -24,12 +24,20 @@ class UserDetails(models.Model):
     ('ST', "Scheduled Tribe")
     ]
 
+    AGE_CHOICES = [
+    ('18-25', '18-25 years'),
+    ('26-35', '26-35 years'),
+    ('36-45', '36-45 years'),
+    ('46-55', '46-55 years'),
+    ('56-65', '56-65 years'),
+    ('65+', '65 years and above'),
+    ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=0)
     name = models.CharField(max_length=255)
     email = models.EmailField()
     gender= models.CharField(max_length=50, choices=GENDER_CHOICES)
-    age = models.IntegerField()
+    age = models.CharField(max_length=20, choices=AGE_CHOICES, default='18-25')
     maritial_status = models.CharField(max_length=50, choices=MARITIAL_CHOICES)
     location = models.CharField(max_length=100, choices=[('rural', "Rural"),('urban', "Urban")])
     caste = models.CharField(max_length=100, choices=CASTE_CHOICES)
@@ -96,10 +104,42 @@ class Scheme(models.Model):
     max_income = models.PositiveIntegerField(blank=True, null=True, default=None)
 
 
+    def _parse_age_range(self, age_range):
+        """Parse age range string to min and max values"""
+        if not age_range:
+            return None, None
+        
+        if age_range == '65+':
+            return 65, 150
+        
+        if '-' in age_range:
+            try:
+                parts = age_range.split('-')
+                return int(parts[0]), int(parts[1])
+            except (ValueError, IndexError):
+                return None, None
+        
+        return None, None
+
+    def _get_age_numeric(self, age_range):
+        """Convert age range to numeric midpoint for comparison"""
+        age_map = {
+            '18-25': 21.5,
+            '26-35': 30.5,
+            '36-45': 40.5,
+            '46-55': 50.5,
+            '56-65': 60.5,
+            '65+': 70,
+        }
+        return age_map.get(age_range, None)
+
     def is_user_eligible(self, details):
+        # Convert age range to numeric for comparison
+        user_age = self._get_age_numeric(details.age)
+        
         checks = {
-        'min_age': lambda: details.age >= self.min_age if self.min_age is not None else True,
-        'max_age': lambda: details.age <= self.max_age if self.max_age is not None else True,
+        'min_age': lambda: user_age >= self.min_age if (self.min_age is not None and user_age is not None) else True,
+        'max_age': lambda: user_age <= self.max_age if (self.max_age is not None and user_age is not None) else True,
         'max_income': lambda: details.income <= self.max_income if self.max_income is not None else True,
         'gender': lambda: details.gender.lower() == self.gender.lower() if self.gender else True,
         'caste': lambda: details.caste == self.caste if self.caste is not None else True,

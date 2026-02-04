@@ -1,15 +1,61 @@
-{% extends "base.html" %}
-{% load group_filters %}
-{% load static %}
-
-{% block title %}Your Feedbacks - GovAid{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% load group_filters %} {% load static %}
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+  }
+  .animate-fade-in-down {
+    animation: fadeInDown 0.6s ease-out forwards;
+    opacity: 0;
+  }
+  .stagger-1 {
+    animation-delay: 0.1s;
+  }
+  .stagger-2 {
+    animation-delay: 0.2s;
+  }
+  .stagger-3 {
+    animation-delay: 0.3s;
+  }
+  .hover-lift {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+</style>
+{% block title %}Your Feedbacks - GovAid{% endblock %} {% block content %}
 <!-- Header -->
-<section class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12">
+<section
+  class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12 animate-fade-in-down"
+>
   <div class="container mx-auto px-4">
     <div class="flex items-center space-x-4 mb-4">
-      <a href="{% url 'home' %}" class="text-primary-100 hover:text-white transition-colors flex items-center gap-1">
+      <a
+        href="{% url 'home' %}"
+        class="text-primary-100 hover:text-white transition-colors flex items-center gap-1"
+      >
         <i class="fas fa-arrow-left"></i> Home
       </a>
     </div>
@@ -30,15 +76,27 @@
     <div class="max-w-5xl mx-auto mb-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="card p-6 text-center">
-          <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-2">{{ total_feedbacks }}</div>
+          <div
+            class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-2"
+          >
+            {{ total_feedbacks }}
+          </div>
           <p class="text-gray-600 dark:text-gray-400">Total Feedbacks</p>
         </div>
         <div class="card p-6 text-center">
-          <div class="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">{{ total_replied }}</div>
+          <div
+            class="text-3xl font-bold text-green-600 dark:text-green-400 mb-2"
+          >
+            {{ total_replied }}
+          </div>
           <p class="text-gray-600 dark:text-gray-400">Replied</p>
         </div>
         <div class="card p-6 text-center">
-          <div class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">{{ total_unreplied }}</div>
+          <div
+            class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2"
+          >
+            {{ total_unreplied }}
+          </div>
           <p class="text-gray-600 dark:text-gray-400">Awaiting Reply</p>
         </div>
       </div>
@@ -50,30 +108,72 @@
       <div class="card p-6 mb-8">
         <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label for="scheme" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="scheme"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               <i class="fas fa-filter mr-2"></i>Scheme
             </label>
             <select name="scheme" id="scheme" class="input w-full">
               <option value="">All Schemes</option>
               {% for code, name in scheme_choices %}
-              <option value="{{ code }}" {% if code == selected_scheme %}selected{% endif %}>{{ name }}</option>
+              <option
+                value="{{ code }}"
+                {%
+                if
+                code=""
+                ="selected_scheme"
+                %}selected{%
+                endif
+                %}
+              >
+                {{ name }}
+              </option>
               {% endfor %}
             </select>
           </div>
 
           <div>
-            <label for="replied" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="replied"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               <i class="fas fa-reply mr-2"></i>Reply Status
             </label>
             <select name="replied" id="replied" class="input w-full">
               <option value="">All</option>
-              <option value="yes" {% if selected_replied == 'yes' %}selected{% endif %}>Replied</option>
-              <option value="no" {% if selected_replied == 'no' %}selected{% endif %}>Awaiting Reply</option>
+              <option
+                value="yes"
+                {%
+                if
+                selected_replied=""
+                ="yes"
+                %}selected{%
+                endif
+                %}
+              >
+                Replied
+              </option>
+              <option
+                value="no"
+                {%
+                if
+                selected_replied=""
+                ="no"
+                %}selected{%
+                endif
+                %}
+              >
+                Awaiting Reply
+              </option>
             </select>
           </div>
 
           <div class="flex items-end">
-            <button type="submit" class="btn-primary w-full py-3 rounded-lg font-medium flex items-center justify-center gap-2">
+            <button
+              type="submit"
+              class="btn-primary w-full py-3 rounded-lg font-medium flex items-center justify-center gap-2"
+            >
               <i class="fas fa-search"></i> Filter
             </button>
           </div>
@@ -86,60 +186,99 @@
         {% for feedback in feedbacks %}
         <div class="card p-6 md:p-8 hover:shadow-lg transition-all">
           <!-- Header -->
-          <div class="flex items-start justify-between mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+          <div
+            class="flex items-start justify-between mb-4 pb-4 border-b border-gray-200 dark:border-gray-700"
+          >
             <div class="flex-grow">
               <div class="flex items-center gap-3 mb-2">
-                <div class="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-lg">
-                  {{ feedback.name|first|upper }}
+                <div
+                  class="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-lg"
+                >
+                  {{ feedback.user.username|first|upper }}
                 </div>
                 <div>
-                  <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ feedback.name }}</h3>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">@{{ feedback.user.username }}</p>
+                  <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                    {{ feedback.user.username }}
+                  </h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    @{{ feedback.user.username }}
+                  </p>
                 </div>
               </div>
             </div>
-            <span class="px-4 py-2 rounded-full font-semibold text-sm {% if feedback.reply %}bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200{% else %}bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200{% endif %}">
+            <span
+              class="px-4 py-2 rounded-full font-semibold text-sm {% if feedback.reply %}bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200{% else %}bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200{% endif %}"
+            >
               {% if feedback.reply %}
-              <i class="fas fa-check-circle mr-1"></i> Replied
-              {% else %}
-              <i class="fas fa-hourglass-half mr-1"></i> Awaiting Reply
-              {% endif %}
+              <i class="fas fa-check-circle mr-1"></i> Replied {% else %}
+              <i class="fas fa-hourglass-half mr-1"></i> Awaiting Reply {% endif
+              %}
             </span>
           </div>
 
           <!-- Scheme & Date -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Scheme</p>
-              <p class="text-sm font-medium text-gray-900 dark:text-white">{{ feedback.scheme }}</p>
+              <p
+                class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1"
+              >
+                Scheme
+              </p>
+              <p class="text-sm font-medium text-gray-900 dark:text-white">
+                {{ feedback.scheme }}
+              </p>
             </div>
             <div>
-              <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Date</p>
-              <p class="text-sm font-medium text-gray-900 dark:text-white">{{ feedback.created_at|date:"M d, Y" }}</p>
+              <p
+                class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1"
+              >
+                Date
+              </p>
+              <p class="text-sm font-medium text-gray-900 dark:text-white">
+                {{ feedback.created_at|date:"M d, Y" }}
+              </p>
             </div>
           </div>
 
           <!-- Feedback Message -->
-          <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-            <p class="text-gray-700 dark:text-gray-300">{{ feedback.message }}</p>
+          <div
+            class="mb-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+          >
+            <p class="text-gray-700 dark:text-gray-300">
+              {{ feedback.message }}
+            </p>
           </div>
 
           <!-- Reply Section -->
           {% if feedback.reply %}
-          <div class="mb-0 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border-2 border-green-200 dark:border-green-800">
-            <p class="text-xs text-green-700 dark:text-green-300 uppercase tracking-wide font-bold mb-2">
+          <div
+            class="mb-0 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border-2 border-green-200 dark:border-green-800"
+          >
+            <p
+              class="text-xs text-green-700 dark:text-green-300 uppercase tracking-wide font-bold mb-2"
+            >
               <i class="fas fa-reply mr-1"></i> Reply
             </p>
-            <p class="text-green-900 dark:text-green-100">{{ feedback.reply }}</p>
+            <p class="text-green-900 dark:text-green-100">
+              {{ feedback.reply }}
+            </p>
             <p class="text-xs text-green-600 dark:text-green-400 mt-2">
               Replied on: {{ feedback.reply_date|default:"N/A"|date:"M d, Y" }}
             </p>
           </div>
           {% else %}
-          <div class="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <button type="button" 
-                    onclick="alert('Your feedback is being reviewed. A response will be provided soon.')"
-                    class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors flex items-center gap-2 text-sm font-medium">
+          <div
+            class="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700"
+          >
+            <button
+              type="button"
+              onclick="
+                alert(
+                  'Your feedback is being reviewed. A response will be provided soon.',
+                )
+              "
+              class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors flex items-center gap-2 text-sm font-medium"
+            >
               <i class="fas fa-hourglass-half"></i> Under Review
             </button>
           </div>
@@ -151,13 +290,20 @@
       <!-- Empty State -->
       <div class="card p-12 text-center">
         <div class="text-center mb-6">
-          <i class="fas fa-inbox text-5xl text-gray-300 dark:text-gray-600 mb-4 block"></i>
-          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">No Feedbacks Yet</h3>
+          <i
+            class="fas fa-inbox text-5xl text-gray-300 dark:text-gray-600 mb-4 block"
+          ></i>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            No Feedbacks Yet
+          </h3>
           <p class="text-gray-600 dark:text-gray-400 mb-8">
             You haven't submitted any feedbacks. Share your experience with us!
           </p>
         </div>
-        <a href="{% url 'feedback' %}" class="btn-primary px-6 py-3 rounded-lg inline-flex items-center gap-2">
+        <a
+          href="{% url 'feedback' %}"
+          class="btn-primary px-6 py-3 rounded-lg inline-flex items-center gap-2"
+        >
           <i class="fas fa-comments"></i> Send Feedback
         </a>
       </div>
@@ -168,45 +314,21 @@
 
 <script>
   // Dark mode
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.add('dark');
+  const savedTheme = localStorage.getItem("theme");
+  if (
+    savedTheme === "dark" ||
+    (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)
+  ) {
+    document.documentElement.classList.add("dark");
   }
 
   // Apply input styling
-  document.querySelectorAll('input:not([type="checkbox"]), select').forEach(el => {
-    if (!el.classList.contains('input')) {
-      el.className = 'input w-full';
-    }
-  });
+  document
+    .querySelectorAll('input:not([type="checkbox"]), select')
+    .forEach((el) => {
+      if (!el.classList.contains("input")) {
+        el.className = "input w-full";
+      }
+    });
 </script>
-{% endblock %}
-
-            {% if feedback.reply %}
-                <span class="badge badge-success">Replied</span>
-            {% else %}
-                <span class="badge badge-warning">Pending Reply</span>
-            {% endif %}
-
-            {% if user|has_group:"Employee" %}
-                {% if feedback.reply %}
-                    <p><strong>Reply:</strong> {{ feedback.reply }}</p>
-                {% else %}
-                    <form action="{% url 'reply_feedback' feedback.id %}" method="get" class="mt-2">
-                        <button type="submit" class="btn btn-reply">Reply</button>
-                    </form>
-                {% endif %}
-            {% else %}
-                {% if feedback.reply %}
-                    <p><strong>Reply from Employee:</strong> {{ feedback.reply }}</p>
-                {% else %}
-                    <p><em>Your feedback hasn't been replied to yet.</em></p>
-                {% endif %}
-            {% endif %}
-        </div>
-    {% empty %}
-        <p class="no-feedback">No feedbacks submitted yet.</p>
-    {% endfor %}
-</div>
-
 {% endblock %}

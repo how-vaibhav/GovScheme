@@ -1,10 +1,23 @@
-{% extends "base.html" %}
 {% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - GovAid</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" />
 
-{% block title %}Login - GovAid{% endblock %}
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
 
-{% block extra_css %}
-  <style>
+    <style>
       /* Animations */
       @keyframes fadeIn {
         from {
@@ -14,6 +27,19 @@
         to {
           opacity: 1;
           transform: translateY(0);
+        }
+      }
+
+      @keyframes floatLabel {
+        from {
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 0.875rem;
+        }
+        to {
+          top: 0.5rem;
+          transform: translateY(0);
+          font-size: 0.75rem;
         }
       }
 
@@ -57,61 +83,62 @@
       }
 
       .animate-fade-in {
-        animation: fadeIn 0.6s ease-out forwards;
-        opacity: 0;
+        animation: fadeIn 0.6s ease-out;
       }
 
       .stagger-1 {
         animation-delay: 0.1s;
+        opacity: 0;
       }
       .stagger-2 {
         animation-delay: 0.2s;
+        opacity: 0;
       }
       .stagger-3 {
         animation-delay: 0.3s;
+        opacity: 0;
       }
 
       /* Floating Label Input */
       .input-group {
         position: relative;
-        margin-bottom: 1.75rem;
+        margin-bottom: 1.5rem;
       }
 
       .input-field {
         width: 100%;
-        padding: 0.875rem 2.5rem 0.875rem 1rem;
+        padding: 1rem 1rem 0.5rem 1rem;
         border: 2px solid #e5e7eb;
         border-radius: 0.5rem;
-        font-size: 1rem;
-        outline: none;
-        transition: all 0.3s ease;
-        color: #111827;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
         background: white;
+        color: #1f2937;
       }
 
       .dark .input-field {
-        background: #374151;
-        border-color: #4b5563;
-        color: #f3f4f6;
+        background: #1f2937;
+        border-color: #374151;
+        color: #f9fafb;
       }
 
       .input-field:focus {
+        outline: none;
         border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        animation: inputGlow 2s ease-in-out infinite;
       }
 
       .dark .input-field:focus {
-        background: #475569;
         border-color: #60a5fa;
       }
 
       .input-field.error {
         border-color: #ef4444;
-        animation: shake 0.3s ease;
+        animation: shake 0.5s ease;
       }
 
-      .input-field.error:focus {
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+      .dark .input-field.error {
+        border-color: #f87171;
       }
 
       .input-label {
@@ -119,24 +146,23 @@
         left: 1rem;
         top: 50%;
         transform: translateY(-50%);
-        font-size: 0.95rem;
+        font-size: 0.875rem;
         color: #6b7280;
         pointer-events: none;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         background: white;
         padding: 0 0.25rem;
-        origin: left center;
       }
 
       .dark .input-label {
         color: #9ca3af;
-        background: #374151;
+        background: #1f2937;
       }
 
       .input-field:focus + .input-label,
       .input-field:not(:placeholder-shown) + .input-label {
-        top: -0.75rem;
-        transform: translateY(0) scale(0.85);
+        top: 0;
+        transform: translateY(-50%);
         font-size: 0.75rem;
         color: #3b82f6;
         font-weight: 500;
@@ -145,7 +171,6 @@
       .dark .input-field:focus + .input-label,
       .dark .input-field:not(:placeholder-shown) + .input-label {
         color: #60a5fa;
-        background: #374151;
       }
 
       .input-field.error + .input-label {
@@ -279,9 +304,9 @@
         height: 300px;
       }
     </style>
-  {% endblock %}
-{% block content %}
-  <div class="min-h-[calc(100vh-200px)] flex items-center justify-center p-4 py-8">
+  </head>
+  <body class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div class="min-h-screen flex items-center justify-center p-4">
       <div class="w-full max-w-md animate-fade-in">
         <!-- Logo -->
         <div class="text-center mb-10 stagger-1 animate-fade-in">
@@ -446,7 +471,7 @@
         </div>
 
         <!-- Back Link -->
-        <div class="text-center mt-3 stagger-3 animate-fade-in">
+        <div class="text-center mt-6 stagger-3 animate-fade-in">
           <a
             href="{% url 'home' %}"
             class="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
@@ -457,11 +482,9 @@
         </div>
       </div>
     </div>
-  </div>
-{% endblock %}
 
-{% block extra_js %}
-  <script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
       // Dark mode init
       const savedTheme = localStorage.getItem("theme");
       if (
@@ -575,4 +598,5 @@
         }
       });
     </script>
-  {% endblock %}
+  </body>
+</html>

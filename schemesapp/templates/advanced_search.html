@@ -1,15 +1,70 @@
 {% extends "base.html" %} {% load static %} {% block title %}Advanced Search -
 GovAid{% endblock %} {% block content %}
+
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+  }
+  .animate-fade-in-down {
+    animation: fadeInDown 0.6s ease-out forwards;
+    opacity: 0;
+  }
+  .stagger-1 {
+    animation-delay: 0.1s;
+  }
+  .stagger-2 {
+    animation-delay: 0.2s;
+  }
+  .stagger-3 {
+    animation-delay: 0.3s;
+  }
+  .stagger-4 {
+    animation-delay: 0.4s;
+  }
+  .hover-lift {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+</style>
+
 <!-- Header -->
 <section
-  class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12"
+  class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12 animate-fade-in-down"
 >
   <div class="container mx-auto px-4">
     <div class="max-w-4xl mx-auto text-center">
-      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+      <h1
+        class="text-4xl md:text-5xl font-bold text-white mb-4 animate-fade-in-up stagger-1"
+      >
         <i class="fas fa-search-plus mr-3"></i>Advanced Search
       </h1>
-      <p class="text-lg text-primary-100 dark:text-gray-300">
+      <p
+        class="text-lg text-primary-100 dark:text-gray-300 animate-fade-in-up stagger-2"
+      >
         Find schemes using multiple criteria and filters
       </p>
     </div>
@@ -21,7 +76,7 @@ GovAid{% endblock %} {% block content %}
   <div class="container mx-auto px-4">
     <div class="max-w-6xl mx-auto">
       <!-- Search Form -->
-      <div class="card p-6 mb-8 animate-fade-in">
+      <div class="card p-6 mb-8 animate-fade-in-up stagger-1 hover-lift">
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
           <i class="fas fa-filter mr-2"></i>Search Filters
         </h3>
@@ -60,13 +115,81 @@ GovAid{% endblock %} {% block content %}
               >
                 <i class="fas fa-birthday-cake mr-2"></i>Your Age
               </label>
-              <input
-                type="number"
-                name="age"
-                value="{{ selected_age }}"
-                placeholder="Enter your age"
-                class="input"
-              />
+              <select name="age" class="input">
+                <option value="">Select Age Range</option>
+                <option
+                  value="18-25"
+                  {%
+                  if
+                  selected_age=""
+                  ="18-25"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  18-25 years
+                </option>
+                <option
+                  value="26-35"
+                  {%
+                  if
+                  selected_age=""
+                  ="26-35"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  26-35 years
+                </option>
+                <option
+                  value="36-45"
+                  {%
+                  if
+                  selected_age=""
+                  ="36-45"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  36-45 years
+                </option>
+                <option
+                  value="46-55"
+                  {%
+                  if
+                  selected_age=""
+                  ="46-55"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  46-55 years
+                </option>
+                <option
+                  value="56-65"
+                  {%
+                  if
+                  selected_age=""
+                  ="56-65"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  56-65 years
+                </option>
+                <option
+                  value="65+"
+                  {%
+                  if
+                  selected_age=""
+                  ="65+"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  65 years and above
+                </option>
+              </select>
             </div>
 
             <!-- Income -->
@@ -76,13 +199,69 @@ GovAid{% endblock %} {% block content %}
               >
                 <i class="fas fa-rupee-sign mr-2"></i>Annual Income
               </label>
-              <input
-                type="number"
-                name="max_income"
-                value="{{ selected_income }}"
-                placeholder="Enter annual income"
-                class="input"
-              />
+              <select name="max_income" class="input">
+                <option value="">Any Income</option>
+                <option
+                  value="100000"
+                  {%
+                  if
+                  selected_income=""
+                  ="100000"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  ₹0 - ₹1 Lakh
+                </option>
+                <option
+                  value="300000"
+                  {%
+                  if
+                  selected_income=""
+                  ="300000"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  ₹1 Lakh - ₹3 Lakh
+                </option>
+                <option
+                  value="500000"
+                  {%
+                  if
+                  selected_income=""
+                  ="500000"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  ₹3 Lakh - ₹5 Lakh
+                </option>
+                <option
+                  value="1000000"
+                  {%
+                  if
+                  selected_income=""
+                  ="1000000"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  ₹5 Lakh - ₹10 Lakh
+                </option>
+                <option
+                  value="9999999"
+                  {%
+                  if
+                  selected_income=""
+                  ="9999999"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  Above ₹10 Lakh
+                </option>
+              </select>
             </div>
 
             <!-- Location -->

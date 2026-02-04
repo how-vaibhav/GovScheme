@@ -1,61 +1,556 @@
-{% extends "base.html" %}
-{% load static %}
+{% extends "base.html" %} {% load static %}
+<style>
+  /* === ANIMATIONS === */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes slideUp {
+    from {
+      transform: translateY(10px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  @keyframes slideUpMobile {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-5px);
+    }
+    75% {
+      transform: translateX(5px);
+    }
+  }
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes inputGlow {
+    0%,
+    100% {
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.5);
+    }
+  }
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  @keyframes successPulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
 
-{% block title %}Send Feedback - GovAid{% endblock %}
+  /* === UTILITY CLASSES === */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out both;
+    opacity: 0;
+  }
+  .animate-fade-in-down {
+    animation: fadeInDown 0.6s ease-out both;
+    opacity: 0;
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out both;
+    opacity: 0;
+  }
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out both;
+    opacity: 0;
+  }
+  .animate-shake {
+    animation: shake 0.4s ease-in-out;
+  }
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+  .stagger-1 {
+    animation-delay: 0.1s;
+  }
+  .stagger-2 {
+    animation-delay: 0.2s;
+  }
+  .stagger-3 {
+    animation-delay: 0.3s;
+  }
+  .hover-lift {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
 
-{% block content %}
-<!-- Animated Hero Section -->
-<section class="relative min-h-[400px] bg-gradient-to-br from-primary-600 via-primary-700 to-indigo-800 dark:from-gray-800 dark:via-gray-900 dark:to-black overflow-hidden">
-  <!-- Animated Background Elements -->
-  <div class="absolute inset-0 overflow-hidden">
-    <div class="absolute -top-40 -right-40 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl animate-pulse"></div>
-    <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-  </div>
+  /* === FLOATING LABEL INPUT === */
+  .floating-label-input {
+    position: relative;
+    margin-top: 1.5rem;
+  }
+  .floating-label-input input,
+  .floating-label-input textarea {
+    width: 100%;
+    padding: 1.25rem 1rem 0.75rem 1rem;
+    background: rgb(255, 255, 255);
+    border: 2px solid rgb(229, 231, 235);
+    border-radius: 0.75rem;
+    outline: none;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    color: rgb(17, 24, 39);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+  .dark .floating-label-input input,
+  .dark .floating-label-input textarea {
+    background: rgb(55, 65, 81);
+    border-color: rgb(75, 85, 99);
+    color: white;
+  }
+  .floating-label-input input:focus,
+  .floating-label-input textarea:focus {
+    border-color: rgb(99, 102, 241);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+  .floating-label-input input.success,
+  .floating-label-input textarea.success {
+    border-color: rgb(34, 197, 94);
+  }
+  .floating-label-input input.error,
+  .floating-label-input textarea.error {
+    border-color: rgb(239, 68, 68);
+    animation: shake 0.4s ease-in-out;
+  }
+  .floating-label-input label {
+    position: absolute;
+    left: 1rem;
+    top: 1.25rem;
+    color: rgb(107, 114, 128);
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    background: transparent;
+    padding: 0 0.25rem;
+  }
+  .dark .floating-label-input label {
+    color: rgb(156, 163, 175);
+  }
+  .floating-label-input input:focus ~ label,
+  .floating-label-input input.has-value ~ label,
+  .floating-label-input textarea:focus ~ label,
+  .floating-label-input textarea.has-value ~ label {
+    top: -0.6rem;
+    left: 0.75rem;
+    font-size: 0.75rem;
+    color: rgb(99, 102, 241);
+    font-weight: 600;
+    background: white;
+    padding: 0 0.5rem;
+  }
+  .dark .floating-label-input input:focus ~ label,
+  .dark .floating-label-input input.has-value ~ label,
+  .dark .floating-label-input textarea:focus ~ label,
+  .dark .floating-label-input textarea.has-value ~ label {
+    background: rgb(31, 41, 55);
+  }
+  .floating-label-input .field-icon {
+    position: absolute;
+    right: 1rem;
+    top: 1.25rem;
+    color: rgb(156, 163, 175);
+    pointer-events: none;
+  }
+  .floating-label-input input:focus ~ .field-icon,
+  .floating-label-input textarea:focus ~ .field-icon {
+    color: rgb(99, 102, 241);
+  }
+  .floating-label-input input.success ~ .field-icon,
+  .floating-label-input textarea.success ~ .field-icon {
+    color: rgb(34, 197, 94);
+  }
 
-  <!-- Content -->
-  <div class="relative container mx-auto px-4 py-20">
-    <div class="max-w-4xl mx-auto">
-      <div class="flex items-center space-x-4 mb-8">
-        <a href="{% url 'home' %}" class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 text-white transition-all duration-300 transform hover:scale-110">
-          <i class="fas fa-arrow-left text-lg"></i>
-        </a>
-        <span class="text-primary-100 font-medium text-sm tracking-wide">Back to Home</span>
-      </div>
-      
-      <div class="space-y-4">
-        <div class="inline-block">
-          <span class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-widest uppercase">We Value Your Input</span>
-        </div>
-        <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight">
-          <span class="block">Share Your</span>
-          <span class="bg-clip-text text-transparent bg-gradient-to-r from-white via-primary-200 to-white">Feedback & Suggestions</span>
-        </h1>
-        <p class="text-lg text-primary-100/90 max-w-2xl leading-relaxed">
-          Help us improve. Your insights shape the future of government scheme services for everyone.
-        </p>
-      </div>
+  /* === CHARACTER COUNTER === */
+  .char-counter {
+    position: absolute;
+    right: 1rem;
+    bottom: 0.75rem;
+    font-size: 0.75rem;
+    color: rgb(107, 114, 128);
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    pointer-events: none;
+  }
+  .dark .char-counter {
+    background: rgba(31, 41, 55, 0.9);
+    color: rgb(156, 163, 175);
+  }
+  .char-counter.warning {
+    color: rgb(234, 179, 8);
+  }
+  .char-counter.error {
+    color: rgb(239, 68, 68);
+  }
+
+  /* === SELECTION BUTTON === */
+  .selection-btn {
+    width: 100%;
+    padding: 1.25rem 1rem;
+    background: rgb(255, 255, 255);
+    border: 2px solid rgb(229, 231, 235);
+    border-radius: 0.75rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: rgb(107, 114, 128);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+  .dark .selection-btn {
+    background: rgb(55, 65, 81);
+    border-color: rgb(75, 85, 99);
+    color: rgb(156, 163, 175);
+  }
+  .selection-btn:hover {
+    border-color: rgb(209, 213, 219);
+    background: rgb(249, 250, 251);
+  }
+  .dark .selection-btn:hover {
+    border-color: rgb(107, 114, 128);
+    background: rgb(75, 85, 99);
+  }
+  .selection-btn:focus {
+    border-color: rgb(99, 102, 241);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+  .selection-btn.has-value {
+    color: rgb(17, 24, 39);
+    border-color: rgb(99, 102, 241);
+    background: rgb(238, 242, 255);
+  }
+  .dark .selection-btn.has-value {
+    color: white;
+    background: rgba(67, 56, 202, 0.3);
+  }
+
+  /* === DIALOG/MODAL === */
+  .dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 9998;
+    animation: fadeIn 0.2s ease-out;
+  }
+  .dialog-container {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .dialog-content {
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 42rem;
+    max-height: 90vh;
+    overflow: hidden;
+    animation: scaleIn 0.2s ease-out;
+  }
+  .dark .dialog-content {
+    background: rgb(31, 41, 55);
+  }
+  @media (max-width: 640px) {
+    .dialog-container {
+      align-items: flex-end;
+      padding: 0;
+    }
+    .dialog-content {
+      max-width: 100%;
+      max-height: 85vh;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      animation: slideUpMobile 0.3s ease-out;
+    }
+  }
+
+  /* === SCHEME OPTION === */
+  .scheme-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 2px solid transparent;
+    background: rgb(249, 250, 251);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .dark .scheme-option {
+    background: rgb(55, 65, 81);
+  }
+  .scheme-option:hover {
+    background: rgb(238, 242, 255);
+    border-color: rgb(199, 210, 254);
+    transform: translateX(4px);
+  }
+  .dark .scheme-option:hover {
+    background: rgb(67, 56, 202, 0.2);
+    border-color: rgb(99, 102, 241);
+  }
+  .scheme-option:active {
+    transform: scale(0.98);
+  }
+
+  /* === RATING STARS === */
+  .rating-container {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 1.5rem;
+    background: rgb(255, 255, 255);
+    border: 2px solid rgb(229, 231, 235);
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  .dark .rating-container {
+    background: rgb(55, 65, 81);
+    border-color: rgb(75, 85, 99);
+  }
+  .rating-container:hover {
+    border-color: rgb(250, 204, 21);
+    box-shadow: 0 4px 12px 0 rgba(250, 204, 21, 0.15);
+  }
+  .star {
+    font-size: 2.5rem;
+    color: rgb(209, 213, 219);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  }
+  .dark .star {
+    color: rgb(75, 85, 99);
+  }
+  .star:hover {
+    color: rgb(250, 204, 21);
+    transform: scale(1.2) rotate(-5deg);
+    filter: drop-shadow(0 4px 8px rgba(250, 204, 21, 0.4));
+  }
+  .star.active {
+    color: rgb(250, 204, 21);
+    transform: scale(1.1);
+    animation: successPulse 0.3s ease-out;
+  }
+  #rating-label {
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    background: rgb(254, 249, 195);
+    border-radius: 0.5rem;
+    color: rgb(161, 98, 7);
+    border: 1px solid rgb(253, 224, 71);
+  }
+  .dark #rating-label {
+    background: rgba(161, 98, 7, 0.2);
+    color: rgb(253, 224, 71);
+    border-color: rgb(161, 98, 7);
+  }
+
+  /* === FIELD MESSAGE === */
+  .field-message {
+    display: flex;
+    align-items: start;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    animation: slideUp 0.3s ease-out;
+  }
+  .field-message.error {
+    background: rgba(254, 226, 226, 0.5);
+    border: 1px solid rgb(254, 202, 202);
+    color: rgb(185, 28, 28);
+  }
+  .dark .field-message.error {
+    background: rgba(127, 29, 29, 0.3);
+    border-color: rgb(153, 27, 27);
+    color: rgb(252, 165, 165);
+  }
+  .field-message.success {
+    background: rgba(220, 252, 231, 0.5);
+    border: 1px solid rgb(187, 247, 208);
+    color: rgb(21, 128, 61);
+  }
+  .dark .field-message.success {
+    background: rgba(20, 83, 45, 0.3);
+    border-color: rgb(22, 101, 52);
+    color: rgb(134, 239, 172);
+  }
+  .field-message i {
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+
+  /* === SPINNER === */
+  .spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  /* === SEARCH INPUT === */
+  .search-input-wrapper {
+    position: relative;
+  }
+  .search-input-wrapper input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    border: 2px solid rgb(229, 231, 235);
+    border-radius: 0.75rem;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+  .dark .search-input-wrapper input {
+    background: rgb(55, 65, 81);
+    border-color: rgb(75, 85, 99);
+    color: white;
+  }
+  .search-input-wrapper input:focus {
+    border-color: rgb(99, 102, 241);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+  .search-input-wrapper i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgb(156, 163, 175);
+  }
+</style>
+{% block title %}Send Feedback - GovAid{% endblock %} {% block content %}
+<!-- Header -->
+<section
+  class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12 animate-fade-in-down"
+>
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1
+        class="text-4xl md:text-5xl font-bold text-white mb-4 animate-fade-in-up stagger-1"
+      >
+        <i class="fas fa-comment-dots mr-3"></i>Send Feedback
+      </h1>
+      <p
+        class="text-lg text-primary-100 dark:text-gray-300 animate-fade-in-up stagger-2"
+      >
+        Your insights help us improve GovAid for everyone
+      </p>
     </div>
   </div>
 </section>
 
 <!-- Form Section with Advanced Styling -->
-<section class="relative py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900">
+<section class="py-12 bg-gray-50 dark:bg-gray-900">
   <div class="container mx-auto px-4">
-    <div class="max-w-3xl mx-auto">
+    <div class="max-w-4xl mx-auto">
       <!-- Glass Morphism Card -->
-      <div class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl overflow-hidden">
+      <div
+        class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl overflow-hidden"
+      >
         <!-- Success Alert -->
         {% if messages %}
-        <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-b border-green-200 dark:border-green-800 px-8 py-6 animate-in slide-in-from-top">
+        <div
+          class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-b border-green-200 dark:border-green-800 px-8 py-6 animate-in slide-in-from-top"
+        >
           <div class="flex items-start gap-4">
             <div class="flex-shrink-0 mt-0.5">
-              <div class="flex items-center justify-center h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/50">
-                <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-lg"></i>
+              <div
+                class="flex items-center justify-center h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/50"
+              >
+                <i
+                  class="fas fa-check-circle text-green-600 dark:text-green-400 text-lg"
+                ></i>
               </div>
             </div>
             <div class="flex-1">
               {% for message in messages %}
-              <p class="text-sm font-semibold text-green-800 dark:text-green-300">{{ message }}</p>
+              <p
+                class="text-sm font-semibold text-green-800 dark:text-green-300"
+              >
+                {{ message }}
+              </p>
               {% endfor %}
             </div>
           </div>
@@ -63,126 +558,272 @@
         {% endif %}
 
         <!-- Form Content -->
-        <div class="p-8 md:p-12">
+        <div class="p-6 md:p-10 pt-8 md:pt-10">
           <!-- Info Banner -->
-          <div class="mb-8 p-5 rounded-2xl bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border border-blue-200/50 dark:border-blue-800/30 backdrop-blur-sm">
+          <div
+            class="mb-5 p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border border-blue-200/50 dark:border-blue-800/30 backdrop-blur-sm"
+          >
             <div class="flex items-start gap-3">
-              <i class="fas fa-lightbulb text-blue-600 dark:text-blue-400 text-lg mt-0.5 flex-shrink-0"></i>
+              <i
+                class="fas fa-lightbulb text-blue-600 dark:text-blue-400 text-lg mt-0.5 flex-shrink-0"
+              ></i>
               <div>
-                <p class="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-1">Your feedback matters to us</p>
-                <p class="text-xs text-blue-800 dark:text-blue-300">We carefully review every submission and respond within 24-48 hours. Your insights help us serve you better.</p>
+                <p
+                  class="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-1"
+                >
+                  Your feedback matters to us
+                </p>
+                <p class="text-xs text-blue-800 dark:text-blue-300">
+                  We carefully review every submission and respond within 24-48
+                  hours. Your insights help us serve you better.
+                </p>
               </div>
             </div>
           </div>
 
           <!-- Form -->
-          <form method="post" id="feedbackForm" class="space-y-8">
+          <form method="post" id="feedbackForm" class="space-y-5">
             {% csrf_token %}
 
             <!-- Form Header -->
-            <div class="space-y-2 pb-6 border-b border-gray-200/50 dark:border-gray-700/50">
+            <div
+              class="space-y-2 pb-4 border-b border-gray-200/50 dark:border-gray-700/50 animate-fade-in stagger-1"
+            >
               <div class="flex items-center gap-2">
-                <div class="w-1 h-6 bg-gradient-to-b from-primary-600 to-indigo-600 rounded-full"></div>
-                <h2 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300">
+                <div
+                  class="w-1 h-6 bg-gradient-to-b from-primary-600 to-indigo-600 rounded-full"
+                ></div>
+                <h2
+                  class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300"
+                >
                   Feedback Form
                 </h2>
               </div>
             </div>
 
-            <!-- Form Fields -->
-            <div class="space-y-8">
-              {% for field in form %}
-              <div>
-                <!-- Label -->
-                <label for="{{ field.id_for_label }}" class="flex items-center gap-2 mb-4">
-                  <span class="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
-                    {{ field.label }}{% if field.field.required %}<span class="text-red-600 ml-1">*</span>{% endif %}
-                  </span>
-                </label>
+            <!-- Scheme Selection -->
+            <div class="animate-fade-in stagger-2">
+              <label
+                class="block text-sm font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2"
+              >
+                <i
+                  class="fas fa-file-contract text-primary-600 dark:text-primary-400"
+                ></i>
+                Which Scheme Are You Reviewing?
+                <span
+                  class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                  >(Optional)</span
+                >
+              </label>
+              <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                Help us improve specific schemes by selecting the one you're
+                providing feedback about
+              </p>
 
-                <!-- Input Wrapper -->
-                <div class="relative group/input">
-                  {% if field.widget.input_type == 'textarea' %}
-                  <textarea 
-                    id="{{ field.id_for_label }}"
-                    name="{{ field.name }}"
-                    placeholder="Share your {{ field.label|lower }}..."
-                    class="w-full px-5 py-4 bg-white/50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:border-primary-500 focus:ring-4 focus:ring-primary-100 dark:focus:ring-primary-900/30 outline-none transition-all duration-300 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white min-h-[150px] resize-vertical backdrop-blur-sm hover:border-gray-300 dark:hover:border-gray-500"
-                  >{{ field.value|default:"" }}</textarea>
-                  {% elif field.widget.input_type == 'select' %}
-                  <div class="relative">
-                    <select 
-                      id="{{ field.id_for_label }}"
-                      name="{{ field.name }}"
-                      class="w-full px-5 py-4 bg-white/50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:border-primary-500 focus:ring-4 focus:ring-primary-100 dark:focus:ring-primary-900/30 outline-none transition-all duration-300 text-gray-900 dark:text-white appearance-none cursor-pointer backdrop-blur-sm hover:border-gray-300 dark:hover:border-gray-500 pr-12"
-                    >
-                      {{ field }}
-                    </select>
-                    <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-sm"></i>
-                  </div>
-                  {% else %}
-                  <input 
-                    type="{{ field.widget.input_type }}"
-                    id="{{ field.id_for_label }}"
-                    name="{{ field.name }}"
-                    value="{{ field.value|default:"" }}"
-                    placeholder="Enter your {{ field.label|lower }}..."
-                    class="w-full px-5 py-4 bg-white/50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:border-primary-500 focus:ring-4 focus:ring-primary-100 dark:focus:ring-primary-900/30 outline-none transition-all duration-300 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white backdrop-blur-sm hover:border-gray-300 dark:hover:border-gray-500"
-                  />
-                  {% endif %}
+              <button
+                type="button"
+                id="scheme-display"
+                onclick="openSchemeDialog()"
+                class="selection-btn"
+                aria-haspopup="dialog"
+                aria-label="Select scheme"
+              >
+                <span id="scheme-text" class="flex items-center gap-2">
+                  <i class="fas fa-file-alt text-gray-400"></i>
+                  <span>Select a scheme (optional)</span>
+                </span>
+                <i class="fas fa-chevron-down text-sm"></i>
+              </button>
 
-                  <!-- Animated Bottom Accent -->
-                  <div class="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary-600 to-indigo-600 rounded-full transition-all duration-300 w-0 group-focus-within/input:w-full"></div>
-                </div>
+              <input type="hidden" name="scheme" id="scheme-input" value="" />
 
-                <!-- Error Messages -->
-                {% if field.errors %}
-                <div class="mt-3 space-y-2">
-                  {% for error in field.errors %}
-                  <div class="flex items-start gap-2 p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-                    <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0 text-sm"></i>
-                    <p class="text-sm text-red-700 dark:text-red-300 font-medium">{{ error }}</p>
-                  </div>
-                  {% endfor %}
-                </div>
-                {% endif %}
-
-                <!-- Help Text -->
-                {% if field.help_text %}
-                <p class="mt-3 text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
-                  <i class="fas fa-info-circle text-gray-400 mt-0.5 flex-shrink-0"></i>
-                  {{ field.help_text|safe }}
-                </p>
-                {% endif %}
+              <div id="scheme-error" class="field-message error hidden">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Please select a scheme</span>
               </div>
-              {% endfor %}
+            </div>
+
+            <!-- Rating -->
+            <div class="animate-fade-in stagger-3">
+              <label
+                class="block text-sm font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2"
+              >
+                <i class="fas fa-star-half-alt text-amber-500"></i>
+                How Was Your Experience?
+              </label>
+              <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                Click on the stars below to rate your overall experience (1 =
+                Poor, 5 = Excellent)
+              </p>
+
+              <div class="rating-container">
+                <input type="hidden" name="rating" id="rating-input" value="" />
+                <div class="flex items-center gap-2">
+                  <i
+                    class="fas fa-star star"
+                    data-rating="1"
+                    onclick="setRating(1)"
+                    title="1 Star - Poor"
+                  ></i>
+                  <i
+                    class="fas fa-star star"
+                    data-rating="2"
+                    onclick="setRating(2)"
+                    title="2 Stars - Fair"
+                  ></i>
+                  <i
+                    class="fas fa-star star"
+                    data-rating="3"
+                    onclick="setRating(3)"
+                    title="3 Stars - Good"
+                  ></i>
+                  <i
+                    class="fas fa-star star"
+                    data-rating="4"
+                    onclick="setRating(4)"
+                    title="4 Stars - Very Good"
+                  ></i>
+                  <i
+                    class="fas fa-star star"
+                    data-rating="5"
+                    onclick="setRating(5)"
+                    title="5 Stars - Excellent"
+                  ></i>
+                </div>
+                <span id="rating-label" class="text-sm font-semibold"></span>
+              </div>
+            </div>
+
+            <!-- Feedback Message -->
+            <div class="floating-label-input animate-fade-in stagger-3">
+              <textarea
+                id="feedback-textarea"
+                name="feedback"
+                rows="6"
+                maxlength="1000"
+                required
+                aria-describedby="feedback-help feedback-error"
+              ></textarea>
+              <label for="feedback-textarea" class="flex items-center gap-2">
+                <i
+                  class="fas fa-comment-dots text-primary-600 dark:text-primary-400 text-xs"
+                ></i>
+                Share Your Detailed Feedback <span class="text-red-600">*</span>
+              </label>
+              <div class="char-counter" id="char-counter">
+                <span id="char-count">0</span> / 1000
+              </div>
+
+              <div id="feedback-error" class="field-message error hidden">
+                <i class="fas fa-exclamation-circle"></i>
+                <span
+                  >Please provide your feedback (minimum 10 characters)</span
+                >
+              </div>
+
+              <div
+                id="feedback-help"
+                class="text-xs text-gray-600 dark:text-gray-400 mt-2 flex items-start gap-2 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800"
+              >
+                <i
+                  class="fas fa-info-circle mt-0.5 flex-shrink-0 text-blue-600 dark:text-blue-400"
+                ></i>
+                <span
+                  ><strong>Pro tip:</strong> Be specific about what you
+                  experienced. Mention what worked well and what could be
+                  improved. Include examples if possible.</span
+                >
+              </div>
+            </div>
+
+            <!-- Suggestions (Optional) -->
+            <div class="floating-label-input animate-fade-in stagger-3">
+              <textarea
+                id="suggestions-textarea"
+                name="suggestions"
+                rows="4"
+                maxlength="500"
+                aria-describedby="suggestions-help"
+              ></textarea>
+              <label for="suggestions-textarea" class="flex items-center gap-2">
+                <i class="fas fa-lightbulb text-amber-500 text-xs"></i>
+                Any Suggestions for Us?
+                <span
+                  class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                  >(Optional)</span
+                >
+              </label>
+              <div class="char-counter" id="suggestions-counter">
+                <span id="suggestions-count">0</span> / 500
+              </div>
+
+              <div
+                id="suggestions-help"
+                class="text-xs text-gray-600 dark:text-gray-400 mt-2 flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 p-3 rounded-lg border border-amber-200 dark:border-amber-800"
+              >
+                <i
+                  class="fas fa-lightbulb mt-0.5 flex-shrink-0 text-amber-600 dark:text-amber-400"
+                ></i>
+                <span
+                  >Got ideas for improvements? We'd love to hear them! Share
+                  specific features or changes you'd like to see.</span
+                >
+              </div>
             </div>
 
             <!-- Submit Section -->
-            <div class="pt-8 border-t border-gray-200/50 dark:border-gray-700/50">
-              <button 
-                type="submit" 
+            <div
+              class="pt-8 border-t border-gray-200/50 dark:border-gray-700/50 animate-fade-in stagger-3"
+            >
+              <button
+                type="button"
+                onclick="showConfirmationModal()"
                 id="submitBtn"
                 class="w-full group relative px-8 py-5 bg-gradient-to-r from-primary-600 via-primary-600 to-indigo-600 hover:from-primary-700 hover:via-primary-700 hover:to-indigo-700 text-white font-bold text-lg rounded-2xl shadow-2xl hover:shadow-3xl transform hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3 overflow-hidden"
+                aria-label="Review and submit feedback"
               >
                 <!-- Animated Shine Effect -->
-                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 group-hover:translate-x-full transition-transform duration-1000"></div>
-                
+                <div
+                  class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 group-hover:translate-x-full transition-transform duration-1000"
+                ></div>
+
                 <!-- Content -->
                 <i class="fas fa-paper-plane text-xl relative z-10"></i>
-                <span id="submitText" class="relative z-10">Send Feedback</span>
+                <span id="submitText" class="relative z-10"
+                  >Submit Your Feedback</span
+                >
               </button>
 
-              <p class="text-center text-xs text-gray-500 dark:text-gray-400 mt-4">
-                <i class="fas fa-shield-alt mr-1"></i> Your feedback is private and secure
-              </p>
+              <div
+                class="mt-4 flex items-center justify-center gap-4 text-xs text-gray-500 dark:text-gray-400"
+              >
+                <div class="flex items-center gap-1">
+                  <i
+                    class="fas fa-shield-alt text-green-600 dark:text-green-400"
+                  ></i>
+                  <span>Private & Secure</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <i class="fas fa-clock text-blue-600 dark:text-blue-400"></i>
+                  <span>Response in 24-48h</span>
+                </div>
+              </div>
             </div>
           </form>
 
           <!-- View Feedbacks Link -->
-          <div class="mt-8 pt-8 border-t border-gray-200/50 dark:border-gray-700/50 text-center">
-            <a href="{% url 'view_feedbacks' %}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-semibold transition-all duration-300 transform hover:scale-105">
-              <i class="fas fa-folder-open"></i> View Your Previous Feedbacks
+          <div
+            class="mt-8 pt-8 border-t border-gray-200/50 dark:border-gray-700/50 text-center"
+          >
+            <a
+              href="{% url 'view_feedbacks' %}"
+              class="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-600 dark:hover:to-gray-500 text-gray-800 dark:text-gray-200 font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg border border-gray-300 dark:border-gray-600"
+            >
+              <i
+                class="fas fa-history text-primary-600 dark:text-primary-400"
+              ></i>
+              <span>View Your Previous Feedbacks</span>
+              <i class="fas fa-arrow-right text-sm"></i>
             </a>
           </div>
         </div>
@@ -191,12 +832,18 @@
       <!-- Advanced Tips Section -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
         <!-- Tips Card -->
-        <div class="backdrop-blur-xl bg-white/60 dark:bg-gray-800/60 border border-white/30 dark:border-gray-700/30 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+        <div
+          class="backdrop-blur-xl bg-white/60 dark:bg-gray-800/60 border border-white/30 dark:border-gray-700/30 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+        >
           <div class="flex items-start gap-3 mb-4">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center flex-shrink-0">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center flex-shrink-0"
+            >
               <i class="fas fa-lightbulb text-white"></i>
             </div>
-            <h3 class="font-bold text-gray-900 dark:text-white">Tips for Better Feedback</h3>
+            <h3 class="font-bold text-gray-900 dark:text-white">
+              Tips for Better Feedback
+            </h3>
           </div>
           <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
             <li class="flex items-start gap-2">
@@ -215,12 +862,18 @@
         </div>
 
         <!-- Response Time Card -->
-        <div class="backdrop-blur-xl bg-white/60 dark:bg-gray-800/60 border border-white/30 dark:border-gray-700/30 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+        <div
+          class="backdrop-blur-xl bg-white/60 dark:bg-gray-800/60 border border-white/30 dark:border-gray-700/30 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+        >
           <div class="flex items-start gap-3 mb-4">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center flex-shrink-0">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center flex-shrink-0"
+            >
               <i class="fas fa-clock text-white"></i>
             </div>
-            <h3 class="font-bold text-gray-900 dark:text-white">Our Commitment</h3>
+            <h3 class="font-bold text-gray-900 dark:text-white">
+              Our Commitment
+            </h3>
           </div>
           <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
             <li class="flex items-start gap-2">
@@ -242,50 +895,456 @@
   </div>
 </section>
 
-<style>
-  @keyframes slideInFromTop {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+<!-- Scheme Selection Dialog -->
+<div
+  id="scheme-dialog"
+  class="hidden"
+  role="dialog"
+  aria-labelledby="scheme-dialog-title"
+  aria-modal="true"
+>
+  <div class="dialog-overlay" onclick="closeSchemeDialog()"></div>
+  <div class="dialog-container">
+    <div class="dialog-content">
+      <!-- Dialog Header -->
+      <div
+        class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 z-10"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <h3
+            id="scheme-dialog-title"
+            class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2"
+          >
+            <i class="fas fa-file-alt text-primary-600"></i>
+            Select Related Scheme
+          </h3>
+          <button
+            type="button"
+            onclick="closeSchemeDialog()"
+            class="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
+            aria-label="Close dialog"
+          >
+            <i class="fas fa-times text-gray-500 dark:text-gray-400"></i>
+          </button>
+        </div>
 
-  .animate-in {
-    animation: slideInFromTop 0.5s ease-in-out forwards;
-  }
+        <!-- Search -->
+        <div class="search-input-wrapper">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            id="scheme-search"
+            placeholder="Search schemes..."
+            oninput="filterSchemes()"
+            aria-label="Search schemes"
+          />
+        </div>
+      </div>
 
-  .slide-in-from-top {
-    animation: slideInFromTop 0.5s ease-in-out forwards;
-  }
+      <!-- Scheme List -->
+      <div class="overflow-y-auto max-h-[60vh] p-6">
+        <div id="scheme-list" class="space-y-3">
+          <div
+            class="scheme-option"
+            onclick="selectScheme('', 'No Specific Scheme', 'General Feedback')"
+            data-name="no specific scheme general feedback"
+            data-agency="general feedback"
+          >
+            <div
+              class="flex-shrink-0 w-12 h-12 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center"
+            >
+              <i
+                class="fas fa-comments text-gray-600 dark:text-gray-300 text-xl"
+              ></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="font-semibold text-gray-900 dark:text-white">
+                General Feedback
+              </div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">
+                Not related to a specific scheme
+              </div>
+            </div>
+          </div>
 
-  .delay-1000 {
-    animation-delay: 1000ms;
-  }
+          {% for scheme in schemes %}
+          <div
+            class="scheme-option"
+            onclick="selectScheme('{{ scheme.id }}', '{{ scheme.name|escapejs }}', '{{ scheme.agency|escapejs }}')"
+            data-name="{{ scheme.name|lower }}"
+            data-agency="{{ scheme.agency|lower }}"
+          >
+            <div
+              class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-500 flex items-center justify-center"
+            >
+              <i class="fas fa-file-alt text-white text-xl"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="font-semibold text-gray-900 dark:text-white truncate">
+                {{ scheme.name }}
+              </div>
+              <div class="text-sm text-gray-600 dark:text-gray-400 truncate">
+                {{ scheme.agency }}
+              </div>
+            </div>
+            {% if scheme.category %}
+            <span
+              class="px-2 py-1 rounded-lg bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-medium flex-shrink-0"
+            >
+              {{ scheme.category }}
+            </span>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
 
-  input:focus,
-  textarea:focus,
-  select:focus {
-    box-shadow: 0 0 30px rgba(88, 115, 207, 0.15);
-  }
-</style>
+        <div id="no-results" class="hidden text-center py-12">
+          <i
+            class="fas fa-search text-gray-300 dark:text-gray-600 text-4xl mb-4"
+          ></i>
+          <p class="text-gray-500 dark:text-gray-400">
+            No schemes found matching your search
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div
+  id="confirmation-modal"
+  class="hidden"
+  role="dialog"
+  aria-labelledby="confirm-title"
+  aria-modal="true"
+>
+  <div class="dialog-overlay" onclick="closeConfirmationModal()"></div>
+  <div class="dialog-container">
+    <div class="dialog-content max-w-lg">
+      <div class="p-6">
+        <!-- Warning Icon -->
+        <div
+          class="flex items-center justify-center w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 mx-auto mb-4"
+        >
+          <i
+            class="fas fa-paper-plane text-amber-600 dark:text-amber-400 text-2xl"
+          ></i>
+        </div>
+
+        <!-- Title -->
+        <h3
+          id="confirm-title"
+          class="text-xl font-bold text-center text-gray-900 dark:text-white mb-2"
+        >
+          Submit Your Feedback?
+        </h3>
+        <p class="text-center text-gray-600 dark:text-gray-400 text-sm mb-6">
+          Please review your feedback before submitting
+        </p>
+
+        <!-- Review Details -->
+        <div
+          class="space-y-3 mb-6 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+        >
+          <div class="flex items-start gap-3">
+            <i class="fas fa-file-alt text-primary-600 mt-1 flex-shrink-0"></i>
+            <div class="flex-1 min-w-0">
+              <div class="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                Related Scheme
+              </div>
+              <div
+                id="confirm-scheme"
+                class="font-medium text-gray-900 dark:text-white"
+              ></div>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3" id="confirm-rating-section">
+            <i class="fas fa-star text-yellow-500 mt-1 flex-shrink-0"></i>
+            <div class="flex-1 min-w-0">
+              <div class="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                Rating
+              </div>
+              <div
+                id="confirm-rating"
+                class="font-medium text-gray-900 dark:text-white"
+              ></div>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <i class="fas fa-comment text-primary-600 mt-1 flex-shrink-0"></i>
+            <div class="flex-1 min-w-0">
+              <div class="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                Feedback Message
+              </div>
+              <div
+                id="confirm-feedback"
+                class="font-medium text-gray-900 dark:text-white text-sm line-clamp-3"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-3">
+          <button
+            type="button"
+            onclick="closeConfirmationModal()"
+            class="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onclick="submitFeedback()"
+            id="confirm-submit-btn"
+            class="flex-1 px-6 py-3 bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all transform hover:scale-105"
+          >
+            <span id="confirm-btn-text">Confirm & Submit</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-  // Form submission
-  document.getElementById('feedbackForm').addEventListener('submit', function(e) {
-    const btn = document.getElementById('submitBtn');
-    const text = document.getElementById('submitText');
+  // === SCHEME DIALOG ===
+  function openSchemeDialog() {
+    document.getElementById("scheme-dialog").classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+    setTimeout(() => {
+      document.getElementById("scheme-search").focus();
+    }, 100);
+  }
+
+  function closeSchemeDialog() {
+    document.getElementById("scheme-dialog").classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  function selectScheme(id, name, agency) {
+    document.getElementById("scheme-input").value = id;
+    const displayText = id ? `${name} - ${agency}` : name;
+    document.getElementById("scheme-text").innerHTML = `
+      <i class="fas fa-file-alt text-primary-600"></i>
+      <span>${displayText}</span>
+    `;
+    document.getElementById("scheme-display").classList.add("has-value");
+    document.getElementById("scheme-error").classList.add("hidden");
+    closeSchemeDialog();
+
+    // Success feedback
+    const btn = document.getElementById("scheme-display");
+    btn.classList.add("ring-2", "ring-green-500");
+    setTimeout(() => btn.classList.remove("ring-2", "ring-green-500"), 600);
+  }
+
+  function filterSchemes() {
+    const searchTerm = document
+      .getElementById("scheme-search")
+      .value.toLowerCase();
+    const options = document.querySelectorAll(".scheme-option");
+    let visibleCount = 0;
+
+    options.forEach((option) => {
+      const name = option.getAttribute("data-name");
+      const agency = option.getAttribute("data-agency");
+
+      if (name.includes(searchTerm) || agency.includes(searchTerm)) {
+        option.style.display = "flex";
+        visibleCount++;
+      } else {
+        option.style.display = "none";
+      }
+    });
+
+    // Show/hide no results message
+    const noResults = document.getElementById("no-results");
+    if (visibleCount === 0) {
+      noResults.classList.remove("hidden");
+    } else {
+      noResults.classList.add("hidden");
+    }
+  }
+
+  // === RATING ===
+  let selectedRating = 0;
+  const ratingLabels = ["", "Poor", "Fair", "Good", "Very Good", "Excellent"];
+
+  function setRating(rating) {
+    selectedRating = rating;
+    document.getElementById("rating-input").value = rating;
+
+    // Update stars
+    const stars = document.querySelectorAll(".star");
+    stars.forEach((star, index) => {
+      if (index < rating) {
+        star.classList.add("active");
+      } else {
+        star.classList.remove("active");
+      }
+    });
+
+    // Update label
+    const label = document.getElementById("rating-label");
+    label.textContent = ratingLabels[rating];
+    label.style.color =
+      rating >= 4
+        ? "rgb(34, 197, 94)"
+        : rating >= 3
+          ? "rgb(234, 179, 8)"
+          : "rgb(239, 68, 68)";
+  }
+
+  // === CHARACTER COUNTER ===
+  function setupCharCounter(textareaId, counterId, max) {
+    const textarea = document.getElementById(textareaId);
+    const counter = document.getElementById(counterId);
+    const countSpan =
+      counter.querySelector("span") ||
+      document.getElementById(counterId.replace("-counter", "-count"));
+
+    function updateCounter() {
+      const length = textarea.value.length;
+      countSpan.textContent = length;
+
+      // Update floating label
+      if (length > 0) {
+        textarea.classList.add("has-value");
+      } else {
+        textarea.classList.remove("has-value");
+      }
+
+      // Update counter color
+      counter.classList.remove("warning", "error");
+      if (length > max * 0.9) {
+        counter.classList.add("error");
+      } else if (length > max * 0.75) {
+        counter.classList.add("warning");
+      }
+
+      // Validation
+      if (textareaId === "feedback-textarea") {
+        const errorDiv = document.getElementById("feedback-error");
+        if (length > 0 && length < 10) {
+          textarea.classList.add("error");
+          textarea.classList.remove("success");
+          errorDiv.classList.remove("hidden");
+        } else if (length >= 10) {
+          textarea.classList.remove("error");
+          textarea.classList.add("success");
+          errorDiv.classList.add("hidden");
+        } else {
+          textarea.classList.remove("error", "success");
+          errorDiv.classList.add("hidden");
+        }
+      }
+    }
+
+    textarea.addEventListener("input", updateCounter);
+    textarea.addEventListener("blur", updateCounter);
+
+    // Initialize
+    updateCounter();
+  }
+
+  // === CONFIRMATION MODAL ===
+  function showConfirmationModal() {
+    const feedback = document.getElementById("feedback-textarea").value.trim();
+    const schemeText = document
+      .getElementById("scheme-text")
+      .textContent.trim();
+
+    // Validate
+    let isValid = true;
+
+    if (feedback.length < 10) {
+      const textarea = document.getElementById("feedback-textarea");
+      const errorDiv = document.getElementById("feedback-error");
+      textarea.classList.add("error");
+      errorDiv.classList.remove("hidden");
+      textarea.focus();
+      isValid = false;
+    }
+
+    if (!isValid) return;
+
+    // Show confirmation
+    document.getElementById("confirm-scheme").textContent = schemeText.includes(
+      "Select a scheme",
+    )
+      ? "General Feedback"
+      : schemeText;
+    document.getElementById("confirm-feedback").textContent = feedback;
+
+    // Show/hide rating section
+    const ratingSection = document.getElementById("confirm-rating-section");
+    if (selectedRating > 0) {
+      document.getElementById("confirm-rating").innerHTML =
+        `${'<i class="fas fa-star text-yellow-500"></i>'.repeat(selectedRating)} ${ratingLabels[selectedRating]}`;
+      ratingSection.classList.remove("hidden");
+    } else {
+      ratingSection.classList.add("hidden");
+    }
+
+    document.getElementById("confirmation-modal").classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeConfirmationModal() {
+    document.getElementById("confirmation-modal").classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  function submitFeedback() {
+    const btn = document.getElementById("confirm-submit-btn");
+    const btnText = document.getElementById("confirm-btn-text");
+
     btn.disabled = true;
-    btn.classList.add('opacity-75');
-    text.innerHTML = '<i class="fas fa-spinner animate-spin"></i> Submitting...';
+    btnText.innerHTML =
+      '<span class="spinner"></span><span class="ml-2">Submitting...</span>';
+
+    // Submit the form
+    document.getElementById("feedbackForm").submit();
+  }
+
+  // === KEYBOARD NAVIGATION ===
+  document.addEventListener("keydown", function (e) {
+    // ESC to close dialogs
+    if (e.key === "Escape") {
+      const schemeDialog = document.getElementById("scheme-dialog");
+      const confirmModal = document.getElementById("confirmation-modal");
+
+      if (!schemeDialog.classList.contains("hidden")) {
+        closeSchemeDialog();
+      } else if (!confirmModal.classList.contains("hidden")) {
+        closeConfirmationModal();
+      }
+    }
   });
 
-  // Smooth interactions
-  window.addEventListener('load', () => {
-    document.querySelector('body').style.scrollBehavior = 'smooth';
+  // === DARK MODE INITIALIZATION ===
+  function initDarkMode() {
+    const darkMode =
+      localStorage.getItem("darkMode") === "true" ||
+      (!localStorage.getItem("darkMode") &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    }
+  }
+
+  // === INITIALIZE ON PAGE LOAD ===
+  document.addEventListener("DOMContentLoaded", function () {
+    initDarkMode();
+    setupCharCounter("feedback-textarea", "char-counter", 1000);
+    setupCharCounter("suggestions-textarea", "suggestions-counter", 500);
+
+    // Smooth scroll
+    document.body.style.scrollBehavior = "smooth";
   });
 </script>
 {% endblock %}

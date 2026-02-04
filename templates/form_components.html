@@ -1,0 +1,896 @@
+{% comment %} ADVANCED FORM COMPONENTS LIBRARY Modern, accessible, responsive
+form components with validation and animations Usage: Include these components
+in your templates or extend them {% endcomment %}
+
+<!-- ============================================ -->
+<!-- FORM VALIDATION & FEEDBACK STYLES -->
+<!-- ============================================ -->
+<style>
+  /* Floating Label Animation */
+  @keyframes floatLabel {
+    from {
+      transform: translateY(0);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(-24px);
+      opacity: 1;
+    }
+  }
+
+  /* Input Focus Glow */
+  @keyframes inputGlow {
+    from {
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.1);
+    }
+    to {
+      box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+    }
+  }
+
+  /* Error Shake Animation */
+  @keyframes errorShake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-8px);
+    }
+    75% {
+      transform: translateX(8px);
+    }
+  }
+
+  /* Success Check Animation */
+  @keyframes successCheck {
+    0% {
+      transform: scale(0) rotate(-45deg);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1) rotate(0);
+      opacity: 1;
+    }
+  }
+
+  /* Validation Success/Error Colors */
+  :root {
+    --form-success-color: #10b981;
+    --form-error-color: #ef4444;
+    --form-warning-color: #f59e0b;
+    --form-focus-color: #3b82f6;
+  }
+
+  /* Base Form Group Styling */
+  .form-group {
+    @apply space-y-2 relative;
+  }
+
+  .form-group.has-error .form-input,
+  .form-group.has-error .form-select,
+  .form-group.has-error .form-textarea {
+    @apply border-red-500 dark:border-red-500 focus:ring-red-100 dark:focus:ring-red-900/30;
+  }
+
+  .form-group.has-success .form-input,
+  .form-group.has-success .form-select,
+  .form-group.has-success .form-textarea {
+    @apply border-green-500 dark:border-green-500 focus:ring-green-100 dark:focus:ring-green-900/30;
+  }
+
+  /* Input Base Styling */
+  .form-input,
+  .form-select,
+  .form-textarea {
+    @apply w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600;
+    @apply bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100;
+    @apply focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-100;
+    @apply dark:focus:ring-primary-900/30 transition-all duration-200;
+    @apply placeholder-gray-400 dark:placeholder-gray-500;
+  }
+
+  .form-input:focus,
+  .form-select:focus,
+  .form-textarea:focus {
+    animation: inputGlow 0.3s ease-out;
+  }
+
+  /* Floating Label */
+  .floating-label-group {
+    @apply relative;
+  }
+
+  .floating-label {
+    @apply absolute left-4 top-3 text-sm font-medium text-gray-600 dark:text-gray-400;
+    @apply transition-all duration-200 pointer-events-none;
+  }
+
+  .floating-label-group .form-input:focus ~ .floating-label,
+  .floating-label-group .form-input:not(:placeholder-shown) ~ .floating-label {
+    animation: floatLabel 0.3s ease-out forwards;
+  }
+
+  /* Error Message Styling */
+  .form-error-message {
+    @apply text-sm text-red-600 dark:text-red-400 flex items-center gap-2 mt-2;
+    animation: errorShake 0.4s ease-in-out;
+  }
+
+  .form-error-message::before {
+    content: "";
+    @apply w-1.5 h-1.5 bg-red-600 dark:bg-red-400 rounded-full;
+  }
+
+  /* Success Message Styling */
+  .form-success-message {
+    @apply text-sm text-green-600 dark:text-green-400 flex items-center gap-2 mt-2;
+  }
+
+  .form-success-message::before {
+    content: "✓";
+    @apply text-green-600 dark:text-green-400 font-bold;
+    animation: successCheck 0.4s ease-out;
+  }
+
+  /* Helper Text */
+  .form-helper-text {
+    @apply text-xs text-gray-500 dark:text-gray-400 mt-1.5 flex items-center gap-1;
+  }
+
+  /* Password Strength Meter */
+  .password-strength-meter {
+    @apply h-1 w-full bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden mt-2;
+  }
+
+  .password-strength-bar {
+    @apply h-full transition-all duration-300;
+  }
+
+  .password-strength-bar.strength-weak {
+    @apply w-1/3 bg-red-500;
+  }
+  .password-strength-bar.strength-fair {
+    @apply w-2/3 bg-yellow-500;
+  }
+  .password-strength-bar.strength-good {
+    @apply w-5/6 bg-blue-500;
+  }
+  .password-strength-bar.strength-strong {
+    @apply w-full bg-green-500;
+  }
+
+  .password-strength-text {
+    @apply text-xs font-medium mt-1 transition-colors duration-300;
+  }
+
+  .password-strength-text.strength-weak {
+    @apply text-red-600 dark:text-red-400;
+  }
+  .password-strength-text.strength-fair {
+    @apply text-yellow-600 dark:text-yellow-400;
+  }
+  .password-strength-text.strength-good {
+    @apply text-blue-600 dark:text-blue-400;
+  }
+  .password-strength-text.strength-strong {
+    @apply text-green-600 dark:text-green-400;
+  }
+
+  /* Segmented Button Group */
+  .segmented-control {
+    @apply inline-flex gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg;
+  }
+
+  .segmented-control-item {
+    @apply px-4 py-2.5 rounded-md transition-all duration-200 cursor-pointer;
+    @apply text-sm font-medium text-gray-700 dark:text-gray-300;
+    @apply hover:bg-gray-200 dark:hover:bg-gray-700;
+  }
+
+  .segmented-control-item.active {
+    @apply bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400;
+    @apply shadow-sm;
+  }
+
+  /* Dialog Overlay */
+  .dialog-overlay {
+    @apply fixed inset-0 bg-black/50 z-40 transition-opacity duration-200;
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Dialog Content */
+  .dialog-content {
+    @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-xl z-50;
+    @apply max-w-md w-[calc(100%-2rem)] max-h-[90vh] overflow-y-auto;
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translate(-50%, calc(-50% + 20px));
+      opacity: 0;
+    }
+    to {
+      transform: translate(-50%, -50%);
+      opacity: 1;
+    }
+  }
+
+  /* Mobile: Bottom Sheet */
+  @media (max-width: 640px) {
+    .dialog-content {
+      @apply bottom-0 left-0 right-0 top-auto rounded-t-3xl rounded-b-none;
+      @apply w-full max-w-none;
+      transform: translateY(100%);
+      animation: slideUpMobile 0.3s ease-out forwards;
+    }
+
+    @keyframes slideUpMobile {
+      to {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  /* Checkbox Group */
+  .checkbox-group {
+    @apply space-y-3;
+  }
+
+  .checkbox-item {
+    @apply flex items-start gap-3 p-3 rounded-lg border-2 border-gray-200 dark:border-gray-700;
+    @apply transition-all duration-200 cursor-pointer hover:border-primary-300 dark:hover:border-primary-700;
+  }
+
+  .checkbox-item input[type="checkbox"] {
+    @apply w-5 h-5 rounded-lg border-primary-300 dark:border-primary-700 accent-primary-600;
+    @apply mt-0.5 cursor-pointer transition-all;
+  }
+
+  .checkbox-item input[type="checkbox"]:checked {
+    @apply bg-primary-600 border-primary-600;
+  }
+
+  .checkbox-item.checked {
+    @apply bg-primary-50 dark:bg-primary-900/10 border-primary-300 dark:border-primary-700;
+  }
+
+  /* Radio Group */
+  .radio-group {
+    @apply space-y-3;
+  }
+
+  .radio-item {
+    @apply flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 dark:border-gray-700;
+    @apply transition-all duration-200 cursor-pointer hover:border-primary-300 dark:hover:border-primary-700;
+  }
+
+  .radio-item input[type="radio"] {
+    @apply w-5 h-5 border-primary-300 dark:border-primary-700 accent-primary-600;
+    @apply cursor-pointer;
+  }
+
+  .radio-item.checked {
+    @apply bg-primary-50 dark:bg-primary-900/10 border-primary-300 dark:border-primary-700;
+  }
+
+  /* Button States */
+  .btn-loading {
+    @apply opacity-60 pointer-events-none;
+  }
+
+  .btn-loading::after {
+    content: "";
+    @apply inline-block w-4 h-4 ml-2 border-2 border-white border-t-transparent rounded-full;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Tooltip */
+  .tooltip-trigger {
+    @apply inline-flex items-center justify-center w-5 h-5 rounded-full;
+    @apply bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 cursor-help;
+    @apply text-xs font-bold;
+  }
+
+  .tooltip-trigger:hover .tooltip-content {
+    @apply visible opacity-100;
+  }
+
+  .tooltip-content {
+    @apply invisible absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2;
+    @apply bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs;
+    @apply px-3 py-2 rounded whitespace-nowrap opacity-0 transition-opacity duration-200 z-10;
+  }
+</style>
+
+<!-- ============================================ -->
+<!-- TEMPLATE COMPONENTS -->
+<!-- ============================================ -->
+
+{# Component: Text Input with Floating Label #} {% macro input_field(name,
+label, type="text", value="", placeholder="", required=False, error="",
+helper="", pattern="") %}
+<div class="form-group {% if error %}has-error{% endif %}">
+  <div class="floating-label-group relative">
+    <input
+      type="{{ type }}"
+      id="{{ name }}"
+      name="{{ name }}"
+      value="{{ value }}"
+      placeholder="{{ placeholder or label }}"
+      {%
+      if
+      required
+      %}required{%
+      endif
+      %}
+      {%
+      if
+      pattern
+      %}pattern="{{ pattern }}"
+      {%
+      endif
+      %}
+      class="form-input peer"
+      aria-label="{{ label }}"
+      aria-describedby="{% if error %}{{ name }}-error{% elif helper %}{{ name }}-helper{% endif %}"
+    />
+    <label for="{{ name }}" class="floating-label">
+      {{ label }} {% if required %}<span class="text-red-600">*</span>{% endif
+      %}
+    </label>
+  </div>
+
+  {% if error %}
+  <div id="{{ name }}-error" class="form-error-message" role="alert">
+    {{ error }}
+  </div>
+  {% elif helper %}
+  <div id="{{ name }}-helper" class="form-helper-text">
+    <i class="fas fa-info-circle"></i>{{ helper }}
+  </div>
+  {% endif %}
+</div>
+{% endmacro %} {# Component: Email Input with Validation #} {% macro
+email_field(name, label, value="", required=False, error="") %}
+<div class="form-group {% if error %}has-error{% endif %}">
+  <div class="floating-label-group relative">
+    <input
+      type="email"
+      id="{{ name }}"
+      name="{{ name }}"
+      value="{{ value }}"
+      placeholder="{{ label }}"
+      {%
+      if
+      required
+      %}required{%
+      endif
+      %}
+      class="form-input peer"
+      aria-label="{{ label }}"
+      aria-describedby="{% if error %}{{ name }}-error{% endif %}"
+    />
+    <label for="{{ name }}" class="floating-label">
+      {{ label }} {% if required %}<span class="text-red-600">*</span>{% endif
+      %}
+    </label>
+  </div>
+
+  {% if error %}
+  <div id="{{ name }}-error" class="form-error-message" role="alert">
+    {{ error }}
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  document.getElementById("{{ name }}").addEventListener("blur", function () {
+    const email = this.value;
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (email && !isValid) {
+      this.parentElement.parentElement.classList.add("has-error");
+      if (!document.getElementById("{{ name }}-error")) {
+        const err = document.createElement("div");
+        err.id = "{{ name }}-error";
+        err.className = "form-error-message";
+        err.textContent = "Please enter a valid email";
+        this.parentElement.parentElement.appendChild(err);
+      }
+    } else {
+      this.parentElement.parentElement.classList.remove("has-error");
+    }
+  });
+</script>
+{% endmacro %} {# Component: Password Input with Strength Meter #} {% macro
+password_field(name, label, value="", required=False, error="") %}
+<div class="form-group {% if error %}has-error{% endif %}">
+  <div class="floating-label-group relative">
+    <div class="flex items-center gap-2">
+      <input
+        type="password"
+        id="{{ name }}"
+        name="{{ name }}"
+        value="{{ value }}"
+        placeholder="{{ label }}"
+        {%
+        if
+        required
+        %}required{%
+        endif
+        %}
+        class="form-input peer flex-1"
+        aria-label="{{ label }}"
+        aria-describedby="{% if error %}{{ name }}-error{% else %}{{ name }}-strength{% endif %}"
+      />
+      <button
+        type="button"
+        onclick="togglePassword('{{ name }}')"
+        class="px-3 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+        aria-label="Toggle password visibility"
+      >
+        <i class="fas fa-eye" id="{{ name }}-icon"></i>
+      </button>
+    </div>
+    <label for="{{ name }}" class="floating-label">
+      {{ label }} {% if required %}<span class="text-red-600">*</span>{% endif
+      %}
+    </label>
+  </div>
+
+  <div class="password-strength-meter" id="{{ name }}-meter">
+    <div class="password-strength-bar"></div>
+  </div>
+  <div class="password-strength-text" id="{{ name }}-strength">Strength: -</div>
+
+  {% if error %}
+  <div id="{{ name }}-error" class="form-error-message" role="alert">
+    {{ error }}
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  function togglePassword(fieldId) {
+    const input = document.getElementById(fieldId);
+    const icon = document.getElementById(fieldId + "-icon");
+    if (input.type === "password") {
+      input.type = "text";
+      icon.classList.remove("fa-eye");
+      icon.classList.add("fa-eye-slash");
+    } else {
+      input.type = "password";
+      icon.classList.remove("fa-eye-slash");
+      icon.classList.add("fa-eye");
+    }
+  }
+
+  document.getElementById("{{ name }}").addEventListener("input", function () {
+    const strength = calculatePasswordStrength(this.value);
+    const meter = document
+      .getElementById("{{ name }}-meter")
+      .querySelector(".password-strength-bar");
+    const text = document.getElementById("{{ name }}-strength");
+
+    meter.className = "password-strength-bar strength-" + strength.level;
+    text.className = "password-strength-text strength-" + strength.level;
+    text.textContent = "Strength: " + strength.text;
+  });
+
+  function calculatePasswordStrength(password) {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+    if (/\d/.test(password)) strength++;
+    if (/[^a-zA-Z\d]/.test(password)) strength++;
+
+    const levels = ["weak", "fair", "good", "strong"];
+    return {
+      level: levels[Math.min(strength, 3)],
+      text:
+        levels[Math.min(strength, 3)].charAt(0).toUpperCase() +
+        levels[Math.min(strength, 3)].slice(1),
+    };
+  }
+</script>
+{% endmacro %} {# Component: Textarea #} {% macro textarea_field(name, label,
+value="", placeholder="", required=False, error="", maxlength=None) %}
+<div class="form-group {% if error %}has-error{% endif %}">
+  <div class="relative">
+    <textarea
+      id="{{ name }}"
+      name="{{ name }}"
+      placeholder="{{ placeholder or label }}"
+      {%
+      if
+      required
+      %}required{%
+      endif
+      %}
+      {%
+      if
+      maxlength
+      %}maxlength="{{ maxlength }}"
+      {%
+      endif
+      %}
+      rows="5"
+      class="form-textarea peer"
+      aria-label="{{ label }}"
+      aria-describedby="{% if error %}{{ name }}-error{% else %}{{ name }}-counter{% endif %}"
+    >
+{{ value }}</textarea
+    >
+    <label for="{{ name }}" class="floating-label">
+      {{ label }} {% if required %}<span class="text-red-600">*</span>{% endif
+      %}
+    </label>
+  </div>
+
+  {% if maxlength %}
+  <div class="text-xs text-gray-500 dark:text-gray-400 text-right mt-1">
+    <span id="{{ name }}-count">0</span> / {{ maxlength }}
+  </div>
+  {% endif %} {% if error %}
+  <div id="{{ name }}-error" class="form-error-message" role="alert">
+    {{ error }}
+  </div>
+  {% endif %}
+</div>
+
+{% if maxlength %}
+<script>
+  const textarea = document.getElementById("{{ name }}");
+  const counter = document.getElementById("{{ name }}-count");
+  textarea.addEventListener("input", function () {
+    counter.textContent = this.value.length;
+  });
+</script>
+{% endif %} {% endmacro %} {# Component: Selection Dialog (Modal for Mobile,
+Dropdown for Desktop) #} {% macro selection_dialog(field_id, field_name, label,
+options, selected="", required=False, icon="") %}
+<div class="form-group">
+  <button
+    type="button"
+    onclick="openSelectionDialog('{{ field_id }}')"
+    class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-left flex items-center justify-between hover:border-primary-400 dark:hover:border-primary-600 transition-colors"
+    aria-haspopup="dialog"
+    aria-label="{{ label }}"
+  >
+    <div class="flex items-center gap-3">
+      {% if icon %}<i class="{{ icon }} text-primary-600"></i>{% endif %}
+      <div>
+        <div class="text-xs text-gray-600 dark:text-gray-400">{{ label }}</div>
+        <div id="{{ field_id }}-display" class="font-medium">
+          {% for value, text in options %} {% if value == selected %}{{ text
+          }}{% endif %} {% endfor %}
+        </div>
+      </div>
+    </div>
+    <i class="fas fa-chevron-down text-gray-600 dark:text-gray-400"></i>
+  </button>
+
+  <!-- Hidden Input for Form Submission -->
+  <input
+    type="hidden"
+    id="{{ field_id }}-input"
+    name="{{ field_name }}"
+    value="{{ selected }}"
+    {%
+    if
+    required
+    %}required{%
+    endif
+    %}
+  />
+
+  <!-- Selection Dialog -->
+  <div id="{{ field_id }}-dialog" class="hidden fixed inset-0 z-50">
+    <div
+      class="dialog-overlay"
+      onclick="closeSelectionDialog('{{ field_id }}')"
+    ></div>
+    <div
+      class="dialog-content"
+      role="dialog"
+      aria-labelledby="{{ field_id }}-title"
+    >
+      <div
+        class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4"
+      >
+        <h3 id="{{ field_id }}-title" class="font-bold text-lg">{{ label }}</h3>
+      </div>
+
+      <div class="p-4 space-y-2">
+        {% for value, text in options %}
+        <button
+          type="button"
+          onclick="selectOption('{{ field_id }}', '{{ value }}', '{{ text }}')"
+          class="w-full p-4 text-left rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary-400 dark:hover:border-primary-600 transition-all {% if value == selected %}border-primary-500 bg-primary-50 dark:bg-primary-900/10 font-semibold{% endif %}"
+          role="option"
+          aria-selected="{% if value == selected %}true{% else %}false{% endif %}"
+        >
+          <div class="flex items-center justify-between">
+            <span>{{ text }}</span>
+            {% if value == selected %}<i
+              class="fas fa-check text-primary-600"
+            ></i
+            >{% endif %}
+          </div>
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openSelectionDialog(fieldId) {
+    const dialog = document.getElementById(fieldId + "-dialog");
+    dialog.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeSelectionDialog(fieldId) {
+    const dialog = document.getElementById(fieldId + "-dialog");
+    dialog.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  function selectOption(fieldId, value, text) {
+    document.getElementById(fieldId + "-input").value = value;
+    document.getElementById(fieldId + "-display").textContent = text;
+    closeSelectionDialog(fieldId);
+  }
+
+  // Keyboard navigation
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      document
+        .querySelectorAll('[id*="-dialog"]:not(.hidden)')
+        .forEach((dialog) => {
+          const fieldId = dialog.id.replace("-dialog", "");
+          closeSelectionDialog(fieldId);
+        });
+    }
+  });
+</script>
+{% endmacro %} {# Component: Checkbox Group #} {% macro
+checkbox_group(field_name, label, options, selected_values=None, required=False)
+%}
+<div class="form-group">
+  <label
+    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3"
+  >
+    {{ label }} {% if required %}<span class="text-red-600">*</span>{% endif %}
+  </label>
+
+  <div class="checkbox-group">
+    {% for value, text in options %}
+    <label
+      class="checkbox-item cursor-pointer {% if value in selected_values %}checked{% endif %}"
+    >
+      <input
+        type="checkbox"
+        name="{{ field_name }}"
+        value="{{ value }}"
+        {%
+        if
+        value
+        in
+        selected_values
+        %}checked{%
+        endif
+        %}
+        class="checkbox-item-input"
+      />
+      <span class="flex-1">{{ text }}</span>
+    </label>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('[name="{{ field_name }}"]').forEach((checkbox) => {
+    checkbox.addEventListener("change", function () {
+      this.parentElement.classList.toggle("checked");
+    });
+  });
+</script>
+{% endmacro %} {# Component: Radio Group #} {% macro radio_group(field_name,
+label, options, selected="", required=False) %}
+<div class="form-group">
+  <label
+    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3"
+  >
+    {{ label }} {% if required %}<span class="text-red-600">*</span>{% endif %}
+  </label>
+
+  <div class="radio-group">
+    {% for value, text in options %}
+    <label
+      class="radio-item cursor-pointer {% if value == selected %}checked{% endif %}"
+    >
+      <input
+        type="radio"
+        name="{{ field_name }}"
+        value="{{ value }}"
+        {%
+        if
+        value=""
+        ="selected"
+        %}checked{%
+        endif
+        %}
+        {%
+        if
+        required
+        %}required{%
+        endif
+        %}
+      />
+      <span class="flex-1">{{ text }}</span>
+    </label>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('[name="{{ field_name }}"]').forEach((radio) => {
+    radio.addEventListener("change", function () {
+      document.querySelectorAll('[name="{{ field_name }}"]').forEach((r) => {
+        r.parentElement.classList.remove("checked");
+      });
+      this.parentElement.classList.add("checked");
+    });
+  });
+</script>
+{% endmacro %} {# Component: Segmented Control #} {% macro
+segmented_control(field_name, label, options, selected="", required=False) %}
+<div class="form-group">
+  <label
+    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3"
+  >
+    {{ label }} {% if required %}<span class="text-red-600">*</span>{% endif %}
+  </label>
+
+  <div class="segmented-control" role="radiogroup">
+    {% for value, text in options %}
+    <label
+      class="segmented-control-item {% if value == selected %}active{% endif %}"
+    >
+      <input
+        type="radio"
+        name="{{ field_name }}"
+        value="{{ value }}"
+        {%
+        if
+        value=""
+        ="selected"
+        %}checked{%
+        endif
+        %}
+        {%
+        if
+        required
+        %}required{%
+        endif
+        %}
+        class="hidden"
+      />
+      <span>{{ text }}</span>
+    </label>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  document
+    .querySelectorAll('[role="radiogroup"] .segmented-control-item')
+    .forEach((item) => {
+      item.addEventListener("click", function () {
+        document
+          .querySelectorAll('[role="radiogroup"] .segmented-control-item')
+          .forEach((i) => {
+            i.classList.remove("active");
+          });
+        this.classList.add("active");
+        this.querySelector("input").checked = true;
+      });
+    });
+</script>
+{% endmacro %} {# Component: Confirmation Modal #} {% macro
+confirmation_modal(modal_id, title, message, confirm_text="Confirm",
+cancel_text="Cancel", on_confirm="") %}
+<div id="{{ modal_id }}" class="hidden fixed inset-0 z-50">
+  <div class="dialog-overlay" onclick="closeModal('{{ modal_id }}')"></div>
+  <div
+    class="dialog-content"
+    role="alertdialog"
+    aria-labelledby="{{ modal_id }}-title"
+  >
+    <div class="p-6 space-y-4">
+      <h3 id="{{ modal_id }}-title" class="text-lg font-bold">{{ title }}</h3>
+      <p class="text-gray-600 dark:text-gray-400">{{ message }}</p>
+
+      <div class="flex gap-3 justify-end">
+        <button
+          type="button"
+          onclick="closeModal('{{ modal_id }}')"
+          class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        >
+          {{ cancel_text }}
+        </button>
+        <button
+          type="button"
+          onclick="{{ on_confirm }}; closeModal('{{ modal_id }}')"
+          class="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors"
+        >
+          {{ confirm_text }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal(modalId) {
+    document.getElementById(modalId).classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+</script>
+{% endmacro %} {# Component: Form Submit Button with Loading State #} {% macro
+submit_button(text="Submit", icon="", full_width=True, form_id="") %}
+<button
+  type="submit"
+  {%
+  if
+  form_id
+  %}form="{{ form_id }}"
+  {%
+  endif
+  %}
+  class="btn-primary {% if full_width %}w-full{% endif %} py-3 px-6 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
+  aria-busy="false"
+  id="submit-btn"
+>
+  {% if icon %}<i class="{{ icon }}"></i>{% endif %}
+  <span id="submit-text">{{ text }}</span>
+</button>
+
+<script>
+  document.addEventListener("submit", function (e) {
+    const btn = document.getElementById("submit-btn");
+    if (e.target.contains(btn)) {
+      btn.disabled = true;
+      btn.classList.add("btn-loading");
+      btn.setAttribute("aria-busy", "true");
+    }
+  });
+</script>
+{% endmacro %}

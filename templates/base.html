@@ -25,6 +25,292 @@
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="{% static 'css/output.css' %}" />
 
+    <!-- Custom Global Styles for Enhanced Dark Mode, Branding & Mobile Optimization -->
+    <style>
+      /* Enhanced Dark Mode Color Scheme */
+      :root {
+        --primary-dark: #1e293b;
+        --secondary-dark: #0f172a;
+        --tertiary-dark: #334155;
+        --accent-dark: #38bdf8;
+        --border-dark: #475569;
+      }
+
+      html.dark {
+        color-scheme: dark;
+      }
+
+      /* Improved Scrollbar for Dark Mode */
+      html.dark ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      html.dark ::-webkit-scrollbar-track {
+        background: rgba(71, 85, 105, 0.1);
+      }
+
+      html.dark ::-webkit-scrollbar-thumb {
+        background: rgba(148, 163, 184, 0.3);
+        border-radius: 4px;
+      }
+
+      html.dark ::-webkit-scrollbar-thumb:hover {
+        background: rgba(148, 163, 184, 0.5);
+      }
+
+      /* Better Dark Mode Background Gradients */
+      .dark {
+        background-color: #0f172a;
+      }
+
+      .dark body {
+        background-color: #0f172a;
+        color: #e2e8f0;
+      }
+
+      .dark .card {
+        background-color: #1e293b;
+        border-color: #475569;
+      }
+
+      .dark .input,
+      .dark .select,
+      .dark textarea {
+        background-color: #334155;
+        border-color: #475569;
+        color: #e2e8f0;
+      }
+
+      .dark .input:focus,
+      .dark .select:focus,
+      .dark textarea:focus {
+        background-color: #475569;
+        border-color: #64748b;
+        color: #e2e8f0;
+      }
+
+      /* Enhanced Button Styling for Dark Mode */
+      .dark .btn-primary {
+        background: linear-gradient(135deg, #3b82f6, #1e40af);
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+      }
+
+      .dark .btn-primary:hover {
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+      }
+
+      /* Mobile First Responsive Design */
+      @media (max-width: 640px) {
+        .container {
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+
+        body {
+          font-size: 14px;
+        }
+
+        h1 {
+          font-size: 1.75rem;
+        }
+
+        h2 {
+          font-size: 1.5rem;
+        }
+
+        h3 {
+          font-size: 1.25rem;
+        }
+
+        .hero-title {
+          font-size: 2rem;
+          line-height: 1.2;
+        }
+
+        .grid-responsive {
+          grid-template-columns: 1fr;
+        }
+
+        .card {
+          padding: 1rem;
+          margin-bottom: 1rem;
+        }
+
+        .btn {
+          padding: 0.75rem 1.5rem;
+          font-size: 0.875rem;
+          min-height: 44px;
+          min-width: 44px;
+        }
+
+        .px-4 {
+          padding-left: 0.75rem;
+          padding-right: 0.75rem;
+        }
+
+        .py-4 {
+          padding-top: 0.75rem;
+          padding-bottom: 0.75rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hidden-mobile {
+          display: none !important;
+        }
+
+        .show-mobile {
+          display: block !important;
+        }
+
+        .text-responsive {
+          font-size: clamp(1rem, 5vw, 1.5rem);
+        }
+
+        .gap-responsive {
+          gap: clamp(0.5rem, 3vw, 2rem);
+        }
+      }
+
+      /* Enhanced Touch Targets for Mobile */
+      @media (max-width: 768px) {
+        a,
+        button {
+          min-height: 44px;
+          min-width: 44px;
+          padding: calc(22px - 0.5em) 1rem;
+        }
+
+        .icon-btn {
+          min-height: 48px;
+          min-width: 48px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+
+      /* Modern Gradient Backgrounds */
+      .gradient-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+      }
+
+      .dark .gradient-primary {
+        background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+      }
+
+      .gradient-secondary {
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      }
+
+      .dark .gradient-secondary {
+        background: linear-gradient(135deg, #0891b2 0%, #164e63 100%);
+      }
+
+      /* Smooth Transitions */
+      * {
+        transition:
+          background-color 150ms ease,
+          border-color 150ms ease,
+          color 150ms ease;
+      }
+
+      /* Improved Contrast for Accessibility */
+      .dark .text-gray-600 {
+        color: #cbd5e1;
+      }
+
+      .dark .text-gray-700 {
+        color: #e2e8f0;
+      }
+
+      .dark .border-gray-200 {
+        border-color: #475569;
+      }
+
+      .dark .border-gray-300 {
+        border-color: #64748b;
+      }
+
+      .dark .bg-gray-50 {
+        background-color: #1e293b;
+      }
+
+      .dark .bg-gray-100 {
+        background-color: #334155;
+      }
+
+      /* Branding Colors - Premium Feel */
+      :root {
+        --brand-primary: #3b82f6;
+        --brand-secondary: #06b6d4;
+        --brand-accent: #f59e0b;
+        --brand-success: #10b981;
+        --brand-warning: #f97316;
+        --brand-danger: #ef4444;
+      }
+
+      /* Smooth Animations for Interactions */
+      @keyframes slideInFromRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideInFromLeft {
+        from {
+          transform: translateX(-100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      .slide-in-right {
+        animation: slideInFromRight 0.3s ease-out;
+      }
+
+      .slide-in-left {
+        animation: slideInFromLeft 0.3s ease-out;
+      }
+
+      /* Better Form Styling */
+      .input-focus {
+        border-color: var(--brand-primary);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .dark .input-focus {
+        border-color: var(--brand-secondary);
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+      }
+
+      /* Premium Shadow System */
+      .shadow-premium {
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .dark .shadow-premium {
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      .shadow-premium-sm {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      .dark .shadow-premium-sm {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+    </style>
+
     {% block extra_head %}{% endblock %}
   </head>
 
@@ -178,11 +464,13 @@
                   alt="Profile"
                   class="w-8 h-8 rounded-full border-2 border-white/30 group-hover:border-white transition-all duration-200"
                 />
-                <span class="hidden md:block text-white font-medium"
-                  >{% if user.is_authenticated %}{{
-                  user.get_full_name|default:user.username|truncatewords:2 }}{%
-                  else %}Guest{% endif %}</span
-                >
+                <span class="hidden md:block text-white font-medium">
+                  {% if user.is_authenticated %}
+                    {{ user.get_full_name|default:user.username|truncatewords:2 }}
+                  {% else %}
+                    Guest
+                  {% endif %}
+                </span>
                 <i
                   class="fas fa-chevron-down text-white text-xs group-hover:rotate-180 transition-transform duration-200"
                 ></i>

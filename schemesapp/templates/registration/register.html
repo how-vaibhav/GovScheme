@@ -1,32 +1,351 @@
+{% extends "base.html" %}
 {% load static %}
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register - GovAid</title>
-    <link rel="icon" href="{% static 'images/favicon.ico' %}" />
 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
-  </head>
-  <body class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <div class="min-h-screen flex items-center justify-center p-4">
+{% block title %}Register - GovAid{% endblock %}
+
+{% block extra_css %}
+  <style>
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes inputGlow {
+        0%,
+        100% {
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0);
+        }
+        50% {
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-5px);
+        }
+        20%,
+        40%,
+        60%,
+        80% {
+          transform: translateX(5px);
+        }
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes progressFill {
+        from {
+          width: 0;
+        }
+        to {
+          width: var(--progress-width);
+        }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      .stagger-1 {
+        animation-delay: 0.1s;
+        opacity: 0;
+      }
+      .stagger-2 {
+        animation-delay: 0.2s;
+        opacity: 0;
+      }
+      .stagger-3 {
+        animation-delay: 0.3s;
+        opacity: 0;
+      }
+
+      /* Floating Label Input */
+      .input-group {
+        position: relative;
+        margin-bottom: 1.5rem;
+      }
+
+      .input-field {
+        width: 100%;
+        padding: 1rem 1rem 0.5rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+        background: white;
+        color: #1f2937;
+      }
+
+      .dark .input-field {
+        background: #1f2937;
+        border-color: #374151;
+        color: #f9fafb;
+      }
+
+      .input-field:focus {
+        outline: none;
+        border-color: #3b82f6;
+        animation: inputGlow 2s ease-in-out infinite;
+      }
+
+      .dark .input-field:focus {
+        border-color: #60a5fa;
+      }
+
+      .input-field.error {
+        border-color: #ef4444;
+        animation: shake 0.5s ease;
+      }
+
+      .dark .input-field.error {
+        border-color: #f87171;
+      }
+
+      .input-field.success {
+        border-color: #10b981;
+      }
+
+      .dark .input-field.success {
+        border-color: #34d399;
+      }
+
+      .input-label {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.875rem;
+        color: #6b7280;
+        pointer-events: none;
+        transition: all 0.2s ease;
+        background: white;
+        padding: 0 0.25rem;
+      }
+
+      .dark .input-label {
+        color: #9ca3af;
+        background: #1f2937;
+      }
+
+      .input-field:focus + .input-label,
+      .input-field:not(:placeholder-shown) + .input-label {
+        top: 0;
+        transform: translateY(-50%);
+        font-size: 0.75rem;
+        color: #3b82f6;
+        font-weight: 500;
+      }
+
+      .dark .input-field:focus + .input-label,
+      .dark .input-field:not(:placeholder-shown) + .input-label {
+        color: #60a5fa;
+      }
+
+      .input-field.error + .input-label {
+        color: #ef4444;
+      }
+
+      .dark .input-field.error + .input-label {
+        color: #f87171;
+      }
+
+      .input-field.success + .input-label {
+        color: #10b981;
+      }
+
+      .dark .input-field.success + .input-label {
+        color: #34d399;
+      }
+
+      /* Password Toggle */
+      .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #6b7280;
+        transition: color 0.2s;
+        padding: 0.25rem;
+      }
+
+      .password-toggle:hover {
+        color: #3b82f6;
+      }
+
+      .dark .password-toggle {
+        color: #9ca3af;
+      }
+
+      .dark .password-toggle:hover {
+        color: #60a5fa;
+      }
+
+      /* Password Strength Meter */
+      .strength-meter {
+        height: 0.25rem;
+        background: #e5e7eb;
+        border-radius: 0.125rem;
+        overflow: hidden;
+        margin-top: 0.5rem;
+      }
+
+      .dark .strength-meter {
+        background: #374151;
+      }
+
+      .strength-bar {
+        height: 100%;
+        transition: all 0.3s ease;
+        animation: progressFill 0.5s ease-out;
+      }
+
+      .strength-weak {
+        background: #ef4444;
+      }
+      .strength-fair {
+        background: #f59e0b;
+      }
+      .strength-good {
+        background: #3b82f6;
+      }
+      .strength-strong {
+        background: #10b981;
+      }
+
+      .strength-text {
+        font-size: 0.75rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
+      }
+
+      /* Error/Success Message */
+      .field-message {
+        display: flex;
+        align-items: start;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        font-size: 0.75rem;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .error-message {
+        color: #dc2626;
+      }
+
+      .dark .error-message {
+        color: #f87171;
+      }
+
+      .success-message {
+        color: #059669;
+      }
+
+      .dark .success-message {
+        color: #34d399;
+      }
+
+      /* Loading Spinner */
+      .spinner {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      /* Button States */
+      .btn-submit {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-submit:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
+      /* Password Requirements */
+      .requirement-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        color: #6b7280;
+        transition: color 0.2s;
+      }
+
+      .requirement-item.met {
+        color: #10b981;
+      }
+
+      .dark .requirement-item {
+        color: #9ca3af;
+      }
+
+      .dark .requirement-item.met {
+        color: #34d399;
+      }
+
+      .requirement-icon {
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        border: 2px solid currentColor;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.625rem;
+      }
+
+      .requirement-item.met .requirement-icon {
+        background: #10b981;
+        border-color: #10b981;
+        color: white;
+      }
+
+      .dark .requirement-item.met .requirement-icon {
+        background: #34d399;
+        border-color: #34d399;
+      }
+    </style>
+  {% endblock %}
+
+{% block content %}
+  <div class="min-h-[calc(100vh-200px)] flex items-center justify-center p-4 py-12">
       <div class="w-full max-w-md animate-fade-in">
         <!-- Logo -->
         <div class="text-center mb-10">
           <a href="{% url 'home' %}" class="inline-block mb-6 group">
             <div
-              class="inline-flex items-center justify-center w-14 h-14 bg-primary-600 dark:bg-primary-500 rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-110"
+              class="inline-flex items-center justify-center w-14 h-14 bg-primary-100 dark:bg-primary-500 border border-primary-200 dark:border-primary-500 rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-110"
             >
-              <i class="fas fa-landmark text-2xl text-white"></i>
+              <i class="fas fa-landmark text-2xl text-primary-700 dark:text-white"></i>
             </div>
           </a>
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
@@ -139,9 +458,11 @@
         </div>
       </div>
     </div>
+  </div>
+{% endblock %}
 
-    <script src="{% static 'js/main.js' %}"></script>
-    <script>
+{% block extra_js %}
+  <script>
       // Dark mode init
       const savedTheme = localStorage.getItem("theme");
       if (
@@ -173,5 +494,4 @@
           text.innerHTML = '<span class="spinner"></span> Creating...';
         });
     </script>
-  </body>
-</html>
+  {% endblock %}
