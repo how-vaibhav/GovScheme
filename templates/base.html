@@ -465,9 +465,7 @@
                   class="w-8 h-8 rounded-full border-2 border-white/30 group-hover:border-white transition-all duration-200"
                 />
                 <span class="hidden md:block text-white font-medium">
-                  {% if user.is_authenticated %} {{
-                  user.get_full_name|default:user.username|truncatewords:2 }} {%
-                  else %} Guest {% endif %}
+                  {% if user.is_authenticated %}{{ user.get_full_name|default:user.username|truncatewords:2 }}{% else %}Guest{% endif %}
                 </span>
                 <i
                   class="fas fa-chevron-down text-white text-xs group-hover:rotate-180 transition-transform duration-200"

@@ -287,10 +287,7 @@ GovAid{% endblock %} {% block content %}
                 aria-haspopup="dialog"
               >
                 <span class="selection-button-text">
-                  {% if selected_category %} {% for key, value in
-                  categories.items %} {% if key == selected_category %}{{ value
-                  }}{% endif %} {% endfor %} {% else %} All Categories {% endif
-                  %}
+                  {% if selected_category %}{% for key, value in categories.items %}{% if key == selected_category %}{{ value }}{% endif %}{% endfor %}{% else %}All Categories{% endif %}
                 </span>
                 <i class="fas fa-chevron-down text-gray-400"></i>
               </button>

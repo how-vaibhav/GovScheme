@@ -1,0 +1,63 @@
+/* Background gradient */
+  body {
+    background: linear-gradient(to right, #1b263b, #1b263b);
+    min-height: 100vh;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .feedback-form-container {
+    max-width: 600px;
+    margin: 60px auto;
+  }
+
+  .card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(10, 10, 10, 0.08);
+    background-color: #ffffff;
+  }
+
+  h2 {
+    color: #333;
+  }
+
+  /* Custom buttons */
+  .btn-send {
+    background-color: #28a745;
+    color: white;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .btn-send:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+  }
+
+  .btn-redirect {
+    background-color: #07a5c5;
+    color: white;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .btn-redirect:hover {
+    background-color: #0798b5;
+    transform: translateY(-2px);
+  }
+
+  /* Alert message */
+  .message {
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  /* Form input styling */
+  .form-control {
+    border-radius: 8px;
+  }
+
+  .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  }

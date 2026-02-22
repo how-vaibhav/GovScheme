@@ -92,7 +92,7 @@
           </div>
           <div>
             <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Applied Date</p>
-            <p class="font-medium text-gray-900 dark:text-white">{{ app.application_date|date:"M d, Y" }}</p>
+            <p class="font-medium text-gray-900 dark:text-white">{{ app.created_at|date:"M d, Y" }}</p>
           </div>
           <div>
             <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Aadhaar (Last 4 digits)</p>
@@ -106,7 +106,7 @@
           </div>
           <div>
             <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Last Updated</p>
-            <p class="font-medium text-gray-900 dark:text-white">{{ app.status_updated_at|default:"Pending"|date:"M d, Y" }}</p>
+            <p class="font-medium text-gray-900 dark:text-white">{{ app.updated_at|date:"M d, Y" }}</p>
           </div>
         </div>
 

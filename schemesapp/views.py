@@ -77,8 +77,6 @@ def home(request):
     if request.user.is_authenticated:
         notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-created_at')
         recommended_schemes = get_smart_recommendations(request.user)
-        print("User:", request.user)
-        print("Notifications:", notifications)
     
     # Get popular/trending schemes for unauthenticated users
     all_schemes = Scheme.objects.all()[:6]
@@ -616,7 +614,9 @@ def toggle_favorite(request, scheme_id):
         messages.success(request, f'Added {scheme.name} to favorites')
     
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return JsonResponse({'is_favorite': is_favorite, 'message': messages.get_messages(request).__str__()})
+        message_list = list(messages.get_messages(request))
+        message_text = message_list[0].message if message_list else ""
+        return JsonResponse({'is_favorite': is_favorite, 'message': message_text})
     
     return redirect(request.META.get('HTTP_REFERER', 'home'))
 

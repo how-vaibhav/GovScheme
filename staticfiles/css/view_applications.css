@@ -1,0 +1,116 @@
+body {
+    background: linear-gradient(to right, #1b263b, #415a77);
+    min-height: 100vh;
+    padding: 0; /* Removed left/right padding that affected base layout */
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #f8f9fa;
+  }
+
+  .container {
+    padding: 40px 20px; /* Padding only for content, not whole page */
+  }
+
+  h1 {
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .tabs {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .tab {
+    display: inline-block;
+    margin: 5px;
+    padding: 10px 22px;
+    background: #e0e0e0;
+    border-radius: 30px;
+    text-decoration: none;
+    color: #0d1b2a;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  .tab:hover {
+    background-color: #c4c4c4;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .tab.active {
+    background: #00a8e8;
+    color: white;
+    transform: scale(1.05);
+  }
+
+  .application-card {
+    background: white;
+    border: none;
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 25px;
+    color: #333;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .application-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.2);
+  }
+
+  .application-header {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0d1b2a;
+    margin-bottom: 12px;
+  }
+
+  .application-detail {
+    margin-bottom: 10px;
+    font-size: 15.5px;
+  }
+
+  .actions {
+    margin-top: 18px;
+  }
+
+  .actions button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .btn-accept {
+    background-color: #28a745;
+    color: white;
+  }
+
+  .btn-accept:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+  }
+
+  .btn-reject {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .btn-reject:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+  }
+
+  .no-applications {
+    text-align: center;
+    color: #ccc;
+    font-style: italic;
+    font-size: 18px;
+    margin-top: 60px;
+  }

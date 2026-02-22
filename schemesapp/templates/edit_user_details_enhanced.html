@@ -223,10 +223,7 @@ GovAid{% endblock %} {% block content %}
                         Gender
                       </div>
                       <div id="gender-display" class="font-medium">
-                        {% if form.gender.value %} {% for value, text in
-                        form.gender.field.choices %} {% if value ==
-                        form.gender.value %}{{ text }}{% endif %} {% endfor %}
-                        {% else %}Select Gender{% endif %}
+                        {% if form.gender.value %}{% for value, text in form.gender.field.choices %}{% if value == form.gender.value %}{{ text }}{% endif %}{% endfor %}{% else %}Select Gender{% endif %}
                       </div>
                     </div>
                   </div>
@@ -257,10 +254,7 @@ GovAid{% endblock %} {% block content %}
                         Location Type
                       </div>
                       <div id="location-display" class="font-medium">
-                        {% if form.location.value %} {% for value, text in
-                        form.location.field.choices %} {% if value ==
-                        form.location.value %}{{ text }}{% endif %} {% endfor %}
-                        {% else %}Select Location{% endif %}
+                        {% if form.location.value %}{% for value, text in form.location.field.choices %}{% if value == form.location.value %}{{ text }}{% endif %}{% endfor %}{% else %}Select Location{% endif %}
                       </div>
                     </div>
                   </div>
@@ -291,10 +285,7 @@ GovAid{% endblock %} {% block content %}
                         Age Range
                       </div>
                       <div id="age-display" class="font-medium">
-                        {% if form.age.value %} {% for value, text in
-                        form.age.field.choices %} {% if value == form.age.value
-                        %}{{ text }}{% endif %} {% endfor %} {% else %}Select
-                        Age{% endif %}
+                        {% if form.age.value %}{% for value, text in form.age.field.choices %}{% if value == form.age.value %}{{ text }}{% endif %}{% endfor %}{% else %}Select Age{% endif %}
                       </div>
                     </div>
                   </div>
@@ -325,10 +316,7 @@ GovAid{% endblock %} {% block content %}
                         Caste Category
                       </div>
                       <div id="caste-display" class="font-medium">
-                        {% if form.caste.value %} {% for value, text in
-                        form.caste.field.choices %} {% if value ==
-                        form.caste.value %}{{ text }}{% endif %} {% endfor %} {%
-                        else %}Select Caste{% endif %}
+                        {% if form.caste.value %}{% for value, text in form.caste.field.choices %}{% if value == form.caste.value %}{{ text }}{% endif %}{% endfor %}{% else %}Select Caste{% endif %}
                       </div>
                     </div>
                   </div>
@@ -359,10 +347,7 @@ GovAid{% endblock %} {% block content %}
                         Marital Status
                       </div>
                       <div id="maritial_status-display" class="font-medium">
-                        {% if form.maritial_status.value %} {% for value, text
-                        in form.maritial_status.field.choices %} {% if value ==
-                        form.maritial_status.value %}{{ text }}{% endif %} {%
-                        endfor %} {% else %}Select Status{% endif %}
+                        {% if form.maritial_status.value %}{% for value, text in form.maritial_status.field.choices %}{% if value == form.maritial_status.value %}{{ text }}{% endif %}{% endfor %}{% else %}Select Status{% endif %}
                       </div>
                     </div>
                   </div>

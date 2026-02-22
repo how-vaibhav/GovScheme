@@ -158,14 +158,14 @@ class User_Details_Form(forms.ModelForm):
             'caste': forms.Select(attrs={
                 'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
             }),
-            'disability': forms.Select(choices=YES_NO_CHOICES, attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
+            'disability': forms.CheckboxInput(attrs={
+                'class': 'rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500'
             }),
-            'minority': forms.Select(choices=YES_NO_CHOICES, attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
+            'minority': forms.CheckboxInput(attrs={
+                'class': 'rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500'
             }),
-            'below_poverty_line': forms.Select(choices=YES_NO_CHOICES, attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
+            'below_poverty_line': forms.CheckboxInput(attrs={
+                'class': 'rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500'
             }),
             'income': forms.NumberInput(attrs={
                 'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none',

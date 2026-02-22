@@ -338,26 +338,14 @@ helper="", pattern="") %}
       name="{{ name }}"
       value="{{ value }}"
       placeholder="{{ placeholder or label }}"
-      {%
-      if
-      required
-      %}required{%
-      endif
-      %}
-      {%
-      if
-      pattern
-      %}pattern="{{ pattern }}"
-      {%
-      endif
-      %}
+      {% if required %}required{% endif %}
+      {% if pattern %}pattern="{{ pattern }}"{% endif %}
       class="form-input peer"
       aria-label="{{ label }}"
       aria-describedby="{% if error %}{{ name }}-error{% elif helper %}{{ name }}-helper{% endif %}"
     />
     <label for="{{ name }}" class="floating-label">
-      {{ label }} {% if required %}<span class="text-red-600">*</span>{% endif
-      %}
+      {{ label }} {% if required %}<span class="text-red-600">*</span>{% endif %}
     </label>
   </div>
 
@@ -381,12 +369,7 @@ email_field(name, label, value="", required=False, error="") %}
       name="{{ name }}"
       value="{{ value }}"
       placeholder="{{ label }}"
-      {%
-      if
-      required
-      %}required{%
-      endif
-      %}
+      {% if required %}required{% endif %}
       class="form-input peer"
       aria-label="{{ label }}"
       aria-describedby="{% if error %}{{ name }}-error{% endif %}"
@@ -433,12 +416,7 @@ password_field(name, label, value="", required=False, error="") %}
         name="{{ name }}"
         value="{{ value }}"
         placeholder="{{ label }}"
-        {%
-        if
-        required
-        %}required{%
-        endif
-        %}
+        {% if required %}required{% endif %}
         class="form-input peer flex-1"
         aria-label="{{ label }}"
         aria-describedby="{% if error %}{{ name }}-error{% else %}{{ name }}-strength{% endif %}"
@@ -453,8 +431,7 @@ password_field(name, label, value="", required=False, error="") %}
       </button>
     </div>
     <label for="{{ name }}" class="floating-label">
-      {{ label }} {% if required %}<span class="text-red-600">*</span>{% endif
-      %}
+      {{ label }} {% if required %}<span class="text-red-600">*</span>{% endif %}
     </label>
   </div>
 
@@ -521,19 +498,8 @@ value="", placeholder="", required=False, error="", maxlength=None) %}
       id="{{ name }}"
       name="{{ name }}"
       placeholder="{{ placeholder or label }}"
-      {%
-      if
-      required
-      %}required{%
-      endif
-      %}
-      {%
-      if
-      maxlength
-      %}maxlength="{{ maxlength }}"
-      {%
-      endif
-      %}
+      {% if required %}required{% endif %}
+      {% if maxlength %}maxlength="{{ maxlength }}"{% endif %}
       rows="5"
       class="form-textarea peer"
       aria-label="{{ label }}"
@@ -542,8 +508,7 @@ value="", placeholder="", required=False, error="", maxlength=None) %}
 {{ value }}</textarea
     >
     <label for="{{ name }}" class="floating-label">
-      {{ label }} {% if required %}<span class="text-red-600">*</span>{% endif
-      %}
+      {{ label }} {% if required %}<span class="text-red-600">*</span>{% endif %}
     </label>
   </div>
 
@@ -582,8 +547,7 @@ options, selected="", required=False, icon="") %}
       <div>
         <div class="text-xs text-gray-600 dark:text-gray-400">{{ label }}</div>
         <div id="{{ field_id }}-display" class="font-medium">
-          {% for value, text in options %} {% if value == selected %}{{ text
-          }}{% endif %} {% endfor %}
+          {% for value, text in options %}{% if value == selected %}{{ text }}{% endif %}{% endfor %}
         </div>
       </div>
     </div>
@@ -596,12 +560,7 @@ options, selected="", required=False, icon="") %}
     id="{{ field_id }}-input"
     name="{{ field_name }}"
     value="{{ selected }}"
-    {%
-    if
-    required
-    %}required{%
-    endif
-    %}
+    {% if required %}required{% endif %}
   />
 
   <!-- Selection Dialog -->
@@ -694,14 +653,7 @@ checkbox_group(field_name, label, options, selected_values=None, required=False)
         type="checkbox"
         name="{{ field_name }}"
         value="{{ value }}"
-        {%
-        if
-        value
-        in
-        selected_values
-        %}checked{%
-        endif
-        %}
+        {% if value in selected_values %}checked{% endif %}
         class="checkbox-item-input"
       />
       <span class="flex-1">{{ text }}</span>
@@ -735,19 +687,8 @@ label, options, selected="", required=False) %}
         type="radio"
         name="{{ field_name }}"
         value="{{ value }}"
-        {%
-        if
-        value=""
-        ="selected"
-        %}checked{%
-        endif
-        %}
-        {%
-        if
-        required
-        %}required{%
-        endif
-        %}
+        {% if value == selected %}checked{% endif %}
+        {% if required %}required{% endif %}
       />
       <span class="flex-1">{{ text }}</span>
     </label>
@@ -783,19 +724,8 @@ segmented_control(field_name, label, options, selected="", required=False) %}
         type="radio"
         name="{{ field_name }}"
         value="{{ value }}"
-        {%
-        if
-        value=""
-        ="selected"
-        %}checked{%
-        endif
-        %}
-        {%
-        if
-        required
-        %}required{%
-        endif
-        %}
+        {% if value == selected %}checked{% endif %}
+        {% if required %}required{% endif %}
         class="hidden"
       />
       <span>{{ text }}</span>
@@ -868,13 +798,7 @@ cancel_text="Cancel", on_confirm="") %}
 submit_button(text="Submit", icon="", full_width=True, form_id="") %}
 <button
   type="submit"
-  {%
-  if
-  form_id
-  %}form="{{ form_id }}"
-  {%
-  endif
-  %}
+  {% if form_id %}form="{{ form_id }}"{% endif %}
   class="btn-primary {% if full_width %}w-full{% endif %} py-3 px-6 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
   aria-busy="false"
   id="submit-btn"
