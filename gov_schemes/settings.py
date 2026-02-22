@@ -22,7 +22,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 SECRET_KEY = config('SECRET_KEY')
 

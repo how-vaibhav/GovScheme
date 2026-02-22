@@ -258,7 +258,7 @@
   .selection-btn {
     width: 100%;
     padding: 1.25rem 1rem;
-    background: rgb(255, 255, 255);
+    background: linear-gradient(135deg, rgb(255, 255, 255), rgb(249, 250, 251));
     border: 2px solid rgb(229, 231, 235);
     border-radius: 0.75rem;
     text-align: left;
@@ -271,7 +271,7 @@
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   }
   .dark .selection-btn {
-    background: rgb(55, 65, 81);
+    background: linear-gradient(135deg, rgb(55, 65, 81), rgb(31, 41, 55));
     border-color: rgb(75, 85, 99);
     color: rgb(156, 163, 175);
   }
@@ -290,11 +290,38 @@
   .selection-btn.has-value {
     color: rgb(17, 24, 39);
     border-color: rgb(99, 102, 241);
-    background: rgb(238, 242, 255);
+    background: linear-gradient(135deg, rgb(238, 242, 255), rgb(224, 231, 255));
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.16);
   }
   .dark .selection-btn.has-value {
     color: white;
     background: rgba(67, 56, 202, 0.3);
+  }
+
+  .floating-label-input textarea {
+    min-height: 170px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.98),
+      rgba(249, 250, 251, 0.96)
+    );
+  }
+  .dark .floating-label-input textarea {
+    background: linear-gradient(
+      135deg,
+      rgba(55, 65, 81, 0.95),
+      rgba(31, 41, 55, 0.98)
+    );
+  }
+
+  .feedback-hero-glow {
+    position: absolute;
+    width: 20rem;
+    height: 20rem;
+    border-radius: 9999px;
+    filter: blur(65px);
+    opacity: 0.22;
+    pointer-events: none;
   }
 
   /* === DIALOG/MODAL === */
@@ -503,8 +530,10 @@
 {% block title %}Send Feedback - GovAid{% endblock %} {% block content %}
 <!-- Header -->
 <section
-  class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12 animate-fade-in-down"
+  class="relative bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-14 animate-fade-in-down overflow-hidden"
 >
+  <div class="feedback-hero-glow bg-indigo-300 top-[-5rem] right-[-4rem]"></div>
+  <div class="feedback-hero-glow bg-cyan-300 bottom-[-8rem] left-[-5rem]"></div>
   <div class="container mx-auto px-4">
     <div class="max-w-4xl mx-auto text-center">
       <h1
@@ -635,12 +664,24 @@
                 <i class="fas fa-chevron-down text-sm"></i>
               </button>
 
-              <input type="hidden" name="scheme" id="scheme-input" value="" />
+              <input
+                type="hidden"
+                name="scheme"
+                id="scheme-input"
+                value="{{ form.scheme.value|default:'' }}"
+              />
 
               <div id="scheme-error" class="field-message error hidden">
                 <i class="fas fa-exclamation-circle"></i>
                 <span>Please select a scheme</span>
               </div>
+
+              {% if form.scheme.errors %}
+              <div class="field-message error mt-2">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>{{ form.scheme.errors.0 }}</span>
+              </div>
+              {% endif %}
             </div>
 
             <!-- Rating -->
@@ -698,12 +739,14 @@
             <div class="floating-label-input animate-fade-in stagger-3">
               <textarea
                 id="feedback-textarea"
-                name="feedback"
+                name="message"
                 rows="6"
                 maxlength="1000"
                 required
                 aria-describedby="feedback-help feedback-error"
-              ></textarea>
+              >
+{{ form.message.value|default:'' }}</textarea
+              >
               <label for="feedback-textarea" class="flex items-center gap-2">
                 <i
                   class="fas fa-comment-dots text-primary-600 dark:text-primary-400 text-xs"
@@ -720,6 +763,13 @@
                   >Please provide your feedback (minimum 10 characters)</span
                 >
               </div>
+
+              {% if form.message.errors %}
+              <div class="field-message error mt-2">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>{{ form.message.errors.0 }}</span>
+              </div>
+              {% endif %}
 
               <div
                 id="feedback-help"
@@ -1342,6 +1392,25 @@
     initDarkMode();
     setupCharCounter("feedback-textarea", "char-counter", 1000);
     setupCharCounter("suggestions-textarea", "suggestions-counter", 500);
+
+    const initialSchemeId = document.getElementById("scheme-input").value;
+    if (initialSchemeId) {
+      const option = document.querySelector(
+        `.scheme-option[onclick^="selectScheme('${initialSchemeId}'"]`,
+      );
+      if (option) {
+        const name =
+          option.querySelector(".font-semibold")?.textContent?.trim() ||
+          "Selected Scheme";
+        const agency =
+          option.querySelector(".text-sm")?.textContent?.trim() || "";
+        document.getElementById("scheme-text").innerHTML = `
+          <i class="fas fa-file-alt text-primary-600"></i>
+          <span>${agency ? `${name} - ${agency}` : name}</span>
+        `;
+        document.getElementById("scheme-display").classList.add("has-value");
+      }
+    }
 
     // Smooth scroll
     document.body.style.scrollBehavior = "smooth";
