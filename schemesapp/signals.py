@@ -14,4 +14,3 @@ def notify_users_on_new_scheme(sender, instance, created, **kwargs):
                 scheme=scheme,
                 is_read=False,
             )
-            print(f"Notifying users about: {scheme.name}")

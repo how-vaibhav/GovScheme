@@ -1,0 +1,173 @@
+
+      /* Base */
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #e0f7fa 0%, #fff 100%);
+        color: #1c2938;
+        margin: 0;
+        padding: 0 15px 60px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 700px;
+        margin: 60px auto;
+        background: #ffffff;
+        padding: 3rem 3.5rem;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(32, 93, 137, 0.12),
+          0 8px 16px rgba(32, 93, 137, 0.08);
+        border: 1px solid #b2ebf2;
+      }
+
+      /* Heading */
+      h1 {
+        font-size: 3rem;
+        font-weight: 900;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(90deg, #00796b, #004d40);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: 0.05em;
+      }
+
+      hr {
+        border: none;
+        border-top: 3px solid #00acc1;
+        width: 75px;
+        border-radius: 4px;
+        margin: 2.5rem 0;
+        box-shadow: 0 0 8px #00acc1;
+      }
+
+      h2 {
+        font-size: 1.9rem;
+        font-weight: 700;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        color: #00695c;
+        border-left: 6px solid #00acc1;
+        padding-left: 0.75rem;
+        letter-spacing: 0.02em;
+      }
+
+      p {
+        font-size: 1.12rem;
+        line-height: 1.65;
+        color: #334a56;
+        margin-bottom: 1.5rem;
+      }
+
+      strong {
+        color: #004d40;
+        font-weight: 700;
+      }
+
+      /* Button Group */
+      .btn-group {
+        margin: 2.8rem 0 3rem;
+        display: flex;
+        gap: 1.2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      a.btn {
+        text-decoration: none;
+        background: linear-gradient(135deg, #00897b, #004d40);
+        color: #e0f2f1;
+        padding: 0.7rem 2rem;
+        font-weight: 700;
+        border-radius: 14px;
+        box-shadow: 0 8px 20px rgba(0, 137, 123, 0.4);
+        transition: background 0.35s ease, box-shadow 0.35s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 1.1rem;
+      }
+
+      a.btn:hover,
+      a.btn:focus {
+        background: linear-gradient(135deg, #004d40, #002f23);
+        box-shadow: 0 12px 28px rgba(0, 77, 64, 0.6);
+        outline: none;
+      }
+
+      /* Feedback Section */
+      .feedback-section {
+        max-width: 700px;
+        margin: 0 auto 80px;
+        padding: 0 1.5rem;
+      }
+
+      .feedback-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .feedback-card {
+        background: #e0f2f1;
+        padding: 1.8rem 2.2rem;
+        border-radius: 18px;
+        box-shadow: inset 0 0 8px #00796b88, 0 8px 20px rgba(0, 121, 107, 0.15);
+        color: #004d40;
+        line-height: 1.55;
+        font-size: 1.05rem;
+        border-left: 6px solid #00796b;
+        transition: transform 0.3s ease;
+      }
+
+      .feedback-card:hover {
+        transform: translateX(8px);
+        box-shadow: inset 0 0 12px #004d4099, 0 12px 28px rgba(0, 77, 64, 0.25);
+      }
+
+      .feedback-card strong {
+        font-weight: 800;
+        font-size: 1.15rem;
+        margin-bottom: 0.4rem;
+        display: block;
+        color: #004d40;
+      }
+
+      .feedback-timestamp {
+        font-size: 0.87rem;
+        color: #00695c;
+        margin-top: 0.65rem;
+        font-style: italic;
+      }
+
+      .no-feedback {
+        font-style: italic;
+        color: #00796b99;
+        font-size: 1.15rem;
+        text-align: center;
+        padding: 3rem 0;
+        font-weight: 600;
+      }
+
+      /* Responsive */
+      @media (max-width: 600px) {
+        .container {
+          padding: 2rem 2rem;
+          margin: 40px auto;
+        }
+
+        h1 {
+          font-size: 2.2rem;
+        }
+
+        h2 {
+          font-size: 1.5rem;
+        }
+
+        a.btn {
+          padding: 0.65rem 1.6rem;
+          font-size: 1rem;
+        }
+      }
