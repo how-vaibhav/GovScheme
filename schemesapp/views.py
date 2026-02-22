@@ -104,7 +104,12 @@ def feedback(request):
     else:
         form = FeedbackForm(initial={'scheme': scheme_id}) if scheme_id else FeedbackForm()
 
-    return render(request, 'feedback/feedback.html', {'form': form})
+    schemes = Scheme.objects.all().order_by('name')
+
+    return render(request, 'feedback/feedback.html', {
+        'form': form,
+        'schemes': schemes,
+    })
 
 #view for users to view feedbacks they sent
 #if a user who is in employee group accesses this page, then they are shown all feedbacks and given an option to reply to them
@@ -354,7 +359,12 @@ def view_user_details(request):
 
 @login_required
 def edit_user_details(request):
-    details = UserDetails.objects.get(user=request.user)
+    try:
+        details = UserDetails.objects.get(user=request.user)
+    except UserDetails.DoesNotExist:
+        messages.info(request, "Please fill your details first.")
+        return redirect('user_detail')
+
     if request.method == 'POST':
         form = User_Details_Form(request.POST, instance=details)
         if form.is_valid():

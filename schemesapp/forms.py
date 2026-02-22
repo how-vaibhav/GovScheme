@@ -42,6 +42,7 @@ class FeedbackForm(forms.ModelForm):
 
     scheme = forms.ModelChoiceField(
         queryset=Scheme.objects.all(), 
+        required=False,
         empty_label="Select a Scheme", 
         widget=forms.Select(attrs={
             'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
@@ -125,13 +126,16 @@ class Add_Scheme_Form(forms.ModelForm):
         }
 
 class User_Details_Form(forms.ModelForm):
-    
-    age = forms.ChoiceField(
-        choices=AGE_CHOICES,
-        widget=forms.Select(attrs={
-            'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-        }),
-        help_text='Select your age group'
+
+    age = forms.CharField(
+        widget=forms.Select(
+            choices=AGE_CHOICES,
+            attrs={
+                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
+            }
+        ),
+        help_text='Select your age group',
+        required=True,
     )
 
     class Meta:
@@ -172,3 +176,27 @@ class User_Details_Form(forms.ModelForm):
                 'placeholder': 'Annual income in INR'
             }),
         }
+
+    def clean_age(self):
+        age_value = (self.cleaned_data.get('age') or '').strip()
+        valid_ranges = {choice[0] for choice in UserDetails.AGE_CHOICES}
+
+        if age_value in valid_ranges:
+            return age_value
+
+        if age_value.isdigit():
+            numeric_age = int(age_value)
+            if 18 <= numeric_age <= 25:
+                return '18-25'
+            if 26 <= numeric_age <= 35:
+                return '26-35'
+            if 36 <= numeric_age <= 45:
+                return '36-45'
+            if 46 <= numeric_age <= 55:
+                return '46-55'
+            if 56 <= numeric_age <= 65:
+                return '56-65'
+            if numeric_age >= 66:
+                return '65+'
+
+        raise forms.ValidationError('Please select a valid age group.')
