@@ -8,7 +8,7 @@
   }
   .choice-chip {
     border: 1px solid #cbd5e1;
-    background: #ffffff;
+    background: #fff;
     color: #334155;
     transition: all 0.2s ease;
   }
@@ -18,7 +18,7 @@
   .choice-input:checked + .choice-chip {
     background: linear-gradient(135deg, #2563eb, #4338ca);
     border-color: #1d4ed8;
-    color: #ffffff;
+    color: #fff;
     box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
   }
   .dark .choice-chip {
@@ -29,7 +29,7 @@
   .dark .choice-input:checked + .choice-chip {
     background: linear-gradient(135deg, #3b82f6, #4f46e5);
     border-color: #3b82f6;
-    color: #ffffff;
+    color: #fff;
     box-shadow: 0 8px 18px rgba(59, 130, 246, 0.35);
   }
 </style>
@@ -42,8 +42,7 @@
       href="{% url 'view_user_details' %}"
       class="inline-flex items-center gap-2 text-primary-100 hover:text-white transition-colors mb-5"
     >
-      <i class="fas fa-arrow-left"></i>
-      Back to Profile
+      <i class="fas fa-arrow-left"></i> Back to Profile
     </a>
     <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">
       <i class="fas fa-pen-to-square mr-3"></i>Edit Your Profile
@@ -395,8 +394,7 @@
               href="{% url 'view_user_details' %}"
               class="inline-flex items-center gap-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white px-6 py-3 font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
             >
-              <i class="fas fa-times"></i>
-              Cancel
+              <i class="fas fa-times"></i> Cancel
             </a>
           </div>
         </form>
@@ -406,9 +404,8 @@
             class="rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-4"
           >
             <p class="text-sm text-blue-800 dark:text-blue-200">
-              <i class="fas fa-shield-alt mr-2"></i>
-              Your information is securely stored and used only for eligibility
-              matching.
+              <i class="fas fa-shield-alt mr-2"></i>Your information is securely
+              stored and used only for eligibility matching.
             </p>
           </div>
         </div>
