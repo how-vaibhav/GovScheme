@@ -24,7 +24,7 @@ def test_rasa_server():
     """Test if RASA actions server is running"""
     try:
         response = requests.post(
-            'http://localhost:5055/webhook',
+            'http://localhost:5005/webhook',
             json={'action': 'action_listen'},
             timeout=3
         )
@@ -55,7 +55,7 @@ def main():
         print("✨ All servers are running and communicating!")
         print("\n📍 Access points:")
         print("   🌐 Main Portal: http://localhost:8000")
-        print("   🤖 RASA API: http://localhost:5055")
+        print("   🤖 RASA API: http://localhost:5005")
         print("   🔧 Admin Panel: http://localhost:8000/admin")
     elif django_ok:
         print("⚠️  Django is running but RASA is not responding")
