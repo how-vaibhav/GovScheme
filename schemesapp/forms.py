@@ -138,6 +138,14 @@ class User_Details_Form(forms.ModelForm):
         required=True,
     )
 
+    gender = forms.ChoiceField(
+        choices=[('M', 'Male'), ('F', 'Female')],
+        required=True,
+        widget=forms.Select(attrs={
+            'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
+        })
+    )
+
     class Meta:
         model = UserDetails
         fields = ['name', 'age', 'email', 'gender', 'maritial_status', 'location', 'caste', 'disability', 'minority', 'below_poverty_line', 'income' ]

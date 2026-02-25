@@ -1,1419 +1,554 @@
-{% extends "base.html" %} {% load static %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Send Feedback - GovAid{% endblock %}
+
+{% block content %}
+
 <style>
-  /* === ANIMATIONS === */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  @keyframes fadeInDown {
-    from {
-      opacity: 0;
-      transform: translateY(-30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  @keyframes slideUp {
-    from {
-      transform: translateY(10px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-  @keyframes slideUpMobile {
-    from {
-      transform: translateY(100%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-  @keyframes shake {
-    0%,
-    100% {
-      transform: translateX(0);
-    }
-    25% {
-      transform: translateX(-5px);
-    }
-    75% {
-      transform: translateX(5px);
-    }
-  }
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  @keyframes inputGlow {
-    0%,
-    100% {
-      box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
-    }
-    50% {
-      box-shadow: 0 0 25px rgba(99, 102, 241, 0.5);
-    }
-  }
-  @keyframes shimmer {
-    0% {
-      background-position: -1000px 0;
-    }
-    100% {
-      background-position: 1000px 0;
-    }
-  }
-  @keyframes scaleIn {
-    from {
-      transform: scale(0.95);
-      opacity: 0;
-    }
-    to {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-  @keyframes successPulse {
-    0%,
-    100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.05);
-    }
+  .feedback-theme {
+    --fb-page-bg: radial-gradient(circle at 20% 20%, #e9efff 0%, #f8faff 40%, #eef2ff 100%);
+    --fb-card-bg: rgba(255, 255, 255, 0.96);
+    --fb-card-border: #cfd9ee;
+    --fb-header-bg: linear-gradient(90deg, #ffffff 0%, #f2f6ff 100%);
+    --fb-surface-bg: #ffffff;
+    --fb-surface-border: #dfe6f4;
+    --fb-title: #0f172a;
+    --fb-body: #334155;
+    --fb-muted: #64748b;
+    --fb-input-bg: #f8fbff;
+    --fb-input-border: #c9d7ee;
+    --fb-input-text: #0f172a;
+    --fb-placeholder: #74839b;
+    --fb-focus-ring: rgba(37, 99, 235, 0.18);
+    --fb-focus-border: #2563eb;
+    --fb-shadow: 0 16px 38px rgba(30, 64, 175, 0.1);
+    --fb-star-off: #94a3b8;
+    --fb-progress-track: #dbe8ff;
+    --fb-progress-fill: linear-gradient(90deg, #2563eb, #4f46e5);
+    --fb-btn-bg: linear-gradient(135deg, #2563eb, #4338ca);
+    --fb-btn-bg-hover: linear-gradient(135deg, #1d4ed8, #3730a3);
+    --fb-link-bg: #eef4ff;
+    --fb-link-border: #bfd3fb;
+    --fb-link-text: #1d4ed8;
   }
 
-  /* === UTILITY CLASSES === */
-  .animate-fade-in-up {
-    animation: fadeInUp 0.6s ease-out both;
-    opacity: 0;
-  }
-  .animate-fade-in-down {
-    animation: fadeInDown 0.6s ease-out both;
-    opacity: 0;
-  }
-  .animate-fade-in {
-    animation: fadeIn 0.4s ease-out both;
-    opacity: 0;
-  }
-  .animate-slide-up {
-    animation: slideUp 0.3s ease-out both;
-    opacity: 0;
-  }
-  .animate-shake {
-    animation: shake 0.4s ease-in-out;
-  }
-  .animate-spin {
-    animation: spin 1s linear infinite;
-  }
-  .stagger-1 {
-    animation-delay: 0.1s;
-  }
-  .stagger-2 {
-    animation-delay: 0.2s;
-  }
-  .stagger-3 {
-    animation-delay: 0.3s;
-  }
-  .hover-lift {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .hover-lift:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  html.dark .feedback-theme {
+    --fb-page-bg: radial-gradient(circle at 20% 20%, #101a31 0%, #0b1220 48%, #070d18 100%);
+    --fb-card-bg: rgba(11, 19, 36, 0.95);
+    --fb-card-border: #26344c;
+    --fb-header-bg: linear-gradient(90deg, #0f172a 0%, #111f3a 100%);
+    --fb-surface-bg: #0f1a30;
+    --fb-surface-border: #2a3d5f;
+    --fb-title: #f8fafc;
+    --fb-body: #dbe6f7;
+    --fb-muted: #b4c3da;
+    --fb-input-bg: #14233f;
+    --fb-input-border: #33507d;
+    --fb-input-text: #f8fafc;
+    --fb-placeholder: #93a8c9;
+    --fb-focus-ring: rgba(96, 165, 250, 0.24);
+    --fb-focus-border: #60a5fa;
+    --fb-shadow: 0 20px 46px rgba(0, 0, 0, 0.5);
+    --fb-star-off: #9fb4d4;
+    --fb-progress-track: #223456;
+    --fb-progress-fill: linear-gradient(90deg, #60a5fa, #818cf8);
+    --fb-btn-bg: linear-gradient(135deg, #3b82f6, #6366f1);
+    --fb-btn-bg-hover: linear-gradient(135deg, #2563eb, #4f46e5);
+    --fb-link-bg: #132544;
+    --fb-link-border: #355585;
+    --fb-link-text: #93c5fd;
   }
 
-  /* === FLOATING LABEL INPUT === */
-  .floating-label-input {
-    position: relative;
-    margin-top: 1.5rem;
+  .feedback-theme {
+    background: var(--fb-page-bg) !important;
   }
-  .floating-label-input input,
-  .floating-label-input textarea {
-    width: 100%;
-    padding: 1.25rem 1rem 0.75rem 1rem;
-    background: rgb(255, 255, 255);
-    border: 2px solid rgb(229, 231, 235);
-    border-radius: 0.75rem;
+
+  .feedback-theme .fb-card {
+    background: var(--fb-card-bg);
+    border-color: var(--fb-card-border);
+    box-shadow: var(--fb-shadow);
+  }
+
+  .feedback-theme .fb-header {
+    background: var(--fb-header-bg);
+    border-color: var(--fb-surface-border);
+  }
+
+  .feedback-theme .fb-surface {
+    background: var(--fb-surface-bg);
+    border-color: var(--fb-surface-border);
+  }
+
+  .feedback-theme .fb-title {
+    color: var(--fb-title);
+  }
+
+  .feedback-theme .fb-text {
+    color: var(--fb-body);
+  }
+
+  .feedback-theme .fb-muted {
+    color: var(--fb-muted);
+  }
+
+  .feedback-theme .fb-progress-track {
+    background: var(--fb-progress-track) !important;
+  }
+
+  .feedback-theme .fb-progress-fill {
+    background: var(--fb-progress-fill) !important;
+  }
+
+  .feedback-theme .fb-field {
+    border: 1px solid var(--fb-input-border);
+    background: var(--fb-input-bg);
+    color: var(--fb-input-text);
+    min-height: 52px;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  }
+
+  .feedback-theme .fb-field::placeholder {
+    color: var(--fb-placeholder);
+    opacity: 1;
+  }
+
+  .feedback-theme .fb-field:focus {
+    border-color: var(--fb-focus-border);
+    box-shadow: 0 0 0 4px var(--fb-focus-ring);
     outline: none;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    color: rgb(17, 24, 39);
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  }
-  .dark .floating-label-input input,
-  .dark .floating-label-input textarea {
-    background: rgb(55, 65, 81);
-    border-color: rgb(75, 85, 99);
-    color: white;
-  }
-  .floating-label-input input:focus,
-  .floating-label-input textarea:focus {
-    border-color: rgb(99, 102, 241);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-  }
-  .floating-label-input input.success,
-  .floating-label-input textarea.success {
-    border-color: rgb(34, 197, 94);
-  }
-  .floating-label-input input.error,
-  .floating-label-input textarea.error {
-    border-color: rgb(239, 68, 68);
-    animation: shake 0.4s ease-in-out;
-  }
-  .floating-label-input label {
-    position: absolute;
-    left: 1rem;
-    top: 1.25rem;
-    color: rgb(107, 114, 128);
-    font-size: 1rem;
-    pointer-events: none;
-    transition: all 0.3s ease;
-    background: transparent;
-    padding: 0 0.25rem;
-  }
-  .dark .floating-label-input label {
-    color: rgb(156, 163, 175);
-  }
-  .floating-label-input input:focus ~ label,
-  .floating-label-input input.has-value ~ label,
-  .floating-label-input textarea:focus ~ label,
-  .floating-label-input textarea.has-value ~ label {
-    top: -0.6rem;
-    left: 0.75rem;
-    font-size: 0.75rem;
-    color: rgb(99, 102, 241);
-    font-weight: 600;
-    background: white;
-    padding: 0 0.5rem;
-  }
-  .dark .floating-label-input input:focus ~ label,
-  .dark .floating-label-input input.has-value ~ label,
-  .dark .floating-label-input textarea:focus ~ label,
-  .dark .floating-label-input textarea.has-value ~ label {
-    background: rgb(31, 41, 55);
-  }
-  .floating-label-input .field-icon {
-    position: absolute;
-    right: 1rem;
-    top: 1.25rem;
-    color: rgb(156, 163, 175);
-    pointer-events: none;
-  }
-  .floating-label-input input:focus ~ .field-icon,
-  .floating-label-input textarea:focus ~ .field-icon {
-    color: rgb(99, 102, 241);
-  }
-  .floating-label-input input.success ~ .field-icon,
-  .floating-label-input textarea.success ~ .field-icon {
-    color: rgb(34, 197, 94);
   }
 
-  /* === CHARACTER COUNTER === */
-  .char-counter {
-    position: absolute;
-    right: 1rem;
-    bottom: 0.75rem;
-    font-size: 0.75rem;
-    color: rgb(107, 114, 128);
-    font-weight: 500;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.5rem;
-    pointer-events: none;
-  }
-  .dark .char-counter {
-    background: rgba(31, 41, 55, 0.9);
-    color: rgb(156, 163, 175);
-  }
-  .char-counter.warning {
-    color: rgb(234, 179, 8);
-  }
-  .char-counter.error {
-    color: rgb(239, 68, 68);
+  .feedback-theme .fb-field:disabled {
+    opacity: 1;
+    background: color-mix(in srgb, var(--fb-input-bg) 75%, #9ca3af 25%);
+    color: color-mix(in srgb, var(--fb-input-text) 70%, #9ca3af 30%);
+    cursor: not-allowed;
   }
 
-  /* === SELECTION BUTTON === */
-  .selection-btn {
-    width: 100%;
-    padding: 1.25rem 1rem;
-    background: linear-gradient(135deg, rgb(255, 255, 255), rgb(249, 250, 251));
-    border: 2px solid rgb(229, 231, 235);
-    border-radius: 0.75rem;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: rgb(107, 114, 128);
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  }
-  .dark .selection-btn {
-    background: linear-gradient(135deg, rgb(55, 65, 81), rgb(31, 41, 55));
-    border-color: rgb(75, 85, 99);
-    color: rgb(156, 163, 175);
-  }
-  .selection-btn:hover {
-    border-color: rgb(209, 213, 219);
-    background: rgb(249, 250, 251);
-  }
-  .dark .selection-btn:hover {
-    border-color: rgb(107, 114, 128);
-    background: rgb(75, 85, 99);
-  }
-  .selection-btn:focus {
-    border-color: rgb(99, 102, 241);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-  }
-  .selection-btn.has-value {
-    color: rgb(17, 24, 39);
-    border-color: rgb(99, 102, 241);
-    background: linear-gradient(135deg, rgb(238, 242, 255), rgb(224, 231, 255));
-    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.16);
-  }
-  .dark .selection-btn.has-value {
-    color: white;
-    background: rgba(67, 56, 202, 0.3);
+  .feedback-theme .fb-field.is-invalid {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.17);
   }
 
-  .floating-label-input textarea {
-    min-height: 170px;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.98),
-      rgba(249, 250, 251, 0.96)
-    );
-  }
-  .dark .floating-label-input textarea {
-    background: linear-gradient(
-      135deg,
-      rgba(55, 65, 81, 0.95),
-      rgba(31, 41, 55, 0.98)
-    );
+  .feedback-theme .fb-field.is-valid {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.14);
   }
 
-  .feedback-hero-glow {
-    position: absolute;
-    width: 20rem;
-    height: 20rem;
-    border-radius: 9999px;
-    filter: blur(65px);
-    opacity: 0.22;
-    pointer-events: none;
+  .feedback-theme #id_scheme option {
+    background-color: #ffffff;
+    color: #111827;
   }
 
-  /* === DIALOG/MODAL === */
-  .dialog-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    z-index: 9998;
-    animation: fadeIn 0.2s ease-out;
-  }
-  .dialog-container {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-  }
-  .dialog-content {
-    background: white;
-    border-radius: 1.5rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    width: 100%;
-    max-width: 42rem;
-    max-height: 90vh;
-    overflow: hidden;
-    animation: scaleIn 0.2s ease-out;
-  }
-  .dark .dialog-content {
-    background: rgb(31, 41, 55);
-  }
-  @media (max-width: 640px) {
-    .dialog-container {
-      align-items: flex-end;
-      padding: 0;
-    }
-    .dialog-content {
-      max-width: 100%;
-      max-height: 85vh;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-      animation: slideUpMobile 0.3s ease-out;
-    }
+  html.dark .feedback-theme #id_scheme option {
+    background-color: #0f172a;
+    color: #e5e7eb;
   }
 
-  /* === SCHEME OPTION === */
-  .scheme-option {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    border-radius: 0.75rem;
-    border: 2px solid transparent;
-    background: rgb(249, 250, 251);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  .dark .scheme-option {
-    background: rgb(55, 65, 81);
-  }
-  .scheme-option:hover {
-    background: rgb(238, 242, 255);
-    border-color: rgb(199, 210, 254);
-    transform: translateX(4px);
-  }
-  .dark .scheme-option:hover {
-    background: rgb(67, 56, 202, 0.2);
-    border-color: rgb(99, 102, 241);
-  }
-  .scheme-option:active {
-    transform: scale(0.98);
+  .feedback-theme .fb-star {
+    color: #f59e0b;
+    opacity: 0.45;
+    text-shadow: 0 0 8px rgba(245, 158, 11, 0.25);
+    filter: drop-shadow(0 0 2px rgba(251, 191, 36, 0.28));
   }
 
-  /* === RATING STARS === */
-  .rating-container {
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-    padding: 1.5rem;
-    background: rgb(255, 255, 255);
-    border: 2px solid rgb(229, 231, 235);
-    border-radius: 0.75rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-  }
-  .dark .rating-container {
-    background: rgb(55, 65, 81);
-    border-color: rgb(75, 85, 99);
-  }
-  .rating-container:hover {
-    border-color: rgb(250, 204, 21);
-    box-shadow: 0 4px 12px 0 rgba(250, 204, 21, 0.15);
-  }
-  .star {
-    font-size: 2.5rem;
-    color: rgb(209, 213, 219);
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-  }
-  .dark .star {
-    color: rgb(75, 85, 99);
-  }
-  .star:hover {
-    color: rgb(250, 204, 21);
-    transform: scale(1.2) rotate(-5deg);
-    filter: drop-shadow(0 4px 8px rgba(250, 204, 21, 0.4));
-  }
-  .star.active {
-    color: rgb(250, 204, 21);
-    transform: scale(1.1);
-    animation: successPulse 0.3s ease-out;
-  }
-  #rating-label {
-    font-weight: 600;
-    padding: 0.5rem 1rem;
-    background: rgb(254, 249, 195);
-    border-radius: 0.5rem;
-    color: rgb(161, 98, 7);
-    border: 1px solid rgb(253, 224, 71);
-  }
-  .dark #rating-label {
-    background: rgba(161, 98, 7, 0.2);
-    color: rgb(253, 224, 71);
-    border-color: rgb(161, 98, 7);
+  .feedback-theme .fb-star:hover,
+  .feedback-theme .fb-star:focus-visible {
+    color: #fbbf24;
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.45), 0 0 18px rgba(245, 158, 11, 0.28);
   }
 
-  /* === FIELD MESSAGE === */
-  .field-message {
-    display: flex;
-    align-items: start;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-    padding: 0.75rem;
-    border-radius: 0.75rem;
-    font-size: 0.875rem;
-    animation: slideUp 0.3s ease-out;
-  }
-  .field-message.error {
-    background: rgba(254, 226, 226, 0.5);
-    border: 1px solid rgb(254, 202, 202);
-    color: rgb(185, 28, 28);
-  }
-  .dark .field-message.error {
-    background: rgba(127, 29, 29, 0.3);
-    border-color: rgb(153, 27, 27);
-    color: rgb(252, 165, 165);
-  }
-  .field-message.success {
-    background: rgba(220, 252, 231, 0.5);
-    border: 1px solid rgb(187, 247, 208);
-    color: rgb(21, 128, 61);
-  }
-  .dark .field-message.success {
-    background: rgba(20, 83, 45, 0.3);
-    border-color: rgb(22, 101, 52);
-    color: rgb(134, 239, 172);
-  }
-  .field-message i {
-    flex-shrink: 0;
-    margin-top: 0.125rem;
+  .feedback-theme input[name="rating"]:checked + .fb-star {
+    color: #facc15;
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(250, 204, 21, 0.58), 0 0 18px rgba(234, 179, 8, 0.35);
   }
 
-  /* === SPINNER === */
-  .spinner {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+  html.dark .feedback-theme .fb-star {
+    color: #fbbf24;
+    opacity: 0.5;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.3), 0 0 20px rgba(245, 158, 11, 0.2);
   }
 
-  /* === SEARCH INPUT === */
-  .search-input-wrapper {
-    position: relative;
+  .feedback-theme .fb-section-title {
+    letter-spacing: 0.08em;
   }
-  .search-input-wrapper input {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.75rem;
-    border: 2px solid rgb(229, 231, 235);
-    border-radius: 0.75rem;
+
+  .feedback-theme .fb-btn {
+    background: var(--fb-btn-bg) !important;
+    color: #ffffff !important;
+    box-shadow: 0 14px 28px rgba(79, 70, 229, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+  }
+
+  .feedback-theme .fb-btn:hover {
+    background: var(--fb-btn-bg-hover) !important;
+    box-shadow: 0 20px 32px rgba(79, 70, 229, 0.36);
+  }
+
+  .feedback-theme .fb-btn:focus-visible {
     outline: none;
-    transition: all 0.2s ease;
+    box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.32), 0 20px 32px rgba(79, 70, 229, 0.36);
   }
-  .dark .search-input-wrapper input {
-    background: rgb(55, 65, 81);
-    border-color: rgb(75, 85, 99);
-    color: white;
+
+  .feedback-theme .fb-secondary-link {
+    background: var(--fb-link-bg) !important;
+    color: var(--fb-link-text) !important;
+    border-color: var(--fb-link-border) !important;
   }
-  .search-input-wrapper input:focus {
-    border-color: rgb(99, 102, 241);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-  }
-  .search-input-wrapper i {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgb(156, 163, 175);
+
+  .feedback-theme .fb-secondary-link:hover {
+    filter: brightness(1.06);
   }
 </style>
-{% block title %}Send Feedback - GovAid{% endblock %} {% block content %}
-<!-- Header -->
-<section
-  class="relative bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-14 animate-fade-in-down overflow-hidden"
->
-  <div class="feedback-hero-glow bg-indigo-300 top-[-5rem] right-[-4rem]"></div>
-  <div class="feedback-hero-glow bg-cyan-300 bottom-[-8rem] left-[-5rem]"></div>
-  <div class="container mx-auto px-4">
-    <div class="max-w-4xl mx-auto text-center">
-      <h1
-        class="text-4xl md:text-5xl font-bold text-white mb-4 animate-fade-in-up stagger-1"
-      >
-        <i class="fas fa-comment-dots mr-3"></i>Send Feedback
-      </h1>
-      <p
-        class="text-lg text-primary-100 dark:text-gray-300 animate-fade-in-up stagger-2"
-      >
-        Your insights help us improve GovAid for everyone
-      </p>
-    </div>
-  </div>
-</section>
 
-<!-- Form Section with Advanced Styling -->
-<section class="py-12 bg-gray-50 dark:bg-gray-900">
-  <div class="container mx-auto px-4">
-    <div class="max-w-4xl mx-auto">
-      <!-- Glass Morphism Card -->
-      <div
-        class="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl overflow-hidden"
-      >
-        <!-- Success Alert -->
-        {% if messages %}
-        <div
-          class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-b border-green-200 dark:border-green-800 px-8 py-6 animate-in slide-in-from-top"
-        >
-          <div class="flex items-start gap-4">
-            <div class="flex-shrink-0 mt-0.5">
-              <div
-                class="flex items-center justify-center h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/50"
-              >
-                <i
-                  class="fas fa-check-circle text-green-600 dark:text-green-400 text-lg"
-                ></i>
-              </div>
-            </div>
-            <div class="flex-1">
-              {% for message in messages %}
-              <p
-                class="text-sm font-semibold text-green-800 dark:text-green-300"
-              >
-                {{ message }}
-              </p>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-        {% endif %}
+<section class="feedback-theme min-h-screen bg-gradient-to-br 
+                from-indigo-50 via-white to-indigo-100 
+                dark:from-gray-900 dark:via-gray-950 dark:to-gray-900
+                transition-colors duration-500 py-6 sm:py-10">
 
-        <!-- Form Content -->
-        <div class="p-6 md:p-10 pt-8 md:pt-10">
-          <!-- Info Banner -->
-          <div
-            class="mb-5 p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border border-blue-200/50 dark:border-blue-800/30 backdrop-blur-sm"
-          >
-            <div class="flex items-start gap-3">
-              <i
-                class="fas fa-lightbulb text-blue-600 dark:text-blue-400 text-lg mt-0.5 flex-shrink-0"
-              ></i>
-              <div>
-                <p
-                  class="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-1"
-                >
-                  Your feedback matters to us
-                </p>
-                <p class="text-xs text-blue-800 dark:text-blue-300">
-                  We carefully review every submission and respond within 24-48
-                  hours. Your insights help us serve you better.
-                </p>
-              </div>
-            </div>
-          </div>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6">
 
-          <!-- Form -->
-          <form method="post" id="feedbackForm" class="space-y-5">
-            {% csrf_token %}
+    <div class="fb-card bg-white/80 dark:bg-gray-900/80 
+                backdrop-blur-xl 
+                border border-gray-200 dark:border-gray-800
+                shadow-xl dark:shadow-black/40
+                rounded-3xl overflow-hidden transition">
 
-            <!-- Form Header -->
-            <div
-              class="space-y-2 pb-4 border-b border-gray-200/50 dark:border-gray-700/50 animate-fade-in stagger-1"
-            >
-              <div class="flex items-center gap-2">
-                <div
-                  class="w-1 h-6 bg-gradient-to-b from-primary-600 to-indigo-600 rounded-full"
-                ></div>
-                <h2
-                  class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300"
-                >
-                  Feedback Form
-                </h2>
-              </div>
-            </div>
+      <!-- HEADER -->
+      <div class="fb-header px-5 sm:px-8 py-6 sm:py-8
+                  border-b border-gray-200 dark:border-gray-800
+                  bg-gradient-to-r 
+                  from-white to-indigo-50 
+                  dark:from-gray-900 dark:to-gray-800
+                  transition-colors duration-500">
 
-            <!-- Scheme Selection -->
-            <div class="animate-fade-in stagger-2">
-              <label
-                class="block text-sm font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2"
-              >
-                <i
-                  class="fas fa-file-contract text-primary-600 dark:text-primary-400"
-                ></i>
-                Which Scheme Are You Reviewing?
-                <span
-                  class="text-xs font-normal text-gray-500 dark:text-gray-400"
-                  >(Optional)</span
-                >
-              </label>
-              <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">
-                Help us improve specific schemes by selecting the one you're
-                providing feedback about
-              </p>
+        <h1 class="fb-title text-xl sm:text-2xl font-bold 
+                   text-gray-800 dark:text-gray-100 tracking-tight">
+          Send Feedback
+        </h1>
 
-              <button
-                type="button"
-                id="scheme-display"
-                onclick="openSchemeDialog()"
-                class="selection-btn"
-                aria-haspopup="dialog"
-                aria-label="Select scheme"
-              >
-                <span id="scheme-text" class="flex items-center gap-2">
-                  <i class="fas fa-file-alt text-gray-400"></i>
-                  <span>Select a scheme (optional)</span>
-                </span>
-                <i class="fas fa-chevron-down text-sm"></i>
-              </button>
-
-              <input
-                type="hidden"
-                name="scheme"
-                id="scheme-input"
-                value="{{ form.scheme.value|default:'' }}"
-              />
-
-              <div id="scheme-error" class="field-message error hidden">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>Please select a scheme</span>
-              </div>
-
-              {% if form.scheme.errors %}
-              <div class="field-message error mt-2">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>{{ form.scheme.errors.0 }}</span>
-              </div>
-              {% endif %}
-            </div>
-
-            <!-- Rating -->
-            <div class="animate-fade-in stagger-3">
-              <label
-                class="block text-sm font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2"
-              >
-                <i class="fas fa-star-half-alt text-amber-500"></i>
-                How Was Your Experience?
-              </label>
-              <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">
-                Click on the stars below to rate your overall experience (1 =
-                Poor, 5 = Excellent)
-              </p>
-
-              <div class="rating-container">
-                <input type="hidden" name="rating" id="rating-input" value="" />
-                <div class="flex items-center gap-2">
-                  <i
-                    class="fas fa-star star"
-                    data-rating="1"
-                    onclick="setRating(1)"
-                    title="1 Star - Poor"
-                  ></i>
-                  <i
-                    class="fas fa-star star"
-                    data-rating="2"
-                    onclick="setRating(2)"
-                    title="2 Stars - Fair"
-                  ></i>
-                  <i
-                    class="fas fa-star star"
-                    data-rating="3"
-                    onclick="setRating(3)"
-                    title="3 Stars - Good"
-                  ></i>
-                  <i
-                    class="fas fa-star star"
-                    data-rating="4"
-                    onclick="setRating(4)"
-                    title="4 Stars - Very Good"
-                  ></i>
-                  <i
-                    class="fas fa-star star"
-                    data-rating="5"
-                    onclick="setRating(5)"
-                    title="5 Stars - Excellent"
-                  ></i>
-                </div>
-                <span id="rating-label" class="text-sm font-semibold"></span>
-              </div>
-            </div>
-
-            <!-- Feedback Message -->
-            <div class="floating-label-input animate-fade-in stagger-3">
-              <textarea
-                id="feedback-textarea"
-                name="message"
-                rows="6"
-                maxlength="1000"
-                required
-                aria-describedby="feedback-help feedback-error"
-              >
-{{ form.message.value|default:'' }}</textarea
-              >
-              <label for="feedback-textarea" class="flex items-center gap-2">
-                <i
-                  class="fas fa-comment-dots text-primary-600 dark:text-primary-400 text-xs"
-                ></i>
-                Share Your Detailed Feedback <span class="text-red-600">*</span>
-              </label>
-              <div class="char-counter" id="char-counter">
-                <span id="char-count">0</span> / 1000
-              </div>
-
-              <div id="feedback-error" class="field-message error hidden">
-                <i class="fas fa-exclamation-circle"></i>
-                <span
-                  >Please provide your feedback (minimum 10 characters)</span
-                >
-              </div>
-
-              {% if form.message.errors %}
-              <div class="field-message error mt-2">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>{{ form.message.errors.0 }}</span>
-              </div>
-              {% endif %}
-
-              <div
-                id="feedback-help"
-                class="text-xs text-gray-600 dark:text-gray-400 mt-2 flex items-start gap-2 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800"
-              >
-                <i
-                  class="fas fa-info-circle mt-0.5 flex-shrink-0 text-blue-600 dark:text-blue-400"
-                ></i>
-                <span
-                  ><strong>Pro tip:</strong> Be specific about what you
-                  experienced. Mention what worked well and what could be
-                  improved. Include examples if possible.</span
-                >
-              </div>
-            </div>
-
-            <!-- Suggestions (Optional) -->
-            <div class="floating-label-input animate-fade-in stagger-3">
-              <textarea
-                id="suggestions-textarea"
-                name="suggestions"
-                rows="4"
-                maxlength="500"
-                aria-describedby="suggestions-help"
-              ></textarea>
-              <label for="suggestions-textarea" class="flex items-center gap-2">
-                <i class="fas fa-lightbulb text-amber-500 text-xs"></i>
-                Any Suggestions for Us?
-                <span
-                  class="text-xs font-normal text-gray-500 dark:text-gray-400"
-                  >(Optional)</span
-                >
-              </label>
-              <div class="char-counter" id="suggestions-counter">
-                <span id="suggestions-count">0</span> / 500
-              </div>
-
-              <div
-                id="suggestions-help"
-                class="text-xs text-gray-600 dark:text-gray-400 mt-2 flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 p-3 rounded-lg border border-amber-200 dark:border-amber-800"
-              >
-                <i
-                  class="fas fa-lightbulb mt-0.5 flex-shrink-0 text-amber-600 dark:text-amber-400"
-                ></i>
-                <span
-                  >Got ideas for improvements? We'd love to hear them! Share
-                  specific features or changes you'd like to see.</span
-                >
-              </div>
-            </div>
-
-            <!-- Submit Section -->
-            <div
-              class="pt-8 border-t border-gray-200/50 dark:border-gray-700/50 animate-fade-in stagger-3"
-            >
-              <button
-                type="button"
-                onclick="showConfirmationModal()"
-                id="submitBtn"
-                class="w-full group relative px-8 py-5 bg-gradient-to-r from-primary-600 via-primary-600 to-indigo-600 hover:from-primary-700 hover:via-primary-700 hover:to-indigo-700 text-white font-bold text-lg rounded-2xl shadow-2xl hover:shadow-3xl transform hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3 overflow-hidden"
-                aria-label="Review and submit feedback"
-              >
-                <!-- Animated Shine Effect -->
-                <div
-                  class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 group-hover:translate-x-full transition-transform duration-1000"
-                ></div>
-
-                <!-- Content -->
-                <i class="fas fa-paper-plane text-xl relative z-10"></i>
-                <span id="submitText" class="relative z-10"
-                  >Submit Your Feedback</span
-                >
-              </button>
-
-              <div
-                class="mt-4 flex items-center justify-center gap-4 text-xs text-gray-500 dark:text-gray-400"
-              >
-                <div class="flex items-center gap-1">
-                  <i
-                    class="fas fa-shield-alt text-green-600 dark:text-green-400"
-                  ></i>
-                  <span>Private & Secure</span>
-                </div>
-                <div class="flex items-center gap-1">
-                  <i class="fas fa-clock text-blue-600 dark:text-blue-400"></i>
-                  <span>Response in 24-48h</span>
-                </div>
-              </div>
-            </div>
-          </form>
-
-          <!-- View Feedbacks Link -->
-          <div
-            class="mt-8 pt-8 border-t border-gray-200/50 dark:border-gray-700/50 text-center"
-          >
-            <a
-              href="{% url 'view_feedbacks' %}"
-              class="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-600 dark:hover:to-gray-500 text-gray-800 dark:text-gray-200 font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg border border-gray-300 dark:border-gray-600"
-            >
-              <i
-                class="fas fa-history text-primary-600 dark:text-primary-400"
-              ></i>
-              <span>View Your Previous Feedbacks</span>
-              <i class="fas fa-arrow-right text-sm"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Advanced Tips Section -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-        <!-- Tips Card -->
-        <div
-          class="backdrop-blur-xl bg-white/60 dark:bg-gray-800/60 border border-white/30 dark:border-gray-700/30 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-        >
-          <div class="flex items-start gap-3 mb-4">
-            <div
-              class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center flex-shrink-0"
-            >
-              <i class="fas fa-lightbulb text-white"></i>
-            </div>
-            <h3 class="font-bold text-gray-900 dark:text-white">
-              Tips for Better Feedback
-            </h3>
-          </div>
-          <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-            <li class="flex items-start gap-2">
-              <i class="fas fa-check text-amber-500 mt-0.5 flex-shrink-0"></i>
-              <span>Be specific about your experience</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <i class="fas fa-check text-amber-500 mt-0.5 flex-shrink-0"></i>
-              <span>Include details that help us understand</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <i class="fas fa-check text-amber-500 mt-0.5 flex-shrink-0"></i>
-              <span>Share both positive and constructive feedback</span>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Response Time Card -->
-        <div
-          class="backdrop-blur-xl bg-white/60 dark:bg-gray-800/60 border border-white/30 dark:border-gray-700/30 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-        >
-          <div class="flex items-start gap-3 mb-4">
-            <div
-              class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center flex-shrink-0"
-            >
-              <i class="fas fa-clock text-white"></i>
-            </div>
-            <h3 class="font-bold text-gray-900 dark:text-white">
-              Our Commitment
-            </h3>
-          </div>
-          <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-            <li class="flex items-start gap-2">
-              <i class="fas fa-check text-green-500 mt-0.5 flex-shrink-0"></i>
-              <span>We respond within 24-48 hours</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <i class="fas fa-check text-green-500 mt-0.5 flex-shrink-0"></i>
-              <span>All feedback is carefully reviewed</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <i class="fas fa-check text-green-500 mt-0.5 flex-shrink-0"></i>
-              <span>Your insights drive improvements</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Scheme Selection Dialog -->
-<div
-  id="scheme-dialog"
-  class="hidden"
-  role="dialog"
-  aria-labelledby="scheme-dialog-title"
-  aria-modal="true"
->
-  <div class="dialog-overlay" onclick="closeSchemeDialog()"></div>
-  <div class="dialog-container">
-    <div class="dialog-content">
-      <!-- Dialog Header -->
-      <div
-        class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 z-10"
-      >
-        <div class="flex items-center justify-between mb-4">
-          <h3
-            id="scheme-dialog-title"
-            class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2"
-          >
-            <i class="fas fa-file-alt text-primary-600"></i>
-            Select Related Scheme
-          </h3>
-          <button
-            type="button"
-            onclick="closeSchemeDialog()"
-            class="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
-            aria-label="Close dialog"
-          >
-            <i class="fas fa-times text-gray-500 dark:text-gray-400"></i>
-          </button>
-        </div>
-
-        <!-- Search -->
-        <div class="search-input-wrapper">
-          <i class="fas fa-search"></i>
-          <input
-            type="text"
-            id="scheme-search"
-            placeholder="Search schemes..."
-            oninput="filterSchemes()"
-            aria-label="Search schemes"
-          />
-        </div>
-      </div>
-
-      <!-- Scheme List -->
-      <div class="overflow-y-auto max-h-[60vh] p-6">
-        <div id="scheme-list" class="space-y-3">
-          <div
-            class="scheme-option"
-            onclick="selectScheme('', 'No Specific Scheme', 'General Feedback')"
-            data-name="no specific scheme general feedback"
-            data-agency="general feedback"
-          >
-            <div
-              class="flex-shrink-0 w-12 h-12 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center"
-            >
-              <i
-                class="fas fa-comments text-gray-600 dark:text-gray-300 text-xl"
-              ></i>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="font-semibold text-gray-900 dark:text-white">
-                General Feedback
-              </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400">
-                Not related to a specific scheme
-              </div>
-            </div>
-          </div>
-
-          {% for scheme in schemes %}
-          <div
-            class="scheme-option"
-            onclick="selectScheme('{{ scheme.id }}', '{{ scheme.name|escapejs }}', '{{ scheme.agency|escapejs }}')"
-            data-name="{{ scheme.name|lower }}"
-            data-agency="{{ scheme.agency|lower }}"
-          >
-            <div
-              class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-500 flex items-center justify-center"
-            >
-              <i class="fas fa-file-alt text-white text-xl"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="font-semibold text-gray-900 dark:text-white truncate">
-                {{ scheme.name }}
-              </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400 truncate">
-                {{ scheme.agency }}
-              </div>
-            </div>
-            {% if scheme.category %}
-            <span
-              class="px-2 py-1 rounded-lg bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-medium flex-shrink-0"
-            >
-              {{ scheme.category }}
-            </span>
-            {% endif %}
-          </div>
-          {% endfor %}
-        </div>
-
-        <div id="no-results" class="hidden text-center py-12">
-          <i
-            class="fas fa-search text-gray-300 dark:text-gray-600 text-4xl mb-4"
-          ></i>
-          <p class="text-gray-500 dark:text-gray-400">
-            No schemes found matching your search
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Confirmation Modal -->
-<div
-  id="confirmation-modal"
-  class="hidden"
-  role="dialog"
-  aria-labelledby="confirm-title"
-  aria-modal="true"
->
-  <div class="dialog-overlay" onclick="closeConfirmationModal()"></div>
-  <div class="dialog-container">
-    <div class="dialog-content max-w-lg">
-      <div class="p-6">
-        <!-- Warning Icon -->
-        <div
-          class="flex items-center justify-center w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 mx-auto mb-4"
-        >
-          <i
-            class="fas fa-paper-plane text-amber-600 dark:text-amber-400 text-2xl"
-          ></i>
-        </div>
-
-        <!-- Title -->
-        <h3
-          id="confirm-title"
-          class="text-xl font-bold text-center text-gray-900 dark:text-white mb-2"
-        >
-          Submit Your Feedback?
-        </h3>
-        <p class="text-center text-gray-600 dark:text-gray-400 text-sm mb-6">
-          Please review your feedback before submitting
+        <p class="fb-muted text-gray-500 dark:text-gray-400 mt-1 text-sm sm:text-base">
+          Help us improve with clear and meaningful input.
         </p>
 
-        <!-- Review Details -->
-        <div
-          class="space-y-3 mb-6 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
-        >
-          <div class="flex items-start gap-3">
-            <i class="fas fa-file-alt text-primary-600 mt-1 flex-shrink-0"></i>
-            <div class="flex-1 min-w-0">
-              <div class="text-xs text-gray-600 dark:text-gray-400 mb-1">
-                Related Scheme
-              </div>
-              <div
-                id="confirm-scheme"
-                class="font-medium text-gray-900 dark:text-white"
-              ></div>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-3" id="confirm-rating-section">
-            <i class="fas fa-star text-yellow-500 mt-1 flex-shrink-0"></i>
-            <div class="flex-1 min-w-0">
-              <div class="text-xs text-gray-600 dark:text-gray-400 mb-1">
-                Rating
-              </div>
-              <div
-                id="confirm-rating"
-                class="font-medium text-gray-900 dark:text-white"
-              ></div>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-3">
-            <i class="fas fa-comment text-primary-600 mt-1 flex-shrink-0"></i>
-            <div class="flex-1 min-w-0">
-              <div class="text-xs text-gray-600 dark:text-gray-400 mb-1">
-                Feedback Message
-              </div>
-              <div
-                id="confirm-feedback"
-                class="font-medium text-gray-900 dark:text-white text-sm line-clamp-3"
-              ></div>
-            </div>
-          </div>
+        <!-- Progress -->
+        <div class="flex justify-between items-center mt-5 text-xs sm:text-sm 
+                    text-gray-500 dark:text-gray-400">
+          <span>Form completion</span>
+          <span id="progressText"
+                class="font-semibold text-indigo-600 dark:text-indigo-400">
+            0%
+          </span>
         </div>
 
-        <!-- Actions -->
-        <div class="flex gap-3">
-          <button
-            type="button"
-            onclick="closeConfirmationModal()"
-            class="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            onclick="submitFeedback()"
-            id="confirm-submit-btn"
-            class="flex-1 px-6 py-3 bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all transform hover:scale-105"
-          >
-            <span id="confirm-btn-text">Confirm & Submit</span>
-          </button>
+         <div class="fb-progress-track w-full bg-indigo-100 dark:bg-gray-700 
+                    h-2 rounded-full mt-2 overflow-hidden">
+          <div id="formProgress"
+           class="fb-progress-fill h-full bg-gradient-to-r 
+                      from-indigo-500 to-purple-500
+                      dark:from-indigo-400 dark:to-purple-400
+                      transition-all duration-500 ease-out rounded-full"
+               style="width:0%">
+          </div>
         </div>
+      </div>
+
+      <!-- BODY -->
+      <div class="px-5 sm:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="flex items-start gap-3 
+                        bg-emerald-50 dark:bg-emerald-900/30
+                        border border-emerald-200 dark:border-emerald-800
+                        text-emerald-800 dark:text-emerald-300
+                        p-4 rounded-xl shadow-sm transition">
+              <i class="fas fa-circle-check mt-1"></i>
+              <div>
+                <strong>Feedback submitted successfully.</strong>
+                <div class="text-sm">{{ message }}</div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post" id="feedbackForm" novalidate class="space-y-6 sm:space-y-8">
+          {% csrf_token %}
+
+          <!-- BASIC INFO -->
+          <div class="fb-surface bg-white dark:bg-gray-900
+                      border border-gray-100 dark:border-gray-800
+                      rounded-2xl p-5 sm:p-6
+                      shadow-sm hover:shadow-md
+                      transition">
+
+            <h2 class="fb-section-title fb-muted text-xs font-bold tracking-wider 
+                       text-gray-500 dark:text-gray-400 
+                       uppercase mb-4">
+              Basic Information
+            </h2>
+
+            <select id="id_scheme" name="scheme"
+              class="fb-field w-full rounded-xl border border-gray-200 dark:border-gray-700
+                     bg-gray-50 dark:bg-gray-800
+                     text-gray-700 dark:text-gray-200
+                     px-4 py-3 text-sm sm:text-base
+                     focus:outline-none focus:ring-4 
+                     focus:ring-indigo-200 dark:focus:ring-indigo-600/40
+                     focus:border-indigo-500
+                     transition">
+              <option value="">Select a Scheme (Optional)</option>
+              {% for scheme in schemes %}
+                <option value="{{ scheme.id }}"
+                  {% if form.scheme.value|stringformat:'s' == scheme.id|stringformat:'s' %}selected{% endif %}>
+                  {{ scheme.name }}
+                </option>
+              {% endfor %}
+            </select>
+
+          </div>
+
+          <!-- RATINGS -->
+          <div class="fb-surface bg-white dark:bg-gray-900
+                      border border-gray-100 dark:border-gray-800
+                      rounded-2xl p-5 sm:p-6 shadow-sm transition">
+
+            <h2 class="fb-section-title fb-muted text-xs font-bold tracking-wider 
+                       text-gray-500 dark:text-gray-400 
+                       uppercase mb-4">
+              Ratings
+            </h2>
+
+            <div class="flex flex-row-reverse justify-center 
+                        gap-2 sm:gap-3 text-3xl sm:text-4xl">
+
+              {% for i in "54321" %}
+                <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" class="hidden peer/star{{ i }}">
+                <label for="star{{ i }}"
+                  class="fb-star cursor-pointer
+                         transition-all duration-200
+                         hover:scale-110 hover:text-yellow-400
+                         peer-checked/star{{ i }}:text-yellow-400">
+                  ★
+                </label>
+              {% endfor %}
+
+            </div>
+
+            <div id="ratingHint"
+                 class="fb-muted text-center text-xs sm:text-sm
+                        text-gray-400 dark:text-gray-500 mt-3">
+              Optional
+            </div>
+          </div>
+
+          <!-- COMMENTS -->
+          <div class="fb-surface bg-white dark:bg-gray-900
+                      border border-gray-100 dark:border-gray-800
+                      rounded-2xl p-5 sm:p-6 space-y-5">
+
+            <h2 class="fb-section-title fb-muted text-xs font-bold tracking-wider 
+                       text-gray-500 dark:text-gray-400 uppercase">
+              Comments
+            </h2>
+
+            <!-- MESSAGE -->
+            <div>
+              <textarea
+                id="id_message"
+                name="message"
+                required
+                placeholder="Share your feedback..."
+                  class="fb-field w-full rounded-2xl border border-gray-200 dark:border-gray-700
+                       bg-gray-50 dark:bg-gray-800
+                       text-gray-800 dark:text-gray-100
+                       px-4 py-4 min-h-[150px] sm:min-h-[170px]
+                       text-sm sm:text-base
+                       focus:outline-none focus:ring-4 
+                       focus:ring-indigo-200 dark:focus:ring-indigo-600/40
+                       focus:border-indigo-500
+                       transition resize-none">{{ form.message.value|default:'' }}</textarea>
+
+              <p id="messageHelper"
+                  class="fb-muted text-xs text-gray-400 dark:text-gray-500 mt-2">
+                Minimum 10 characters.
+              </p>
+
+              <p id="messageError"
+                 class="text-xs text-red-500 mt-1 hidden">
+                Please enter at least 10 characters.
+              </p>
+            </div>
+
+            <!-- SUGGESTIONS -->
+            <div>
+              <textarea
+                id="id_suggestions"
+                name="suggestions"
+                placeholder="Optional suggestions..."
+                  class="fb-field w-full rounded-2xl border border-gray-200 dark:border-gray-700
+                       bg-gray-50 dark:bg-gray-800
+                       text-gray-800 dark:text-gray-100
+                       px-4 py-4 min-h-[120px]
+                       text-sm sm:text-base
+                       focus:outline-none focus:ring-4 
+                       focus:ring-indigo-200 dark:focus:ring-indigo-600/40
+                       focus:border-indigo-500
+                       transition resize-none"></textarea>
+            </div>
+
+            <div class="fb-muted flex justify-between text-xs text-gray-400 dark:text-gray-500">
+              <span>Required fields *</span>
+              <span id="messageCount">0 characters</span>
+            </div>
+
+          </div>
+
+          <!-- SUBMIT -->
+          <button type="submit"
+            id="submitButton"
+            class="fb-btn w-full py-4 rounded-2xl
+                   bg-gradient-to-r from-indigo-600 to-purple-600
+                   dark:from-indigo-500 dark:to-purple-500
+                   text-white font-semibold text-sm sm:text-base
+                   shadow-lg hover:shadow-xl
+                   hover:-translate-y-1
+                   active:scale-95
+                   transition-all duration-300">
+            Submit Feedback
+          </button>
+
+        </form>
+
+        <div class="text-center mt-6">
+          <a href="{% url 'view_feedbacks' %}"
+             data-href="{% url 'view_feedbacks' %}"
+             onclick="if(!this.getAttribute('href')){window.location.href=this.dataset.href;}"
+             class="fb-secondary-link inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-indigo-200 dark:border-indigo-700 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/50 hover:border-indigo-300 dark:hover:border-indigo-600 transition-all duration-200 text-sm sm:text-base cursor-pointer">
+            <i class="fas fa-clock-rotate-left"></i>
+            View your previous feedback
+          </a>
+        </div>
+
       </div>
     </div>
   </div>
-</div>
+</section>
 
 <script>
-  // === SCHEME DIALOG ===
-  function openSchemeDialog() {
-    document.getElementById("scheme-dialog").classList.remove("hidden");
-    document.body.style.overflow = "hidden";
-    setTimeout(() => {
-      document.getElementById("scheme-search").focus();
-    }, 100);
-  }
+  (() => {
+    const form = document.getElementById("feedbackForm");
+    const scheme = document.getElementById("id_scheme");
+    const message = document.getElementById("id_message");
+    const suggestions = document.getElementById("id_suggestions");
+    const messageCount = document.getElementById("messageCount");
+    const messageHelper = document.getElementById("messageHelper");
+    const messageError = document.getElementById("messageError");
+    const progressText = document.getElementById("progressText");
+    const progressBar = document.getElementById("formProgress");
+    const ratingHint = document.getElementById("ratingHint");
+    const stars = document.querySelectorAll('input[name="rating"]');
+    let hasInteracted = false;
 
-  function closeSchemeDialog() {
-    document.getElementById("scheme-dialog").classList.add("hidden");
-    document.body.style.overflow = "";
-  }
+    const ratingLabels = {
+      "1": "Poor",
+      "2": "Fair",
+      "3": "Good",
+      "4": "Very Good",
+      "5": "Excellent",
+    };
 
-  function selectScheme(id, name, agency) {
-    document.getElementById("scheme-input").value = id;
-    const displayText = id ? `${name} - ${agency}` : name;
-    document.getElementById("scheme-text").innerHTML = `
-      <i class="fas fa-file-alt text-primary-600"></i>
-      <span>${displayText}</span>
-    `;
-    document.getElementById("scheme-display").classList.add("has-value");
-    document.getElementById("scheme-error").classList.add("hidden");
-    closeSchemeDialog();
+    function validateMessage() {
+      const len = message.value.trim().length;
 
-    // Success feedback
-    const btn = document.getElementById("scheme-display");
-    btn.classList.add("ring-2", "ring-green-500");
-    setTimeout(() => btn.classList.remove("ring-2", "ring-green-500"), 600);
-  }
+      if (len === 0) {
+        message.classList.remove("is-valid", "is-invalid");
+        messageError.classList.add("hidden");
+        messageHelper.textContent = "Minimum 10 characters.";
+        return false;
+      }
 
-  function filterSchemes() {
-    const searchTerm = document
-      .getElementById("scheme-search")
-      .value.toLowerCase();
-    const options = document.querySelectorAll(".scheme-option");
-    let visibleCount = 0;
+      if (len < 10) {
+        message.classList.remove("is-valid");
+        message.classList.add("is-invalid");
+        messageError.classList.remove("hidden");
+        messageHelper.textContent = "Please add more detail for better review.";
+        return false;
+      }
 
-    options.forEach((option) => {
-      const name = option.getAttribute("data-name");
-      const agency = option.getAttribute("data-agency");
+      message.classList.remove("is-invalid");
+      message.classList.add("is-valid");
+      messageError.classList.add("hidden");
+      messageHelper.textContent = "Looks clear and useful. Thank you.";
+      return true;
+    }
 
-      if (name.includes(searchTerm) || agency.includes(searchTerm)) {
-        option.style.display = "flex";
-        visibleCount++;
+    function updateProgress() {
+      if (!hasInteracted) {
+        progressBar.style.width = "0%";
+        progressText.textContent = "0%";
+        messageCount.textContent = `${message.value.length} characters`;
+        return;
+      }
+
+      let score = 0;
+      const hasScheme = !!scheme.value;
+      const hasMessage = message.value.trim().length >= 10;
+      const hasRating = !!document.querySelector('input[name="rating"]:checked');
+
+      if (hasMessage) score += 60;
+      if (hasScheme) score += 20;
+      if (hasRating) score += 20;
+
+      progressBar.style.width = `${score}%`;
+      progressText.textContent = `${score}%`;
+      messageCount.textContent = `${message.value.length} characters`;
+
+      if (suggestions.value.trim().length >= 15) {
+        suggestions.classList.add("is-valid");
       } else {
-        option.style.display = "none";
+        suggestions.classList.remove("is-valid");
+      }
+    }
+
+    stars.forEach((star) => {
+      star.addEventListener("change", () => {
+        hasInteracted = true;
+        ratingHint.textContent = ratingLabels[star.value] || "Optional";
+        updateProgress();
+      });
+    });
+
+    message.addEventListener("input", () => {
+      hasInteracted = true;
+      validateMessage();
+      updateProgress();
+    });
+
+    suggestions.addEventListener("input", () => {
+      hasInteracted = true;
+      updateProgress();
+    });
+
+    scheme.addEventListener("change", () => {
+      hasInteracted = true;
+      updateProgress();
+    });
+
+    form.addEventListener("submit", (event) => {
+      if (!validateMessage()) {
+        event.preventDefault();
+        message.focus();
       }
     });
 
-    // Show/hide no results message
-    const noResults = document.getElementById("no-results");
-    if (visibleCount === 0) {
-      noResults.classList.remove("hidden");
-    } else {
-      noResults.classList.add("hidden");
-    }
-  }
-
-  // === RATING ===
-  let selectedRating = 0;
-  const ratingLabels = ["", "Poor", "Fair", "Good", "Very Good", "Excellent"];
-
-  function setRating(rating) {
-    selectedRating = rating;
-    document.getElementById("rating-input").value = rating;
-
-    // Update stars
-    const stars = document.querySelectorAll(".star");
-    stars.forEach((star, index) => {
-      if (index < rating) {
-        star.classList.add("active");
-      } else {
-        star.classList.remove("active");
-      }
-    });
-
-    // Update label
-    const label = document.getElementById("rating-label");
-    label.textContent = ratingLabels[rating];
-    label.style.color =
-      rating >= 4
-        ? "rgb(34, 197, 94)"
-        : rating >= 3
-          ? "rgb(234, 179, 8)"
-          : "rgb(239, 68, 68)";
-  }
-
-  // === CHARACTER COUNTER ===
-  function setupCharCounter(textareaId, counterId, max) {
-    const textarea = document.getElementById(textareaId);
-    const counter = document.getElementById(counterId);
-    const countSpan =
-      counter.querySelector("span") ||
-      document.getElementById(counterId.replace("-counter", "-count"));
-
-    function updateCounter() {
-      const length = textarea.value.length;
-      countSpan.textContent = length;
-
-      // Update floating label
-      if (length > 0) {
-        textarea.classList.add("has-value");
-      } else {
-        textarea.classList.remove("has-value");
-      }
-
-      // Update counter color
-      counter.classList.remove("warning", "error");
-      if (length > max * 0.9) {
-        counter.classList.add("error");
-      } else if (length > max * 0.75) {
-        counter.classList.add("warning");
-      }
-
-      // Validation
-      if (textareaId === "feedback-textarea") {
-        const errorDiv = document.getElementById("feedback-error");
-        if (length > 0 && length < 10) {
-          textarea.classList.add("error");
-          textarea.classList.remove("success");
-          errorDiv.classList.remove("hidden");
-        } else if (length >= 10) {
-          textarea.classList.remove("error");
-          textarea.classList.add("success");
-          errorDiv.classList.add("hidden");
-        } else {
-          textarea.classList.remove("error", "success");
-          errorDiv.classList.add("hidden");
-        }
-      }
-    }
-
-    textarea.addEventListener("input", updateCounter);
-    textarea.addEventListener("blur", updateCounter);
-
-    // Initialize
-    updateCounter();
-  }
-
-  // === CONFIRMATION MODAL ===
-  function showConfirmationModal() {
-    const feedback = document.getElementById("feedback-textarea").value.trim();
-    const schemeText = document
-      .getElementById("scheme-text")
-      .textContent.trim();
-
-    // Validate
-    let isValid = true;
-
-    if (feedback.length < 10) {
-      const textarea = document.getElementById("feedback-textarea");
-      const errorDiv = document.getElementById("feedback-error");
-      textarea.classList.add("error");
-      errorDiv.classList.remove("hidden");
-      textarea.focus();
-      isValid = false;
-    }
-
-    if (!isValid) return;
-
-    // Show confirmation
-    document.getElementById("confirm-scheme").textContent = schemeText.includes(
-      "Select a scheme",
-    )
-      ? "General Feedback"
-      : schemeText;
-    document.getElementById("confirm-feedback").textContent = feedback;
-
-    // Show/hide rating section
-    const ratingSection = document.getElementById("confirm-rating-section");
-    if (selectedRating > 0) {
-      document.getElementById("confirm-rating").innerHTML =
-        `${'<i class="fas fa-star text-yellow-500"></i>'.repeat(selectedRating)} ${ratingLabels[selectedRating]}`;
-      ratingSection.classList.remove("hidden");
-    } else {
-      ratingSection.classList.add("hidden");
-    }
-
-    document.getElementById("confirmation-modal").classList.remove("hidden");
-    document.body.style.overflow = "hidden";
-  }
-
-  function closeConfirmationModal() {
-    document.getElementById("confirmation-modal").classList.add("hidden");
-    document.body.style.overflow = "";
-  }
-
-  function submitFeedback() {
-    const btn = document.getElementById("confirm-submit-btn");
-    const btnText = document.getElementById("confirm-btn-text");
-
-    btn.disabled = true;
-    btnText.innerHTML =
-      '<span class="spinner"></span><span class="ml-2">Submitting...</span>';
-
-    // Submit the form
-    document.getElementById("feedbackForm").submit();
-  }
-
-  // === KEYBOARD NAVIGATION ===
-  document.addEventListener("keydown", function (e) {
-    // ESC to close dialogs
-    if (e.key === "Escape") {
-      const schemeDialog = document.getElementById("scheme-dialog");
-      const confirmModal = document.getElementById("confirmation-modal");
-
-      if (!schemeDialog.classList.contains("hidden")) {
-        closeSchemeDialog();
-      } else if (!confirmModal.classList.contains("hidden")) {
-        closeConfirmationModal();
-      }
-    }
-  });
-
-  // === DARK MODE INITIALIZATION ===
-  function initDarkMode() {
-    const darkMode =
-      localStorage.getItem("darkMode") === "true" ||
-      (!localStorage.getItem("darkMode") &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches);
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    }
-  }
-
-  // === INITIALIZE ON PAGE LOAD ===
-  document.addEventListener("DOMContentLoaded", function () {
-    initDarkMode();
-    setupCharCounter("feedback-textarea", "char-counter", 1000);
-    setupCharCounter("suggestions-textarea", "suggestions-counter", 500);
-
-    const initialSchemeId = document.getElementById("scheme-input").value;
-    if (initialSchemeId) {
-      const option = document.querySelector(
-        `.scheme-option[onclick^="selectScheme('${initialSchemeId}'"]`,
-      );
-      if (option) {
-        const name =
-          option.querySelector(".font-semibold")?.textContent?.trim() ||
-          "Selected Scheme";
-        const agency =
-          option.querySelector(".text-sm")?.textContent?.trim() || "";
-        document.getElementById("scheme-text").innerHTML = `
-          <i class="fas fa-file-alt text-primary-600"></i>
-          <span>${agency ? `${name} - ${agency}` : name}</span>
-        `;
-        document.getElementById("scheme-display").classList.add("has-value");
-      }
-    }
-
-    // Smooth scroll
-    document.body.style.scrollBehavior = "smooth";
-  });
+    validateMessage();
+    updateProgress();
+  })();
 </script>
+
 {% endblock %}

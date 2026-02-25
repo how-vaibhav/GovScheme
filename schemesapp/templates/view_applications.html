@@ -10,6 +10,58 @@
   .stagger-3 { animation-delay: 0.3s; }
   .hover-lift { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
   .hover-lift:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
+
+  .status-tabs {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.2rem 0;
+  }
+
+  .status-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.65rem 1.1rem;
+    border-radius: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 240ms ease, background-color 240ms ease, color 240ms ease;
+    will-change: transform;
+  }
+
+  .status-tab i,
+  .status-tab .status-count {
+    transition: transform 220ms ease, opacity 220ms ease;
+  }
+
+  .status-tab:hover {
+    transform: translateY(-2px);
+  }
+
+  .status-tab:hover i {
+    transform: translateX(1px);
+  }
+
+  .status-tab:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  }
+
+  .status-tab-active {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(79, 70, 229, 0.24);
+  }
+
+  .status-tab-active .status-count {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+
+  .status-tab-idle .status-count {
+    opacity: 0.88;
+  }
 </style>
 {% block title %}My Applications - GovAid{% endblock %}
 
@@ -34,18 +86,18 @@
 <!-- Status Tabs -->
 <section class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
   <div class="container mx-auto px-4">
-    <div class="flex gap-4 overflow-x-auto py-4">
-      <a href="?status=all" class="px-6 py-2 rounded-lg font-medium whitespace-nowrap {% if current_filter == 'all' %}bg-primary-600 text-white{% else %}bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600{% endif %} transition-colors">
-        <i class="fas fa-list mr-2"></i>All <span class="ml-2 px-3 py-1 bg-gray-200 dark:bg-gray-600 rounded-full text-xs">{{ total_count }}</span>
+    <div class="status-tabs py-4" role="tablist" aria-label="Application status filters">
+      <a href="?status=all" class="status-tab {% if current_filter == 'all' %}status-tab-active bg-primary-600 text-white{% else %}status-tab-idle bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600{% endif %} transition-colors" role="tab" aria-selected="{% if current_filter == 'all' %}true{% else %}false{% endif %}">
+        <i class="fas fa-list"></i>All <span class="status-count ml-2 px-3 py-1 bg-gray-200 dark:bg-gray-600 rounded-full text-xs">{{ total_count }}</span>
       </a>
-      <a href="?status=pending" class="px-6 py-2 rounded-lg font-medium whitespace-nowrap {% if current_filter == 'pending' %}bg-yellow-600 text-white{% else %}bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600{% endif %} transition-colors">
-        <i class="fas fa-hourglass-half mr-2"></i>Pending <span class="ml-2 px-3 py-1 bg-yellow-200 dark:bg-yellow-900/40 rounded-full text-xs">{{ pending_count }}</span>
+      <a href="?status=pending" class="status-tab {% if current_filter == 'pending' %}status-tab-active bg-yellow-600 text-white{% else %}status-tab-idle bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600{% endif %} transition-colors" role="tab" aria-selected="{% if current_filter == 'pending' %}true{% else %}false{% endif %}">
+        <i class="fas fa-hourglass-half"></i>Pending <span class="status-count ml-2 px-3 py-1 bg-yellow-200 dark:bg-yellow-900/40 rounded-full text-xs">{{ pending_count }}</span>
       </a>
-      <a href="?status=accepted" class="px-6 py-2 rounded-lg font-medium whitespace-nowrap {% if current_filter == 'accepted' %}bg-green-600 text-white{% else %}bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600{% endif %} transition-colors">
-        <i class="fas fa-check-circle mr-2"></i>Accepted <span class="ml-2 px-3 py-1 bg-green-200 dark:bg-green-900/40 rounded-full text-xs">{{ accepted_count }}</span>
+      <a href="?status=accepted" class="status-tab {% if current_filter == 'accepted' %}status-tab-active bg-green-600 text-white{% else %}status-tab-idle bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600{% endif %} transition-colors" role="tab" aria-selected="{% if current_filter == 'accepted' %}true{% else %}false{% endif %}">
+        <i class="fas fa-check-circle"></i>Accepted <span class="status-count ml-2 px-3 py-1 bg-green-200 dark:bg-green-900/40 rounded-full text-xs">{{ accepted_count }}</span>
       </a>
-      <a href="?status=rejected" class="px-6 py-2 rounded-lg font-medium whitespace-nowrap {% if current_filter == 'rejected' %}bg-red-600 text-white{% else %}bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600{% endif %} transition-colors">
-        <i class="fas fa-times-circle mr-2"></i>Rejected <span class="ml-2 px-3 py-1 bg-red-200 dark:bg-red-900/40 rounded-full text-xs">{{ rejected_count }}</span>
+      <a href="?status=rejected" class="status-tab {% if current_filter == 'rejected' %}status-tab-active bg-red-600 text-white{% else %}status-tab-idle bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600{% endif %} transition-colors" role="tab" aria-selected="{% if current_filter == 'rejected' %}true{% else %}false{% endif %}">
+        <i class="fas fa-times-circle"></i>Rejected <span class="status-count ml-2 px-3 py-1 bg-red-200 dark:bg-red-900/40 rounded-full text-xs">{{ rejected_count }}</span>
       </a>
     </div>
   </div>

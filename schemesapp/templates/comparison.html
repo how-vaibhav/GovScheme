@@ -656,10 +656,6 @@ GovAid{% endblock %} {% block content %}
       hideMaxWarning();
     }
     
-    // Submit form after a short delay
-    setTimeout(() => {
-      document.getElementById('comparisonForm').submit();
-    }, 300);
   }
 
   // Update UI elements
@@ -687,6 +683,14 @@ GovAid{% endblock %} {% block content %}
     } else {
       maxWarning.classList.add('hidden');
       successMessage.classList.add('hidden');
+    }
+
+    const compareButton = document.querySelector('#comparisonForm button[type="submit"]');
+    if (compareButton) {
+      const canCompare = selectedCount >= 2;
+      compareButton.disabled = !canCompare;
+      compareButton.style.opacity = canCompare ? '1' : '0.5';
+      compareButton.style.cursor = canCompare ? 'pointer' : 'not-allowed';
     }
   }
 
