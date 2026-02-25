@@ -1,0 +1,16 @@
+GovAid - Frequently Asked Questions
+
+Q1: Is registration required?
+A: Yes, create an account to apply and track schemes.
+
+Q2: How is eligibility calculated?
+A: Based on your profile details and scheme criteria.
+
+Q3: Can I apply for multiple schemes?
+A: Yes, if you meet eligibility criteria.
+
+Q4: How long does approval take?
+A: It depends on the scheme and department workflow.
+
+Q5: Where can I see updates?
+A: Check Notifications and My Applications sections.

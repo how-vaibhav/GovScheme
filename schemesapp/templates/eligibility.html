@@ -1,35 +1,79 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block title %}Check Eligibility - GovAid{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% load static %} {% block title %}Check Eligibility -
+GovAid{% endblock %} {% block content %}
 <style>
-  @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-  .animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
-  .animate-fade-in-down { animation: fadeInDown 0.6s ease-out forwards; opacity: 0; }
-  .stagger-1 { animation-delay: 0.1s; }
-  .stagger-2 { animation-delay: 0.2s; }
-  .stagger-3 { animation-delay: 0.3s; }
-  .stagger-4 { animation-delay: 0.4s; }
-  .stagger-5 { animation-delay: 0.5s; }
-  .hover-lift { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-  .hover-lift:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+  }
+  .animate-fade-in-down {
+    animation: fadeInDown 0.6s ease-out forwards;
+    opacity: 0;
+  }
+  .stagger-1 {
+    animation-delay: 0.1s;
+  }
+  .stagger-2 {
+    animation-delay: 0.2s;
+  }
+  .stagger-3 {
+    animation-delay: 0.3s;
+  }
+  .stagger-4 {
+    animation-delay: 0.4s;
+  }
+  .stagger-5 {
+    animation-delay: 0.5s;
+  }
+  .hover-lift {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
 </style>
 
 <!-- Header -->
-<section class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12 animate-fade-in-down">
+<section
+  class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12 animate-fade-in-down"
+>
   <div class="container mx-auto px-4">
     <div class="flex items-center space-x-4 mb-4 animate-fade-in-up stagger-1">
-      <a href="{% url 'home' %}" class="text-primary-100 hover:text-white transition-colors flex items-center gap-1">
+      <a
+        href="{% url 'home' %}"
+        class="text-primary-100 hover:text-white transition-colors flex items-center gap-1"
+      >
         <i class="fas fa-arrow-left"></i> Home
       </a>
     </div>
-    <h1 class="text-4xl md:text-5xl font-bold text-white mb-3 animate-fade-in-up stagger-2">
+    <h1
+      class="text-4xl md:text-5xl font-bold text-white mb-3 animate-fade-in-up stagger-2"
+    >
       <i class="fas fa-magnifying-glass-check mr-3"></i>Eligibility Check
     </h1>
-    <p class="text-lg text-primary-100 dark:text-gray-300 animate-fade-in-up stagger-3">
+    <p
+      class="text-lg text-primary-100 dark:text-gray-300 animate-fade-in-up stagger-3"
+    >
       For: <strong class="text-white">{{ scheme.name }}</strong>
     </p>
   </div>
@@ -39,29 +83,58 @@
 <section class="py-12 bg-gray-50 dark:bg-gray-900">
   <div class="container mx-auto px-4">
     <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-      
       <!-- Scheme Information -->
       <div class="space-y-6 animate-fade-in-up stagger-1 hover-lift">
         <div class="card p-8">
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-            <i class="fas fa-info-circle mr-3 text-primary-600 dark:text-primary-400"></i>Scheme Details
+          <h2
+            class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center"
+          >
+            <i
+              class="fas fa-info-circle mr-3 text-primary-600 dark:text-primary-400"
+            ></i
+            >Scheme Details
           </h2>
           <div class="space-y-4">
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Scheme Name</p>
-              <p class="text-lg font-medium text-gray-900 dark:text-white">{{ scheme.name }}</p>
+              <p
+                class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2"
+              >
+                Scheme Name
+              </p>
+              <p class="text-lg font-medium text-gray-900 dark:text-white">
+                {{ scheme.name }}
+              </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Agency</p>
-              <p class="text-lg font-medium text-gray-900 dark:text-white">{{ scheme.agency }}</p>
+              <p
+                class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2"
+              >
+                Agency
+              </p>
+              <p class="text-lg font-medium text-gray-900 dark:text-white">
+                {{ scheme.agency }}
+              </p>
             </div>
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Description</p>
-              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">{{ scheme.description }}</p>
+              <p
+                class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2"
+              >
+                Description
+              </p>
+              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                {{ scheme.description }}
+              </p>
             </div>
             <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-              <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Benefits</p>
-              <p class="text-gray-700 dark:text-gray-300">{{ scheme.benefits|default:"View details for more information" }}</p>
+              <p
+                class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2"
+              >
+                Benefits
+              </p>
+              <p class="text-gray-700 dark:text-gray-300">
+                {{ scheme.benefits|default:"View details for more information"
+                }}
+              </p>
             </div>
           </div>
         </div>
@@ -71,78 +144,110 @@
       <div class="space-y-6">
         <!-- Your Details -->
         <div class="card p-8">
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-            <i class="fas fa-user mr-3 text-primary-600 dark:text-primary-400"></i>Your Profile
+          <h2
+            class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center"
+          >
+            <i
+              class="fas fa-user mr-3 text-primary-600 dark:text-primary-400"
+            ></i
+            >Your Profile
           </h2>
           <div class="space-y-3 text-sm">
-            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
+            <div
+              class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"
+            >
               <span class="text-gray-600 dark:text-gray-400">Age</span>
-              <span class="font-medium text-gray-900 dark:text-white">{{ details.age|default:"Not provided" }} years</span>
+              <span class="font-medium text-gray-900 dark:text-white"
+                >{{ details.age|default:"Not provided" }} years</span
+              >
             </div>
-            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
-              <span class="text-gray-600 dark:text-gray-400">Annual Income</span>
-              <span class="font-medium text-gray-900 dark:text-white">₹ {{ details.income|default:"Not provided" }}</span>
+            <div
+              class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"
+            >
+              <span class="text-gray-600 dark:text-gray-400"
+                >Annual Income</span
+              >
+              <span class="font-medium text-gray-900 dark:text-white"
+                >₹ {{ details.income|default:"Not provided" }}</span
+              >
             </div>
-            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
+            <div
+              class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"
+            >
               <span class="text-gray-600 dark:text-gray-400">Caste</span>
-              <span class="font-medium text-gray-900 dark:text-white">{{ details.caste|default:"Not provided" }}</span>
+              <span class="font-medium text-gray-900 dark:text-white"
+                >{{ details.caste|default:"Not provided" }}</span
+              >
             </div>
-            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
-              <span class="text-gray-600 dark:text-gray-400">Marital Status</span>
-              <span class="font-medium text-gray-900 dark:text-white">{{ details.marital_status|default:"Not provided" }}</span>
+            <div
+              class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"
+            >
+              <span class="text-gray-600 dark:text-gray-400"
+                >Marital Status</span
+              >
+              <span class="font-medium text-gray-900 dark:text-white"
+                >{{ details.marital_status|default:"Not provided" }}</span
+              >
             </div>
-            <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
+            <div
+              class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"
+            >
               <span class="text-gray-600 dark:text-gray-400">Disability</span>
               <span class="font-medium text-gray-900 dark:text-white">
                 {% if details.disable %}
-                  <i class="fas fa-check text-green-600"></i> Yes
-                {% else %}
-                  <i class="fas fa-times text-gray-400"></i> No
-                {% endif %}
+                <i class="fas fa-check text-green-600"></i> Yes {% else %}
+                <i class="fas fa-times text-gray-400"></i> No {% endif %}
               </span>
             </div>
             <div class="flex justify-between items-center py-2">
               <span class="text-gray-600 dark:text-gray-400">BPL Status</span>
               <span class="font-medium text-gray-900 dark:text-white">
                 {% if details.below_poverty_line %}
-                  <i class="fas fa-check text-green-600"></i> Yes
-                {% else %}
-                  <i class="fas fa-times text-gray-400"></i> No
-                {% endif %}
+                <i class="fas fa-check text-green-600"></i> Yes {% else %}
+                <i class="fas fa-times text-gray-400"></i> No {% endif %}
               </span>
             </div>
           </div>
         </div>
 
         <!-- Eligibility Requirements -->
-        <div class="card p-8 border-2 border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/20">
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-            <i class="fas fa-check-circle mr-3 text-primary-600 dark:text-primary-400"></i>Eligibility Criteria
+        <div
+          class="card p-8 border-2 border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/20"
+        >
+          <h2
+            class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center"
+          >
+            <i
+              class="fas fa-check-circle mr-3 text-primary-600 dark:text-primary-400"
+            ></i
+            >Eligibility Criteria
           </h2>
           <div class="space-y-3 text-sm">
             <div class="flex items-start gap-3 py-2">
-              <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div
+                class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5"
+              >
                 {% if details.age >= scheme.min_age %}
-                  <i class="fas fa-check text-xs"></i>
+                <i class="fas fa-check text-xs"></i>
                 {% else %}
-                  <i class="fas fa-times text-xs"></i>
+                <i class="fas fa-times text-xs"></i>
                 {% endif %}
               </div>
               <div class="flex-grow">
                 <p class="text-gray-700 dark:text-gray-300">
-                  Age: {{ scheme.min_age }}+ years
-                  {% if scheme.max_age %}
-                    to {{ scheme.max_age }} years
-                  {% endif %}
+                  Age: {{ scheme.min_age }}+ years {% if scheme.max_age %} to {{
+                  scheme.max_age }} years {% endif %}
                 </p>
               </div>
             </div>
             <div class="flex items-start gap-3 py-2">
-              <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div
+                class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5"
+              >
                 {% if details.income <= scheme.max_income %}
-                  <i class="fas fa-check text-xs"></i>
+                <i class="fas fa-check text-xs"></i>
                 {% else %}
-                  <i class="fas fa-times text-xs"></i>
+                <i class="fas fa-times text-xs"></i>
                 {% endif %}
               </div>
               <div class="flex-grow">
@@ -153,11 +258,13 @@
             </div>
             {% if scheme.caste %}
             <div class="flex items-start gap-3 py-2">
-              <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div
+                class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5"
+              >
                 {% if details.caste == scheme.caste %}
-                  <i class="fas fa-check text-xs"></i>
+                <i class="fas fa-check text-xs"></i>
                 {% else %}
-                  <i class="fas fa-times text-xs"></i>
+                <i class="fas fa-times text-xs"></i>
                 {% endif %}
               </div>
               <div class="flex-grow">
@@ -166,14 +273,15 @@
                 </p>
               </div>
             </div>
-            {% endif %}
-            {% if scheme.below_poverty_line %}
+            {% endif %} {% if scheme.below_poverty_line %}
             <div class="flex items-start gap-3 py-2">
-              <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div
+                class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5"
+              >
                 {% if details.below_poverty_line %}
-                  <i class="fas fa-check text-xs"></i>
+                <i class="fas fa-check text-xs"></i>
                 {% else %}
-                  <i class="fas fa-times text-xs"></i>
+                <i class="fas fa-times text-xs"></i>
                 {% endif %}
               </div>
               <div class="flex-grow">
@@ -189,12 +297,20 @@
     </div>
 
     <!-- Action Section -->
-    <div class="max-w-5xl mx-auto mt-8 pt-8 border-t-2 border-gray-200 dark:border-gray-700">
+    <div
+      class="max-w-5xl mx-auto mt-8 pt-8 border-t-2 border-gray-200 dark:border-gray-700"
+    >
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <a href="{% url 'scheme_list' %}" class="px-6 py-4 rounded-lg font-medium bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center gap-2">
+        <a
+          href="{% url 'scheme_list' %}"
+          class="px-6 py-4 rounded-lg font-medium bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center gap-2"
+        >
           <i class="fas fa-arrow-left"></i> Back to Schemes
         </a>
-        <a href="{% url 'apply_scheme' %}?scheme={{ scheme.id }}" class="btn-primary px-6 py-4 rounded-lg font-medium flex items-center justify-center gap-2">
+        <a
+          href="{% url 'apply_scheme' %}?scheme={{ scheme.id }}"
+          class="btn-primary px-6 py-4 rounded-lg font-medium flex items-center justify-center gap-2"
+        >
           <i class="fas fa-paper-plane"></i> Apply for This Scheme
         </a>
       </div>
@@ -204,36 +320,12 @@
 
 <script>
   // Dark mode
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.add('dark');
+  const savedTheme = localStorage.getItem("theme");
+  if (
+    savedTheme === "dark" ||
+    (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)
+  ) {
+    document.documentElement.classList.add("dark");
   }
 </script>
-{% endblock %}
-        <tr>
-          <th>Below Poverty Line</th>
-          <td>{{ details.below_poverty_line }}</td>
-        </tr>
-      </table>
-    </div>
-  </div>
-
-  <div class="text-center">
-    {% if is_eligible %}
-    <p class="eligible">
-      <i class="bi bi-check-circle-fill icon-check me-2"></i>Congratulations!
-      You are eligible for this scheme.
-    </p>
-    {% else %}
-    <p class="not-eligible">
-      <i class="bi bi-x-circle-fill icon-cross me-2"></i>Sorry, you are not
-      eligible for this scheme.
-    </p>
-    {% endif %}
-
-    <a href="{% url 'home' %}" class="btn btn-home mt-3">
-      <i class="bi bi-house-door-fill me-1"></i>Back to Home
-    </a>
-  </div>
-</div>
 {% endblock %}

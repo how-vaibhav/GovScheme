@@ -1,0 +1,10 @@
+GovAid Portal User Guide
+
+1. Login/Register on GovAid.
+2. Fill User Details from the profile page.
+3. Check eligibility for schemes.
+4. Apply to eligible schemes.
+5. Track application status from My Applications.
+6. View notifications for updates and replies.
+
+Support: Use the Help/Feedback section for assistance.

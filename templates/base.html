@@ -9,6 +9,22 @@
     <title>{% block title %}Government Schemes Portal{% endblock %}</title>
     <link rel="icon" href="{% static 'images/favicon.ico' %}" />
 
+    <script>
+      (function () {
+        try {
+          const savedTheme = localStorage.getItem("theme");
+          const prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)",
+          ).matches;
+          if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+            document.documentElement.classList.add("dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Font Awesome for icons -->
     <link
       rel="stylesheet"
@@ -29,6 +45,15 @@
     <style>
       /* Enhanced Dark Mode Color Scheme */
       :root {
+        --app-bg: #f8fafc;
+        --app-bg-soft: #eef2ff;
+        --surface: #ffffff;
+        --surface-2: #f8fafc;
+        --border: #dbe4f2;
+        --text-1: #0f172a;
+        --text-2: #334155;
+        --text-3: #64748b;
+        --focus-ring: rgba(59, 130, 246, 0.22);
         --primary-dark: #1e293b;
         --secondary-dark: #0f172a;
         --tertiary-dark: #334155;
@@ -66,34 +91,88 @@
 
       .dark body {
         background-color: #0f172a;
-        color: #e2e8f0;
+        color: #e5edf9;
+      }
+
+      html.dark {
+        --app-bg: #0b1220;
+        --app-bg-soft: #0f1b32;
+        --surface: #111b2e;
+        --surface-2: #152238;
+        --border: #32445f;
+        --text-1: #f8fafc;
+        --text-2: #dbe6f7;
+        --text-3: #b4c3da;
+        --focus-ring: rgba(96, 165, 250, 0.25);
+      }
+
+      body {
+        background: var(--app-bg);
+        color: var(--text-2);
+      }
+
+      main {
+        overflow-x: hidden;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
       }
 
       .dark .card {
-        background-color: #1e293b;
-        border-color: #475569;
+        background-color: var(--surface);
+        border-color: var(--border);
       }
 
       .dark .input,
       .dark .select,
       .dark textarea {
-        background-color: #334155;
-        border-color: #475569;
-        color: #e2e8f0;
+        background-color: #1b2a43;
+        border-color: #3d5579;
+        color: #f1f5f9;
       }
 
       .dark .input:focus,
       .dark .select:focus,
       .dark textarea:focus {
-        background-color: #475569;
-        border-color: #64748b;
-        color: #e2e8f0;
+        background-color: #223552;
+        border-color: #60a5fa;
+        color: #f8fafc;
+      }
+
+      .input,
+      .select,
+      textarea,
+      input:not([type="checkbox"]):not([type="radio"]),
+      select {
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--surface-2);
+        color: var(--text-1);
+      }
+
+      .input:focus,
+      .select:focus,
+      textarea:focus,
+      input:not([type="checkbox"]):not([type="radio"]):focus,
+      select:focus,
+      button:focus-visible,
+      a:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px var(--focus-ring);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #2563eb, #4338ca);
+        color: #fff;
       }
 
       /* Enhanced Button Styling for Dark Mode */
       .dark .btn-primary {
-        background: linear-gradient(135deg, #3b82f6, #1e40af);
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        background: linear-gradient(135deg, #3b82f6, #4f46e5);
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.35);
       }
 
       .dark .btn-primary:hover {
@@ -103,8 +182,8 @@
       /* Mobile First Responsive Design */
       @media (max-width: 640px) {
         .container {
-          padding-left: 1rem;
-          padding-right: 1rem;
+          padding-left: 0.9rem;
+          padding-right: 0.9rem;
         }
 
         body {
@@ -112,15 +191,15 @@
         }
 
         h1 {
-          font-size: 1.75rem;
+          font-size: 1.6rem;
         }
 
         h2 {
-          font-size: 1.5rem;
+          font-size: 1.35rem;
         }
 
         h3 {
-          font-size: 1.25rem;
+          font-size: 1.12rem;
         }
 
         .hero-title {
@@ -133,7 +212,7 @@
         }
 
         .card {
-          padding: 1rem;
+          padding: 0.95rem;
           margin-bottom: 1rem;
         }
 
@@ -142,6 +221,19 @@
           font-size: 0.875rem;
           min-height: 44px;
           min-width: 44px;
+        }
+
+        .grid,
+        .grid-cols-2,
+        .grid-cols-3,
+        .grid-cols-4 {
+          gap: 0.85rem;
+        }
+
+        table {
+          display: block;
+          overflow-x: auto;
+          white-space: nowrap;
         }
 
         .px-4 {
@@ -217,12 +309,27 @@
       }
 
       /* Improved Contrast for Accessibility */
+      .text-gray-900,
+      .text-gray-800 {
+        color: var(--text-1);
+      }
+
+      .text-gray-700,
+      .text-gray-600 {
+        color: var(--text-2);
+      }
+
+      .text-gray-500,
+      .text-gray-400 {
+        color: var(--text-3);
+      }
+
       .dark .text-gray-600 {
-        color: #cbd5e1;
+        color: #d1dcef;
       }
 
       .dark .text-gray-700 {
-        color: #e2e8f0;
+        color: #e5edf9;
       }
 
       .dark .border-gray-200 {
@@ -234,11 +341,11 @@
       }
 
       .dark .bg-gray-50 {
-        background-color: #1e293b;
+        background-color: #14233a;
       }
 
       .dark .bg-gray-100 {
-        background-color: #334155;
+        background-color: #1b2d47;
       }
 
       /* Branding Colors - Premium Feel */
@@ -465,7 +572,9 @@
                   class="w-8 h-8 rounded-full border-2 border-white/30 group-hover:border-white transition-all duration-200"
                 />
                 <span class="hidden md:block text-white font-medium">
-                  {% if user.is_authenticated %}{{ user.get_full_name|default:user.username|truncatewords:2 }}{% else %}Guest{% endif %}
+                  {% if user.is_authenticated %} {% firstof user.get_full_name
+                  user.username as display_name %} {{
+                  display_name|truncatewords:2 }} {% else %} Guest {% endif %}
                 </span>
                 <i
                   class="fas fa-chevron-down text-white text-xs group-hover:rotate-180 transition-transform duration-200"
@@ -1028,122 +1137,124 @@
       });
     </script>
 
-<!-- Floating Chat Button -->
-<button
-  id="chatbot-toggle"
-  onclick="toggleChat()"
-  class="fixed bottom-6 right-6 w-16 h-16 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-full shadow-2xl flex items-center justify-center z-40 transform hover:scale-110 transition-all duration-300 focus-outline"
-  aria-label="Open Chat"
->
-  <i class="fas fa-comment-dots text-2xl"></i>
-</button>
-
-<!-- Chatbot Container -->
-<div
-  id="chatbot"
-  class="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-3rem)] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 hidden flex-col z-40 animate-scale-in overflow-hidden"
->
-  <!-- Chat Header -->
-  <div
-    class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-700 dark:to-gray-800 p-4 flex items-center justify-between"
-  >
-    <div class="flex items-center space-x-3">
-      <div
-        class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"
-      >
-        <i class="fas fa-robot text-white text-lg"></i>
-      </div>
-      <div>
-        <h3 class="text-white font-semibold">GovAid Assistant</h3>
-        <p
-          class="text-primary-100 dark:text-gray-300 text-xs flex items-center space-x-1"
-        >
-          <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-          <span>Online</span>
-        </p>
-      </div>
-    </div>
+    <!-- Floating Chat Button -->
     <button
+      id="chatbot-toggle"
       onclick="toggleChat()"
-      class="text-white hover:bg-white/20 p-2 rounded-lg transition-colors duration-200 focus-outline"
+      class="fixed bottom-6 right-6 w-16 h-16 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-full shadow-2xl flex items-center justify-center z-40 transform hover:scale-110 transition-all duration-300 focus-outline"
+      aria-label="Open Chat"
     >
-      <i class="fas fa-times text-lg"></i>
+      <i class="fas fa-comment-dots text-2xl"></i>
     </button>
-  </div>
 
-  <!-- Chat Body -->
-  <div
-    id="chatbot-body"
-    class="flex-1 p-4 space-y-3 overflow-y-auto scrollbar-thin"
-    style="max-height: 400px"
-  >
-    <div class="flex items-start space-x-2">
+    <!-- Chatbot Container -->
+    <div
+      id="chatbot"
+      class="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-3rem)] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 hidden flex-col z-40 animate-scale-in overflow-hidden"
+    >
+      <!-- Chat Header -->
       <div
-        class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center flex-shrink-0"
+        class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-700 dark:to-gray-800 p-4 flex items-center justify-between"
       >
-        <i
-          class="fas fa-robot text-primary-600 dark:text-primary-400 text-sm"
-        ></i>
+        <div class="flex items-center space-x-3">
+          <div
+            class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"
+          >
+            <i class="fas fa-robot text-white text-lg"></i>
+          </div>
+          <div>
+            <h3 class="text-white font-semibold">GovAid Assistant</h3>
+            <p
+              class="text-primary-100 dark:text-gray-300 text-xs flex items-center space-x-1"
+            >
+              <span
+                class="w-2 h-2 bg-green-400 rounded-full animate-pulse"
+              ></span>
+              <span>Online</span>
+            </p>
+          </div>
+        </div>
+        <button
+          onclick="toggleChat()"
+          class="text-white hover:bg-white/20 p-2 rounded-lg transition-colors duration-200 focus-outline"
+        >
+          <i class="fas fa-times text-lg"></i>
+        </button>
       </div>
+
+      <!-- Chat Body -->
       <div
-        class="bg-gray-100 dark:bg-gray-700 rounded-2xl rounded-tl-none px-4 py-3 max-w-[75%]"
+        id="chatbot-body"
+        class="flex-1 p-4 space-y-3 overflow-y-auto scrollbar-thin"
+        style="max-height: 400px"
       >
-        <p class="text-sm text-gray-800 dark:text-gray-200">
-          Hello! How can I help you today?
-        </p>
+        <div class="flex items-start space-x-2">
+          <div
+            class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center flex-shrink-0"
+          >
+            <i
+              class="fas fa-robot text-primary-600 dark:text-primary-400 text-sm"
+            ></i>
+          </div>
+          <div
+            class="bg-gray-100 dark:bg-gray-700 rounded-2xl rounded-tl-none px-4 py-3 max-w-[75%]"
+          >
+            <p class="text-sm text-gray-800 dark:text-gray-200">
+              Hello! How can I help you today?
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input -->
+      <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex items-center space-x-2">
+          <input
+            id="chat-input"
+            type="text"
+            placeholder="Type your message..."
+            class="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 border-0 rounded-full text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600 outline-none transition-all duration-200"
+            autocomplete="off"
+          />
+          <button
+            onclick="sendChatMessage()"
+            class="w-10 h-10 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-full flex items-center justify-center transition-all duration-200 focus-outline"
+          >
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-
-  <!-- Chat Input -->
-  <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-    <div class="flex items-center space-x-2">
-      <input
-        id="chat-input"
-        type="text"
-        placeholder="Type your message..."
-        class="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 border-0 rounded-full text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600 outline-none transition-all duration-200"
-        autocomplete="off"
-      />
-      <button
-        onclick="sendChatMessage()"
-        class="w-10 h-10 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-full flex items-center justify-center transition-all duration-200 focus-outline"
-      >
-        <i class="fas fa-paper-plane"></i>
-      </button>
-    </div>
-  </div>
-</div>
 
     {% block extra_scripts %}
-<script>
-  // Chatbot Functionality
-  function toggleChat() {
-    const chatbot = document.getElementById("chatbot");
-    const toggleButton = document.getElementById("chatbot-toggle");
+    <script>
+      // Chatbot Functionality
+      function toggleChat() {
+        const chatbot = document.getElementById("chatbot");
+        const toggleButton = document.getElementById("chatbot-toggle");
 
-    if (chatbot.classList.contains("hidden")) {
-      chatbot.classList.remove("hidden");
-      chatbot.classList.add("flex");
-      toggleButton.classList.add("scale-0");
-    } else {
-      chatbot.classList.add("hidden");
-      chatbot.classList.remove("flex");
-      toggleButton.classList.remove("scale-0");
-    }
-  }
+        if (chatbot.classList.contains("hidden")) {
+          chatbot.classList.remove("hidden");
+          chatbot.classList.add("flex");
+          toggleButton.classList.add("scale-0");
+        } else {
+          chatbot.classList.add("hidden");
+          chatbot.classList.remove("flex");
+          toggleButton.classList.remove("scale-0");
+        }
+      }
 
-  async function sendChatMessage() {
-    const input = document.getElementById("chat-input");
-    const message = input.value.trim();
+      async function sendChatMessage() {
+        const input = document.getElementById("chat-input");
+        const message = input.value.trim();
 
-    if (!message) return;
+        if (!message) return;
 
-    // Add user message to chat
-    const chatBody = document.getElementById("chatbot-body");
-    const userMessageDiv = document.createElement("div");
-    userMessageDiv.className = "flex items-start space-x-2 justify-end";
-    userMessageDiv.innerHTML = `
+        // Add user message to chat
+        const chatBody = document.getElementById("chatbot-body");
+        const userMessageDiv = document.createElement("div");
+        userMessageDiv.className = "flex items-start space-x-2 justify-end";
+        userMessageDiv.innerHTML = `
     <div class="bg-primary-600 dark:bg-primary-500 rounded-2xl rounded-tr-none px-4 py-3 max-w-[75%]">
       <p class="text-sm text-white">${message}</p>
     </div>
@@ -1151,14 +1262,14 @@
       <i class="fas fa-user text-white text-sm"></i>
     </div>
   `;
-    chatBody.appendChild(userMessageDiv);
-    input.value = "";
+        chatBody.appendChild(userMessageDiv);
+        input.value = "";
 
-    // Show typing indicator
-    const typingDiv = document.createElement("div");
-    typingDiv.id = "typing-indicator";
-    typingDiv.className = "flex items-start space-x-2";
-    typingDiv.innerHTML = `
+        // Show typing indicator
+        const typingDiv = document.createElement("div");
+        typingDiv.id = "typing-indicator";
+        typingDiv.className = "flex items-start space-x-2";
+        typingDiv.innerHTML = `
     <div class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center flex-shrink-0">
       <i class="fas fa-robot text-primary-600 dark:text-primary-400 text-sm"></i>
     </div>
@@ -1170,45 +1281,47 @@
       </div>
     </div>
   `;
-    chatBody.appendChild(typingDiv);
-    chatBody.scrollTop = chatBody.scrollHeight;
+        chatBody.appendChild(typingDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
 
-    try {
-      const response = await fetch(
-        "http://localhost:5005/webhooks/rest/webhook",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sender: "user", message: message }),
-        },
-      );
+        try {
+          const response = await fetch(
+            "http://localhost:5005/webhooks/rest/webhook",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ sender: "user", message: message }),
+            },
+          );
 
-      document.getElementById("typing-indicator").remove();
+          document.getElementById("typing-indicator").remove();
 
-      const data = await response.json();
+          const data = await response.json();
 
-      if (data.length === 0) {
-        addBotMessage("Sorry, I didn't get that. Could you please rephrase?");
-      } else {
-        data.forEach((item) => {
-          addBotMessage(item.text);
-        });
+          if (data.length === 0) {
+            addBotMessage(
+              "Sorry, I didn't get that. Could you please rephrase?",
+            );
+          } else {
+            data.forEach((item) => {
+              addBotMessage(item.text);
+            });
+          }
+        } catch (error) {
+          document.getElementById("typing-indicator").remove();
+          addBotMessage(
+            "I'm currently unavailable. Please try again later or contact support.",
+          );
+        }
+
+        chatBody.scrollTop = chatBody.scrollHeight;
       }
-    } catch (error) {
-      document.getElementById("typing-indicator").remove();
-      addBotMessage(
-        "I'm currently unavailable. Please try again later or contact support.",
-      );
-    }
 
-    chatBody.scrollTop = chatBody.scrollHeight;
-  }
-
-  function addBotMessage(text) {
-    const chatBody = document.getElementById("chatbot-body");
-    const botMessageDiv = document.createElement("div");
-    botMessageDiv.className = "flex items-start space-x-2 animate-slide-up";
-    botMessageDiv.innerHTML = `
+      function addBotMessage(text) {
+        const chatBody = document.getElementById("chatbot-body");
+        const botMessageDiv = document.createElement("div");
+        botMessageDiv.className = "flex items-start space-x-2 animate-slide-up";
+        botMessageDiv.innerHTML = `
     <div class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center flex-shrink-0">
       <i class="fas fa-robot text-primary-600 dark:text-primary-400 text-sm"></i>
     </div>
@@ -1216,21 +1329,21 @@
       <p class="text-sm text-gray-800 dark:text-gray-200">${text}</p>
     </div>
   `;
-    chatBody.appendChild(botMessageDiv);
-  }
+        chatBody.appendChild(botMessageDiv);
+      }
 
-  // Send message on Enter key
-  document.addEventListener("DOMContentLoaded", function() {
-    const chatInput = document.getElementById("chat-input");
-    if (chatInput) {
-      chatInput.addEventListener("keypress", function (e) {
-        if (e.key === "Enter") {
-          sendChatMessage();
+      // Send message on Enter key
+      document.addEventListener("DOMContentLoaded", function () {
+        const chatInput = document.getElementById("chat-input");
+        if (chatInput) {
+          chatInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+              sendChatMessage();
+            }
+          });
         }
       });
-    }
-  });
-</script>
-{% endblock %}
+    </script>
+    {% endblock %}
   </body>
 </html>

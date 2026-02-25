@@ -1,0 +1,17 @@
+GovAid - Income Certificate Application Template
+
+1. Applicant Name:
+2. Father/Mother/Guardian Name:
+3. Address:
+4. Occupation:
+5. Annual Household Income:
+6. Supporting Proof Attached:
+   - Salary Slip / Income Proof
+   - Bank Statement
+   - Self Declaration
+
+Declaration:
+I hereby declare that the income details provided are correct.
+
+Signature:
+Date:

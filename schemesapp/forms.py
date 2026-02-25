@@ -2,51 +2,52 @@ from django import forms
 from django.contrib.auth.models import User
 from .models import Feedback, Scheme, UserDetails
 
-# Predefined choices for common fields
-AGE_CHOICES = [
-    ('', 'Select Age'),
-    ('18-25', '18-25 years'),
-    ('26-35', '26-35 years'),
-    ('36-45', '36-45 years'),
-    ('46-55', '46-55 years'),
-    ('56-65', '56-65 years'),
-    ('65+', '65 years and above'),
-]
 
-AGE_RANGE_CHOICES = [
-    ('', 'Any Age'),
-] + [(str(i), str(i)) for i in range(18, 76)]
+# =========================
+# SHARED TAILWIND STYLES
+# =========================
 
-INCOME_RANGE_CHOICES = [
-    ('', 'Any Income'),
-    ('0-100000', '₹0 - ₹1 Lakh'),
-    ('100000-300000', '₹1 Lakh - ₹3 Lakh'),
-    ('300000-500000', '₹3 Lakh - ₹5 Lakh'),
-    ('500000-1000000', '₹5 Lakh - ₹10 Lakh'),
-    ('1000000+', 'Above ₹10 Lakh'),
-]
+BASE_INPUT = """
+w-full px-4 py-3 rounded-xl
+bg-gray-50 dark:bg-gray-800
+border border-gray-300 dark:border-gray-700
+text-gray-900 dark:text-gray-100
+focus:outline-none focus:ring-4
+focus:ring-primary-200 dark:focus:ring-primary-800/40
+focus:border-primary-500
+transition duration-200
+"""
 
-LOCATION_CHOICES = [
-    ('', 'Any Location'),
-    ('rural', 'Rural'),
-    ('urban', 'Urban'),
-]
+SEGMENTED_OPTION = """
+peer hidden
+"""
 
-YES_NO_CHOICES = [
-    ('', 'Select'),
-    ('true', 'Yes'),
-    ('false', 'No'),
-]
+SEGMENTED_LABEL = """
+flex items-center justify-center
+px-4 py-3 rounded-xl
+border border-gray-300 dark:border-gray-700
+bg-gray-50 dark:bg-gray-800
+cursor-pointer
+transition
+peer-checked:bg-primary-600
+peer-checked:text-white
+peer-checked:border-primary-600
+hover:border-primary-500
+text-sm font-medium
+"""
+
+
+# =========================
+# FEEDBACK FORM
+# =========================
 
 class FeedbackForm(forms.ModelForm):
 
     scheme = forms.ModelChoiceField(
-        queryset=Scheme.objects.all(), 
+        queryset=Scheme.objects.all(),
         required=False,
-        empty_label="Select a Scheme", 
-        widget=forms.Select(attrs={
-            'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-        })
+        empty_label="Select a Scheme",
+        widget=forms.Select(attrs={'class': BASE_INPUT})
     )
 
     class Meta:
@@ -54,136 +55,150 @@ class FeedbackForm(forms.ModelForm):
         fields = ['scheme', 'message']
         widgets = {
             'message': forms.Textarea(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none',
+                'class': BASE_INPUT,
                 'rows': 4
             })
         }
 
+
 class AddEmployee(forms.Form):
     username = forms.CharField(
-        max_length=150, 
+        max_length=150,
         label="Enter Username",
         widget=forms.TextInput(attrs={
-            'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
+            'class': BASE_INPUT,
+            'placeholder': 'Employee username'
         })
     )
+
 
 class Add_Scheme_Form(forms.ModelForm):
 
     class Meta:
         model = Scheme
-        fields = ['name', 'objective', 'benefits', 'agency', 'full_description', 'gender', 'min_age', 'max_age', 'maritial_status', 'location', 'caste', 'disability', 'minority', 'below_poverty_line', 'max_income' ]
+        fields = [
+            'name',
+            'objective',
+            'benefits',
+            'agency',
+            'full_description',
+            'category',
+            'website',
+            'contact_email',
+            'contact_phone',
+            'application_deadline',
+            'gender',
+            'min_age',
+            'max_age',
+            'maritial_status',
+            'location',
+            'caste',
+            'disability',
+            'minority',
+            'below_poverty_line',
+            'max_income',
+        ]
         widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'objective': forms.Textarea(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none',
-                'rows': 3
-            }),
-            'benefits': forms.Textarea(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none',
-                'rows': 3
-            }),
-            'agency': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'full_description': forms.Textarea(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none',
-                'rows': 4
-            }),
-            'gender': forms.Select(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'min_age': forms.Select(choices=AGE_RANGE_CHOICES, attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'max_age': forms.Select(choices=AGE_RANGE_CHOICES, attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'maritial_status': forms.Select(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'location': forms.Select(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'caste': forms.Select(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'disability': forms.Select(choices=[(None, 'Any'), (True, 'Yes'), (False, 'No')], attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'minority': forms.Select(choices=[(None, 'Any'), (True, 'Yes'), (False, 'No')], attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'below_poverty_line': forms.Select(choices=[(None, 'Any'), (True, 'Yes'), (False, 'No')], attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'max_income': forms.NumberInput(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none',
-                'placeholder': 'Maximum income limit'
-            }),
+            'name': forms.TextInput(attrs={'class': BASE_INPUT}),
+            'objective': forms.Textarea(attrs={'class': BASE_INPUT, 'rows': 3}),
+            'benefits': forms.Textarea(attrs={'class': BASE_INPUT, 'rows': 3}),
+            'agency': forms.TextInput(attrs={'class': BASE_INPUT}),
+            'full_description': forms.Textarea(attrs={'class': BASE_INPUT, 'rows': 4}),
+            'category': forms.Select(attrs={'class': BASE_INPUT}),
+            'website': forms.URLInput(attrs={'class': BASE_INPUT}),
+            'contact_email': forms.EmailInput(attrs={'class': BASE_INPUT}),
+            'contact_phone': forms.TextInput(attrs={'class': BASE_INPUT}),
+            'application_deadline': forms.DateInput(attrs={'class': BASE_INPUT, 'type': 'date'}),
+            'gender': forms.Select(attrs={'class': BASE_INPUT}),
+            'min_age': forms.NumberInput(attrs={'class': BASE_INPUT}),
+            'max_age': forms.NumberInput(attrs={'class': BASE_INPUT}),
+            'maritial_status': forms.Select(attrs={'class': BASE_INPUT}),
+            'location': forms.Select(attrs={'class': BASE_INPUT}),
+            'caste': forms.Select(attrs={'class': BASE_INPUT}),
+            'disability': forms.Select(attrs={'class': BASE_INPUT}),
+            'minority': forms.Select(attrs={'class': BASE_INPUT}),
+            'below_poverty_line': forms.Select(attrs={'class': BASE_INPUT}),
+            'max_income': forms.NumberInput(attrs={'class': BASE_INPUT}),
         }
+
+
+# =========================
+# USER DETAILS FORM
+# =========================
+
+YES_NO_CHOICES = [
+    ('yes', 'Yes'),
+    ('no', 'No')
+]
+
 
 class User_Details_Form(forms.ModelForm):
 
-    age = forms.CharField(
-        widget=forms.Select(
-            choices=AGE_CHOICES,
-            attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }
-        ),
-        help_text='Select your age group',
-        required=True,
+    gender = forms.ChoiceField(
+        choices=[
+            ('M', 'Male'),
+            ('F', 'Female')
+        ],
+        widget=forms.RadioSelect
     )
 
-    gender = forms.ChoiceField(
-        choices=[('M', 'Male'), ('F', 'Female')],
-        required=True,
-        widget=forms.Select(attrs={
-            'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-        })
+    disability = forms.ChoiceField(
+        choices=YES_NO_CHOICES,
+        widget=forms.RadioSelect
+    )
+
+    minority = forms.ChoiceField(
+        choices=YES_NO_CHOICES,
+        widget=forms.RadioSelect
+    )
+
+    below_poverty_line = forms.ChoiceField(
+        choices=YES_NO_CHOICES,
+        widget=forms.RadioSelect
     )
 
     class Meta:
         model = UserDetails
-        fields = ['name', 'age', 'email', 'gender', 'maritial_status', 'location', 'caste', 'disability', 'minority', 'below_poverty_line', 'income' ]
+        fields = [
+            'name',
+            'age',
+            'email',
+            'gender',
+            'maritial_status',
+            'location',
+            'caste',
+            'disability',
+            'minority',
+            'below_poverty_line',
+            'income'
+        ]
+
         widgets = {
             'name': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none',
+                'class': BASE_INPUT,
                 'placeholder': 'Full Name'
             }),
+            'age': forms.Select(attrs={'class': BASE_INPUT}),
             'email': forms.EmailInput(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none',
+                'class': BASE_INPUT,
                 'placeholder': 'your@email.com'
             }),
-            'gender': forms.Select(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'maritial_status': forms.Select(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'location': forms.Select(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'caste': forms.Select(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none'
-            }),
-            'disability': forms.CheckboxInput(attrs={
-                'class': 'rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500'
-            }),
-            'minority': forms.CheckboxInput(attrs={
-                'class': 'rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500'
-            }),
-            'below_poverty_line': forms.CheckboxInput(attrs={
-                'class': 'rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500'
-            }),
+            'maritial_status': forms.Select(attrs={'class': BASE_INPUT}),
+            'location': forms.Select(attrs={'class': BASE_INPUT}),
+            'caste': forms.Select(attrs={'class': BASE_INPUT}),
             'income': forms.NumberInput(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all outline-none',
+                'class': BASE_INPUT,
                 'placeholder': 'Annual income in INR'
             }),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance and self.instance.pk:
+            self.initial['disability'] = 'yes' if self.instance.disability else 'no'
+            self.initial['minority'] = 'yes' if self.instance.minority else 'no'
+            self.initial['below_poverty_line'] = 'yes' if self.instance.below_poverty_line else 'no'
 
     def clean_age(self):
         age_value = (self.cleaned_data.get('age') or '').strip()
@@ -208,3 +223,12 @@ class User_Details_Form(forms.ModelForm):
                 return '65+'
 
         raise forms.ValidationError('Please select a valid age group.')
+
+    def clean_disability(self):
+        return self.cleaned_data.get('disability') == 'yes'
+
+    def clean_minority(self):
+        return self.cleaned_data.get('minority') == 'yes'
+
+    def clean_below_poverty_line(self):
+        return self.cleaned_data.get('below_poverty_line') == 'yes'
