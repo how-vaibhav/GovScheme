@@ -1,170 +1,326 @@
-# GovAid – Government Schemes Portal
+# GovAid - Government Schemes Portal
 
-GovAid is a Django-based web platform that helps citizens discover, compare, and apply for government schemes, with eligibility matching, notifications, feedback workflows, and role-based access for citizens, employees, and administrators.
+GovAid is a Django-based citizen services platform for discovering, comparing, and applying to government welfare schemes. It includes profile-driven eligibility checks, scheme recommendations, application workflows, feedback handling, and role-based operations for citizens, employees, and administrators.
 
-## Highlights
+## Why this project
 
-- Scheme directory with filtering and detail pages
-- Profile-based eligibility checking
-- Application submission and status tracking
-- Notifications center (with mark-as-read)
-- Favorites and comparison tools
-- Feedback and employee reply workflow
-- Dark/light mode support
-- Mobile-responsive UI
+- Centralizes scheme discovery and filtering in one portal.
+- Matches users to schemes using profile attributes (age range, income, caste, location, BPL, disability, minority, etc.).
+- Supports end-to-end application flow with encrypted Aadhaar storage.
+- Provides operational tools for employees (feedback reply + application status decisions).
+- Offers user engagement features (favorites, comparison, notification center, advanced search).
 
-## Tech Stack
+## Feature overview
 
-- Backend: Django 5.2.1, Python 3.13
-- Database: SQLite (default)
-- Frontend: Tailwind CSS 3.4.1, Vanilla JavaScript
-- Icons/Fonts: Font Awesome, Google Fonts
+### Citizen features
 
-## Project Structure
+- Authentication (register/login/logout).
+- Profile capture and editing (`UserDetails`).
+- Scheme browsing and detail pages.
+- Eligibility checks (single-scheme and all-schemes).
+- Scheme application submission.
+- Favorites/bookmarks.
+- Side-by-side scheme comparison.
+- Advanced multi-filter search.
+- Notification center and mark-as-read.
+- Feedback submission.
+
+### Employee features
+
+- Respond to user feedback.
+- View applications and update status (`pending`, `accepted`, `rejected`).
+
+### Admin features
+
+- Django admin management.
+- Employee group assignment via custom UI (`addemployee/`).
+- Scheme creation and lifecycle management.
+
+## Technical stack (detailed)
+
+| Layer         | Technology                    | Version / Notes        | Purpose                                            |
+| ------------- | ----------------------------- | ---------------------- | -------------------------------------------------- |
+| Runtime       | Python                        | 3.12+ (Pipfile)        | Core backend runtime                               |
+| Web framework | Django                        | 5.2.1                  | MVC-ish server rendering, ORM, auth, admin         |
+| Database      | SQLite                        | Default (`db.sqlite3`) | Local persistence for users, schemes, applications |
+| Styling       | Tailwind CSS                  | 3.4.1                  | Utility-first styling pipeline                     |
+| Frontend      | Django Templates + Vanilla JS | Server-first UI        | Fast pages without SPA complexity                  |
+| Config        | python-decouple               | 3.8                    | Environment-driven settings (`.env`)               |
+| Crypto        | cryptography (Fernet)         | 45.0.2                 | Aadhaar encryption at model layer                  |
+| HTTP clients  | requests                      | 2.32.3                 | Integration calls (translation, utility endpoints) |
+| HTML parsing  | beautifulsoup4 + lxml         | 4.13.4 / 5.4.0         | Data scraping and parsing utilities                |
+| Build tooling | npm + Tailwind CLI            | package scripts        | CSS build/watch pipeline                           |
+
+### Dependency profile
+
+- **Core backend**: `Django`, `asgiref`, `sqlparse`, `tzdata`.
+- **Security + config**: `cryptography`, `cffi`, `python-decouple`.
+- **Data ingestion/integration**: `requests`, `beautifulsoup4`, `lxml`.
+- **Frontend pipeline**: `tailwindcss` via `build:css` and `watch:css` scripts.
+
+### Compatibility notes
+
+- `requirements.txt` pins Django ecosystem and supporting libs for reproducibility.
+- `Pipfile` targets Python `3.12`; align your local interpreter with this for least friction.
+- SQLite is ideal for local/dev; for production scale, migrate to Postgres/MySQL.
+
+## Engineering architecture
+
+### Service boundaries
+
+- **Web App Service (Django, port 8000)**
+  - Handles auth, profile management, scheme catalog, application workflows, and notifications.
+- **Translation/Bot Side Services (external ports 5000/5055/5005 depending on script)**
+  - Used by helper integration flows (`translate_page`, startup scripts, Rasa command wrappers).
+
+### Application modules
+
+- **Domain models**: `UserDetails`, `Scheme`, `Application`, `Notification`, `Feedback`, `Favorite`, `ApplicationTimeline`.
+- **Business logic**: eligibility checks in `Scheme.is_user_eligible`, recommendation scoring in views.
+- **Security logic**: Verhoeff checksum validation + Fernet encryption/decryption for Aadhaar.
+- **Eventing**: `post_save` signal on `Scheme` to fan out user notifications.
+
+### Request lifecycle (example: apply to scheme)
+
+1. Authenticated user submits Aadhaar + scheme selection on `/apply/`.
+2. Aadhaar is validated using Verhoeff checksum.
+3. Value is encrypted through `Application.sensitive_data` setter.
+4. Application row is persisted with `pending` status.
+5. Session stores masked Aadhaar for success confirmation page.
+6. Employee later accepts/rejects from `/applications/`, triggering notification creation.
+
+## Data model snapshot
+
+| Entity                | Key fields                                | Core relationships                                |
+| --------------------- | ----------------------------------------- | ------------------------------------------------- |
+| `UserDetails`         | demographics, socioeconomic fields        | One-to-one with `User`                            |
+| `Scheme`              | benefit metadata + eligibility criteria   | Referenced by applications/feedback/notifications |
+| `Application`         | encrypted Aadhaar + status + timestamps   | Many-to-one to `User` and `Scheme`                |
+| `Notification`        | message, read state, optional scheme link | Many-to-one to `User`                             |
+| `Feedback`            | message + optional employee reply         | Linked to `User` and optional `Scheme`            |
+| `Favorite`            | user-scheme bookmark                      | Unique pair (`user`, `scheme`)                    |
+| `ApplicationTimeline` | status events and timestamps              | Many-to-one to `Application`                      |
+
+## Repository layout
 
 ```text
 GovScheme/
-├── gov_schemes/                 # Django project settings and root URLs
-├── schemesapp/                  # Main app (views, models, forms, templates)
-│   ├── management/commands/     # Custom management commands
-│   ├── migrations/              # DB migrations
-│   ├── templates/               # App templates
-│   └── templatetags/            # Custom template tags/filters
-├── templates/                   # Global templates (base layout)
-├── static/                      # CSS, JS, images, downloadable assets
-├── schemes_data/                # CSV data source(s)
+├── gov_schemes/                       # Project config (settings, urls, wsgi/asgi)
+├── schemesapp/
+│   ├── management/commands/           # Data import, seed, utility commands
+│   ├── migrations/
+│   ├── templates/
+│   ├── forms.py
+│   ├── models.py
+│   ├── urls.py
+│   └── views.py
+├── schemes_data/                      # CSV dataset(s)
+├── static/                            # Source static files (input/output CSS, JS, images)
+├── staticfiles/                       # collectstatic output
+├── templates/                         # Global templates (base layouts)
 ├── manage.py
 ├── requirements.txt
 ├── package.json
-└── tailwind.config.js
+├── run_all_servers.py
+└── START_SERVERS.bat
 ```
 
-## Prerequisites
+## Architecture at a glance
 
-- Python 3.10+
-- Node.js + npm
-- Git
+1. **User profile as eligibility anchor**
+   - `UserDetails` stores user attributes used for matching.
+2. **Eligibility engine on `Scheme` model**
+   - `Scheme.is_user_eligible(details)` applies criteria checks.
+3. **Recommendation layer in views**
+   - `get_smart_recommendations(user)` computes simple score-based top matches.
+4. **Event-driven notifications**
+   - `post_save` signal on `Scheme` creates per-user notifications.
+5. **Application workflow**
+   - Aadhaar is validated (Verhoeff), encrypted, and status-managed by employees.
 
-## Quick Start
+## Environment configuration
 
-1. Clone and enter project:
+This project expects a `.env` file (loaded via `python-decouple`) with at least:
+
+```env
+SECRET_KEY=replace-with-django-secret
+FIELD_ENCRYPTION_KEY=replace-with-fernet-key
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# Optional production hardening values
+SECURE_SSL_REDIRECT=False
+SESSION_COOKIE_SECURE=False
+CSRF_COOKIE_SECURE=False
+SECURE_HSTS_SECONDS=0
+SECURE_HSTS_INCLUDE_SUBDOMAINS=False
+SECURE_HSTS_PRELOAD=False
+```
+
+### Generate `FIELD_ENCRYPTION_KEY`
+
+Run once and copy output into `.env`:
 
 ```bash
-git clone <your-repo-url>
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+```
+
+## Local setup (recommended)
+
+### 1) Clone and enter project
+
+```bash
+git clone <your-repository-url>
 cd GovScheme
 ```
 
-2. Create and activate virtual environment:
+### 2) Create virtual environment
 
 ```bash
-python -m venv venv
-# Windows
-venv\Scripts\activate
-# macOS/Linux
-source venv/bin/activate
+python -m venv .venv
 ```
 
-3. Install dependencies:
+Windows (PowerShell):
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+macOS/Linux:
+
+```bash
+source .venv/bin/activate
+```
+
+### 3) Install dependencies
 
 ```bash
 pip install -r requirements.txt
 npm install
 ```
 
-4. Apply migrations:
+### 4) Configure environment variables
+
+- Create `.env` in project root using the values shown above.
+
+### 5) Apply migrations + create admin
 
 ```bash
 python manage.py migrate
+python manage.py createsuperuser
 ```
 
-5. (Optional) Load sample schemes:
-
-```bash
-python manage.py populate_schemes
-# or
-python manage.py import_csv
-```
-
-6. Build CSS:
+### 6) Build Tailwind CSS
 
 ```bash
 npm run build:css
 ```
 
-7. Run server:
+For active frontend edits:
+
+```bash
+npm run watch:css
+```
+
+### 7) Run app
 
 ```bash
 python manage.py runserver
 ```
 
-Open:
+App URLs:
 
-- App: http://127.0.0.1:8000/
+- Home: http://127.0.0.1:8000/
 - Admin: http://127.0.0.1:8000/admin/
 
-## Useful Commands
+## Seed and data import commands
 
 ```bash
-# Validate Django config and templates
-python manage.py check
+# Bulk seed curated sample schemes
+python manage.py populate_schemes
 
-# Run tests
-python manage.py test
+# Import from CSV (schemes_data/sikkim_schemes.csv)
+python manage.py import_csv
 
-# Tailwind watch mode
-npm run watch:css
-
-# Create admin user
-python manage.py createsuperuser
+# Update long descriptions for known scheme names
+python manage.py update_full_descriptions
 ```
 
-## Core Features by Role
+## Route map (major flows)
 
-### Citizen
+- `/schemes/` - scheme listing
+- `/scheme/<id>/` - scheme detail
+- `/advanced-search/` - advanced filtering
+- `/check-eligibility/` - all eligible schemes for logged-in user
+- `/apply/` - application form
+- `/applications/` - application dashboard (employee)
+- `/favorites/` - saved schemes
+- `/comparison/` - compare up to 5 schemes
+- `/notifications/` - notification center
+- `/feedback/` and `/feedbacks/` - feedback submission/review
 
-- Register/login
-- Complete profile (`/userdetails/`)
-- Browse/search schemes
-- Check eligibility
-- Apply and track applications
-- Submit feedback
+## Security notes
 
-### Employee
+- Sensitive Aadhaar value in `Application` is stored encrypted (`cryptography.Fernet`) via model property `sensitive_data`.
+- Aadhaar number is validated with Verhoeff checksum before persistence.
+- Authentication and role checks are enforced through `@login_required` and group-based `@user_passes_test`.
+- CSRF middleware is enabled globally (except explicitly exempted endpoints).
 
-- View and respond to feedback
-- Review application workflows
-- Add/update scheme data (as configured)
+## Running Django + external bot stack
 
-### Admin
+This repository includes helper scripts for dual-server startup:
 
-- Full Django admin management
-- User/role and content oversight
+- `run_all_servers.py`
+- `START_SERVERS.bat`
+- `start_servers.sh`
+- `python manage.py run_rasa_server`
 
-## Security Notes
+### Important caveat
 
-- CSRF protection via Django middleware
-- Role-based access in views/templates
-- Sensitive Aadhaar application data handled with encryption logic in model layer
+These scripts currently include machine-specific absolute paths (for example, `C:\Users\LENOVO\...`) and may not work out-of-the-box on another system. Update those paths before use.
 
-## Deployment Notes
+Also verify expected service ports in your environment:
 
-For production, set:
+- `translate_page` view posts to `http://localhost:5000/translate`
+- Rasa helper command uses port `5055`
+- `run_all_servers.py` text references port `5005`
 
-- `DEBUG = False`
-- Proper `ALLOWED_HOSTS`
-- Secure secret key management (environment variables)
-- Static/media serving strategy (e.g., Nginx + collectstatic)
+Unify these in your deployment for stable integration.
 
-## Troubleshooting
+## Quality checks
 
-- **TemplateSyntaxError**: run `python manage.py check` and verify latest template edits.
-- **CSS not updating**: run `npm run build:css` (or `watch:css`).
-- **Missing data**: run `populate_schemes` or `import_csv` commands.
+```bash
+# Django system checks
+python manage.py check
+
+# App tests
+python manage.py test
+
+# Utility validation scripts included in repo
+python test_servers.py
+python test_notifications.py
+```
+
+## Common troubleshooting
+
+- **`SECRET_KEY` / `FIELD_ENCRYPTION_KEY` missing**: ensure `.env` exists and has both values.
+- **CSS not updating**: run `npm run build:css` or keep `npm run watch:css` running.
+- **No schemes visible**: run `python manage.py populate_schemes` or `python manage.py import_csv`.
+- **App crashes on another machine with startup scripts**: replace hard-coded paths in server scripts.
+- **Eligibility empty for logged-in user**: ensure profile is created at `/userdetails/`.
+
+## Production readiness checklist
+
+Before deployment:
+
+- Set `DEBUG=False`
+- Set strict `ALLOWED_HOSTS`
+- Rotate and securely store `SECRET_KEY` and `FIELD_ENCRYPTION_KEY`
+- Enable HTTPS + secure cookie settings
+- Run `collectstatic`
+- Replace SQLite with production-grade DB if required by scale
+- Align bot/translation ports and endpoints
 
 ## License
 
-This project is licensed under the terms in [LICENSE](LICENSE).
-
----
-
-If you want, I can also create a short `CONTRIBUTING.md` and `ENVIRONMENT_SETUP.md` to make onboarding for collaborators even smoother.
+This project is licensed under [LICENSE](LICENSE).
