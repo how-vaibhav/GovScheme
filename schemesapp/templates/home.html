@@ -68,6 +68,16 @@ Schemes Portal{% endblock %} {% block content %}
     }
   }
 
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
   .animate-fade-in-up {
     animation: fadeInUp 0.8s ease-out forwards;
     opacity: 0;
@@ -81,6 +91,10 @@ Schemes Portal{% endblock %} {% block content %}
   .animate-fade-in-left {
     animation: fadeInLeft 0.8s ease-out forwards;
     opacity: 0;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
   }
 
   .animate-fade-in-right {
@@ -138,15 +152,20 @@ Schemes Portal{% endblock %} {% block content %}
 
 <!-- Hero Section with Parallax Effect -->
 <section
-  class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 dark:from-gray-800 dark:via-gray-900 dark:to-black overflow-hidden"
+  class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-purple-800 dark:from-gray-800 dark:via-gray-900 dark:to-black overflow-hidden"
 >
-  <!-- Animated Background Pattern -->
-  <div class="absolute inset-0 opacity-10">
+  <!-- Animated Background Elements -->
+  <div class="absolute inset-0 overflow-hidden">
     <div
-      class="absolute inset-0"
-      style="
-        background-image: url(&quot;data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E&quot;);
-      "
+      class="absolute top-10 left-10 w-72 h-72 bg-primary-400/20 rounded-full blur-3xl animate-float"
+    ></div>
+    <div
+      class="absolute bottom-10 right-10 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-float"
+      style="animation-delay: 2s"
+    ></div>
+    <div
+      class="absolute top-1/2 left-1/3 w-64 h-64 bg-pink-400/10 rounded-full blur-3xl animate-float"
+      style="animation-delay: 4s"
     ></div>
   </div>
 

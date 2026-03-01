@@ -119,13 +119,7 @@
               {% for code, name in scheme_choices %}
               <option
                 value="{{ code }}"
-                {%
-                if
-                code=""
-                ="selected_scheme"
-                %}selected{%
-                endif
-                %}
+                {% if code == selected_scheme %}selected{% endif %}
               >
                 {{ name }}
               </option>
@@ -144,25 +138,13 @@
               <option value="">All</option>
               <option
                 value="yes"
-                {%
-                if
-                selected_replied=""
-                ="yes"
-                %}selected{%
-                endif
-                %}
+                {% if selected_replied == "yes" %}selected{% endif %}
               >
                 Replied
               </option>
               <option
                 value="no"
-                {%
-                if
-                selected_replied=""
-                ="no"
-                %}selected{%
-                endif
-                %}
+                {% if selected_replied == "no" %}selected{% endif %}
               >
                 Awaiting Reply
               </option>
