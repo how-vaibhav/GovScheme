@@ -468,12 +468,7 @@
       if (len === 0) {
         message.classList.remove("is-valid", "is-invalid");
         messageError.classList.add("hidden");
-        messageHelper.textContent = "Minimum 10 characters.";
-        return false;
-      }
-
-      if (len < 10) {
-        message.classList.remove("is-valid");
+        messageHelper.textContent = "Please enter your feedback (at least 1 character).";
         message.classList.add("is-invalid");
         messageError.classList.remove("hidden");
         messageHelper.textContent = "Please add more detail for better review.";
@@ -539,8 +534,10 @@
       updateProgress();
     });
 
+    // keep validation helper but do not block submission – the server will handle required fields
     form.addEventListener("submit", (event) => {
-      if (!validateMessage()) {
+      if (message.value.trim().length === 0) {
+        // prevent empty messages only
         event.preventDefault();
         message.focus();
       }
