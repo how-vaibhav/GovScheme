@@ -4,7 +4,8 @@
   "description": "Government Schemes Portal with Tailwind CSS",
   "scripts": {
     "build:css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --minify",
-    "watch:css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch"
+    "watch:css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
+    "vercel-build": "python manage.py collectstatic --noinput && npm run build:css"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.1"
