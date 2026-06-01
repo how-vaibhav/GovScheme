@@ -1,4 +1,4 @@
-from vercel_wsgi import handle_request
+from .vercel_wsgi import handle_request
 from gov_schemes.wsgi import application
 
 
