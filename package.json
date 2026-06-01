@@ -5,7 +5,7 @@
   "scripts": {
     "build:css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --minify",
     "watch:css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
-    "vercel-build": "python -m pip install -r requirements.txt && python manage.py collectstatic --noinput && npm run build:css"
+    "vercel-build": "python -m pip install --break-system-packages -r requirements.txt && python manage.py collectstatic --noinput && npm run build:css"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.1"
