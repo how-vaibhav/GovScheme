@@ -17,7 +17,7 @@ soupsieve==2.7
 sqlparse==0.5.3
 typing_extensions==4.13.2
 tzdata==2025.2
-urllib3==2.4.0
+urllib3==1.26.16
 virtualenv==20.31.2
 
 # Production / deployment helpers
@@ -26,4 +26,4 @@ dj-database-url==1.0.0
 psycopg2-binary==2.9.10
 python-dotenv==1.0.0
 gunicorn==21.2.0
-boto3==1.28.0
+

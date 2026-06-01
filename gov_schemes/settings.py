@@ -14,6 +14,8 @@ from pathlib import Path
 
 
 from decouple import config
+from django.core.exceptions import ImproperlyConfigured
+import dj_database_url
 import dj_database_url
 
 from cryptography.fernet import Fernet
@@ -25,9 +27,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-SECRET_KEY = config('SECRET_KEY')
+# SECRET_KEY: prefer environment variable; require in production
+SECRET_KEY = os.environ.get('SECRET_KEY') or config('SECRET_KEY', default=None)
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = 'dev-secret-key'
+    else:
+        raise ImproperlyConfigured('The SECRET_KEY environment variable is not set.')
 
-FIELD_ENCRYPTION_KEY = config('FIELD_ENCRYPTION_KEY').encode()
+# FIELD_ENCRYPTION_KEY: prefer environment variable; require in production
+field_key = os.environ.get('FIELD_ENCRYPTION_KEY') or config('FIELD_ENCRYPTION_KEY', default=None)
+if not field_key:
+    if DEBUG:
+        # generate temporary key for development (not for production)
+        from cryptography.fernet import Fernet as _Fernet
+        field_key = _Fernet.generate_key().decode()
+    else:
+        raise ImproperlyConfigured('The FIELD_ENCRYPTION_KEY environment variable is not set.')
+
+FIELD_ENCRYPTION_KEY = field_key.encode()
 FERNET = Fernet(FIELD_ENCRYPTION_KEY)
 
 DATABASES = {
