@@ -22,18 +22,22 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-prod-key-30fc79b381ab435bb-sec-940294829')
 
-FIELD_ENCRYPTION_KEY = config('FIELD_ENCRYPTION_KEY').encode()
+FIELD_ENCRYPTION_KEY = config('FIELD_ENCRYPTION_KEY', default='VvLYCmaqTwSPhQjjSSbTnwVDPWgx0G-G3_49JdOWeF0=').encode()
 FERNET = Fernet(FIELD_ENCRYPTION_KEY)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',') if s.strip()])
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='*,localhost,127.0.0.1,.onrender.com',
+    cast=lambda v: [s.strip() for s in v.split(',') if s.strip()]
+)
 
 CSRF_TRUSTED_ORIGINS = config(
     'CSRF_TRUSTED_ORIGINS',
-    default='http://localhost:8000,http://127.0.0.1:8000',
+    default='https://*.onrender.com,http://localhost:8000,http://127.0.0.1:8000',
     cast=lambda v: [s.strip() for s in v.split(',') if s.strip()]
 )
 
@@ -142,7 +146,7 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage" if not DEBUG else "django.contrib.staticfiles.storage.StaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
