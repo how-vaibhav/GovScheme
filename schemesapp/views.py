@@ -534,26 +534,32 @@ def apply_success(request):
     })
 
 @login_required
-@user_passes_test(is_employee)
 def applications_view(request):
+    is_emp = is_employee(request.user) or request.user.is_superuser
     status_filter = request.GET.get('status', 'all')
 
-    if status_filter == 'pending':
-        applications = Application.objects.filter(status='pending')
-    elif status_filter == 'accepted':
-        applications = Application.objects.filter(status='accepted')
-    elif status_filter == 'rejected':
-        applications = Application.objects.filter(status='rejected')
+    if is_emp:
+        base_qs = Application.objects.all().select_related('user', 'scheme')
     else:
-        applications = Application.objects.all()
+        base_qs = Application.objects.filter(user=request.user).select_related('scheme')
+
+    if status_filter == 'pending':
+        applications = base_qs.filter(status='pending')
+    elif status_filter == 'accepted':
+        applications = base_qs.filter(status='accepted')
+    elif status_filter == 'rejected':
+        applications = base_qs.filter(status='rejected')
+    else:
+        applications = base_qs
 
     context = {
-        'applications': applications,
+        'applications': applications.order_by('-created_at'),
         'current_filter': status_filter,
-        'total_count': Application.objects.count(),
-        'pending_count': Application.objects.filter(status='pending').count(),
-        'accepted_count': Application.objects.filter(status='accepted').count(),
-        'rejected_count': Application.objects.filter(status='rejected').count(),
+        'is_employee': is_emp,
+        'total_count': base_qs.count(),
+        'pending_count': base_qs.filter(status='pending').count(),
+        'accepted_count': base_qs.filter(status='accepted').count(),
+        'rejected_count': base_qs.filter(status='rejected').count(),
     }
     return render(request, 'view_applications.html', context)
 

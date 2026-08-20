@@ -199,7 +199,11 @@ class Application(models.Model):
     @property
     def sensitive_data(self):
         if self._aadhaar:
-            return settings.FERNET.decrypt(self._aadhaar).decode()
+            try:
+                raw_bytes = bytes(self._aadhaar) if not isinstance(self._aadhaar, bytes) else self._aadhaar
+                return settings.FERNET.decrypt(raw_bytes).decode()
+            except Exception:
+                return None
         return None
     
     @sensitive_data.setter

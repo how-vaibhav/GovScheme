@@ -570,14 +570,14 @@
                 <i
                   class="fas fa-bell text-white text-lg group-hover:animate-pulse"
                 ></i>
-                {% if notifications|length > 0 %}
+                {% if unread_notifications_count > 0 %}
                 <span
                   class="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-primary-700 dark:border-gray-800 animate-pulse"
                 ></span>
                 <span
                   class="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center -mt-1 -mr-1"
                 >
-                  {{ notifications|length }}
+                  {{ unread_notifications_count }}
                 </span>
                 {% endif %}
               </a>
@@ -684,6 +684,38 @@
                       class="fas fa-id-badge text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
                     ></i>
                     <span>User Details</span>
+                  </a>
+                  <a
+                    href="{% url 'all_applications' %}"
+                    class="flex items-center justify-between px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <i
+                        class="fas fa-file-circle-check text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+                      ></i>
+                      <span>{% if user_is_employee %}All Applications{% else %}My Applications{% endif %}</span>
+                    </div>
+                    {% if user_applications_count > 0 %}
+                    <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300">
+                      {{ user_applications_count }}
+                    </span>
+                    {% endif %}
+                  </a>
+                  <a
+                    href="{% url 'notification_center' %}"
+                    class="flex items-center justify-between px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <i
+                        class="fas fa-bell text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+                      ></i>
+                      <span>Notifications</span>
+                    </div>
+                    {% if unread_notifications_count > 0 %}
+                    <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300">
+                      {{ unread_notifications_count }}
+                    </span>
+                    {% endif %}
                   </a>
                   <a
                     href="{% url 'check_all_eligibility' %}"
@@ -808,6 +840,20 @@
             ></i>
             <span class="font-medium">Compare</span>
           </a>
+          <a
+            href="{% url 'all_applications' %}"
+            class="flex items-center space-x-2 px-5 py-2.5 text-white hover:bg-white/20 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group focus-outline"
+          >
+            <i
+              class="fas fa-file-circle-check group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">{% if user_is_employee %}Applications{% else %}My Applications{% endif %}</span>
+            {% if user_applications_count > 0 %}
+            <span class="ml-1 px-2 py-0.5 text-xs rounded-full bg-white/20 text-white font-bold">
+              {{ user_applications_count }}
+            </span>
+            {% endif %}
+          </a>
           {% endif %} {% if user|has_group:"Employee" %}
           <a
             href="{% url 'view_feedbacks' %}"
@@ -826,15 +872,6 @@
               class="fas fa-plus-circle group-hover:scale-110 transition-transform duration-200"
             ></i>
             <span class="font-medium">Add Scheme</span>
-          </a>
-          <a
-            href="{% url 'all_applications' %}"
-            class="flex items-center space-x-2 px-5 py-2.5 text-white hover:bg-white/20 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group focus-outline"
-          >
-            <i
-              class="fas fa-check-circle group-hover:scale-110 transition-transform duration-200"
-            ></i>
-            <span class="font-medium">Applications</span>
           </a>
           {% else %}
           <a
@@ -917,6 +954,38 @@
             ></i>
             <span class="font-medium">Compare</span>
           </a>
+          <a
+            href="{% url 'all_applications' %}"
+            class="flex items-center justify-between px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+          >
+            <div class="flex items-center space-x-3">
+              <i
+                class="fas fa-file-circle-check text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+              ></i>
+              <span class="font-medium">{% if user_is_employee %}All Applications{% else %}My Applications{% endif %}</span>
+            </div>
+            {% if user_applications_count > 0 %}
+            <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300">
+              {{ user_applications_count }}
+            </span>
+            {% endif %}
+          </a>
+          <a
+            href="{% url 'notification_center' %}"
+            class="flex items-center justify-between px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
+          >
+            <div class="flex items-center space-x-3">
+              <i
+                class="fas fa-bell text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
+              ></i>
+              <span class="font-medium">Notifications</span>
+            </div>
+            {% if unread_notifications_count > 0 %}
+            <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300">
+              {{ unread_notifications_count }}
+            </span>
+            {% endif %}
+          </a>
           {% endif %} {% if user|has_group:"Employee" %}
           <a
             href="{% url 'view_feedbacks' %}"
@@ -935,15 +1004,6 @@
               class="fas fa-plus-circle text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
             ></i>
             <span class="font-medium">Add Scheme</span>
-          </a>
-          <a
-            href="{% url 'all_applications' %}"
-            class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group"
-          >
-            <i
-              class="fas fa-check-circle text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200"
-            ></i>
-            <span class="font-medium">Applications</span>
           </a>
           {% else %}
           <a

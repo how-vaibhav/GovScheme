@@ -93,6 +93,13 @@
             Update Profile
           </a>
           <a
+            href="{% url 'all_applications' %}"
+            class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 text-white px-5 py-2.5 font-semibold hover:bg-emerald-700 transition-all hover:-translate-y-0.5"
+          >
+            <i class="fas fa-file-circle-check"></i>
+            My Applications
+          </a>
+          <a
             href="{% url 'home' %}"
             class="inline-flex items-center gap-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white px-5 py-2.5 font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all hover:-translate-y-0.5"
           >

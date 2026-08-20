@@ -282,55 +282,66 @@
           </div>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Status & Actions Section -->
         {% if app.status == 'pending' %}
-        <div
-          class="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700"
-        >
-          <form
-            method="post"
-            action="{% url 'accept_application' app.id %}"
-            style="display: inline"
+          {% if is_employee %}
+          <div
+            class="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700"
           >
-            {% csrf_token %}
-            <button
-              type="submit"
-              class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center gap-2 text-sm"
+            <form
+              method="post"
+              action="{% url 'accept_application' app.id %}"
+              style="display: inline"
             >
-              <i class="fas fa-check"></i> Accept
-            </button>
-          </form>
-          <form
-            method="post"
-            action="{% url 'reject_application' app.id %}"
-            style="display: inline"
-          >
-            {% csrf_token %}
-            <button
-              type="submit"
-              class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center gap-2 text-sm"
+              {% csrf_token %}
+              <button
+                type="submit"
+                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center gap-2 text-sm font-semibold shadow-sm"
+              >
+                <i class="fas fa-check"></i> Accept Application
+              </button>
+            </form>
+            <form
+              method="post"
+              action="{% url 'reject_application' app.id %}"
+              style="display: inline"
             >
-              <i class="fas fa-times"></i> Reject
-            </button>
-          </form>
-        </div>
+              {% csrf_token %}
+              <button
+                type="submit"
+                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center gap-2 text-sm font-semibold shadow-sm"
+              >
+                <i class="fas fa-times"></i> Reject Application
+              </button>
+            </form>
+          </div>
+          {% else %}
+          <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl text-amber-800 dark:text-amber-200 text-sm">
+              <i class="fas fa-hourglass-half text-amber-600 dark:text-amber-400 text-base flex-shrink-0"></i>
+              <span><strong>Under Department Review:</strong> Your application has been submitted and is currently being verified by government officers. You will receive an instant notification once confirmed.</span>
+            </div>
+          </div>
+          {% endif %}
         {% elif app.status == 'accepted' %}
         <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-          <p
-            class="text-sm text-green-700 dark:text-green-300 flex items-center gap-2"
-          >
-            <i class="fas fa-check-circle"></i> Congratulations! Your
-            application has been accepted.
-          </p>
+          <div class="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/25 border-2 border-green-300 dark:border-green-700 rounded-xl text-green-900 dark:text-green-100 text-sm font-medium">
+            <i class="fas fa-circle-check text-green-600 dark:text-green-400 text-xl flex-shrink-0"></i>
+            <div>
+              <p class="font-bold text-base text-green-800 dark:text-green-200 mb-0.5">Confirmed & Approved!</p>
+              <p class="text-green-700 dark:text-green-300 text-xs md:text-sm">Congratulations! Your application for <strong>{{ app.scheme.name }}</strong> has been officially approved by the department.</p>
+            </div>
+          </div>
         </div>
         {% else %}
         <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-          <p
-            class="text-sm text-red-700 dark:text-red-300 flex items-center gap-2"
-          >
-            <i class="fas fa-times-circle"></i> Your application has been
-            rejected. Please check eligibility and try another scheme.
-          </p>
+          <div class="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/25 border border-red-200 dark:border-red-800 rounded-xl text-red-900 dark:text-red-100 text-sm">
+            <i class="fas fa-circle-xmark text-red-600 dark:text-red-400 text-xl flex-shrink-0"></i>
+            <div>
+              <p class="font-bold text-red-800 dark:text-red-200 mb-0.5">Application Not Approved</p>
+              <p class="text-red-700 dark:text-red-300 text-xs md:text-sm">Your application was not approved during department verification. Please review the scheme eligibility criteria or check for alternative welfare programs.</p>
+            </div>
+          </div>
         </div>
         {% endif %}
       </div>

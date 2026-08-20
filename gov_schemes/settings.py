@@ -31,9 +31,12 @@ FERNET = Fernet(FIELD_ENCRYPTION_KEY)
 
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='*,localhost,127.0.0.1,.onrender.com',
+    default='*,localhost,127.0.0.1,.onrender.com,testserver',
     cast=lambda v: [s.strip() for s in v.split(',') if s.strip()]
 )
+if 'testserver' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('testserver')
+
 
 CSRF_TRUSTED_ORIGINS = config(
     'CSRF_TRUSTED_ORIGINS',
@@ -77,6 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'schemesapp.context_processors.global_user_context',
             ],
         },
     },
