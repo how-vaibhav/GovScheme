@@ -6,12 +6,15 @@
 
 **Empowering citizens with seamless, secure access to government welfare schemes**
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Render_Deployment-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://govaid-5n3k.onrender.com/)
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Django](https://img.shields.io/badge/Django-5.2.1-092E20?style=for-the-badge&logo=django&logoColor=white)](https://djangoproject.com)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.1-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![SQLite](https://img.shields.io/badge/SQLite-Default_DB-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://sqlite.org)
 [![License](https://img.shields.io/badge/License-MIT--Compatible-green?style=for-the-badge)](LICENSE)
 [![Status](https://img.shields.io/badge/Build-Stable-brightgreen?style=for-the-badge)]()
+
+**Live Application:** [https://govaid-5n3k.onrender.com/](https://govaid-5n3k.onrender.com/)
 
 </div>
 
@@ -460,10 +463,11 @@ npm run watch:css
 python manage.py runserver
 ```
 
-| URL | Description |
-|-----|-------------|
-| http://127.0.0.1:8000/ | Main application |
-| http://127.0.0.1:8000/admin/ | Django admin panel |
+| Environment | URL | Description |
+|-------------|-----|-------------|
+| **Live Production** | [https://govaid-5n3k.onrender.com/](https://govaid-5n3k.onrender.com/) | Deployed live web application |
+| **Local Development** | `http://127.0.0.1:8000/` | Local server instance |
+| **Admin Panel** | [https://govaid-5n3k.onrender.com/admin/](https://govaid-5n3k.onrender.com/admin/) | Django administrative dashboard |
 
 ---
 
