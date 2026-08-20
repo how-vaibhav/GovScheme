@@ -77,14 +77,22 @@ def home(request):
     if request.user.is_authenticated:
         notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-created_at')
         recommended_schemes = get_smart_recommendations(request.user)
-    
+
+    marquee_items = [
+        'Education', 'Health', 'Agriculture', 'Housing',
+        'Women & Child', 'Skill Development', 'Food Security',
+        'Digital Inclusion', 'Social Welfare', 'Entrepreneurship',
+        'Youth Affairs', 'Pension Support'
+    ]
+
     # Get popular/trending schemes for unauthenticated users
     all_schemes = Scheme.objects.all()[:6]
-    
+
     return render(request, 'home.html', {
         'notifications': notifications,
         'recommended_schemes': recommended_schemes,
-        'popular_schemes': all_schemes
+        'popular_schemes': all_schemes,
+        'marquee_items': marquee_items + marquee_items,
     })
 
 
