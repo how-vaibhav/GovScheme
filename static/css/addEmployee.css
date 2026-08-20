@@ -1,61 +1,126 @@
-body {
-    background: linear-gradient(to right, #1b263b, #1b263b);
-    min-height: 100vh;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  }
+/* Add Employee Page — Light & Dark Mode */
 
+body {
+  background: var(--app-bg, #f8fafc);
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-1, #212529);
+}
+
+html.dark body {
+  color: var(--text-1, #f8fafc);
+}
+
+.employee-form-container {
+  max-width: 650px;
+  margin: 60px auto;
+  padding: 0 1rem;
+}
+
+.card {
+  border: 1px solid var(--border, #dbe4f2) !important;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  background-color: var(--surface, #ffffff) !important;
+  padding: 30px;
+  animation: fadeIn 0.6s ease;
+}
+
+html.dark .card {
+  background-color: var(--surface, #111b2e) !important;
+  border-color: var(--border, #32445f) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45) !important;
+}
+
+h2 {
+  color: var(--text-1, #1b263b);
+  font-weight: 700;
+  font-size: 2rem;
+  text-align: center;
+}
+
+html.dark h2 {
+  color: var(--text-1, #f8fafc);
+}
+
+.form-label {
+  color: var(--text-2, #334155);
+  font-weight: 500;
+}
+
+html.dark .form-label {
+  color: var(--text-2, #dbe6f7);
+}
+
+.form-control {
+  border-radius: 10px;
+  font-size: 1rem;
+  padding: 0.75rem;
+  background: var(--surface-2, #f8fafc);
+  border: 1px solid var(--border, #dbe4f2);
+  color: var(--text-1, #0f172a);
+}
+
+html.dark .form-control {
+  background: #1b2a43;
+  border-color: #3d5579;
+  color: #f1f5f9;
+}
+
+.form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+html.dark .form-control:focus {
+  border-color: #4ade80;
+  background: #223552;
+  color: #f8fafc;
+  box-shadow: 0 0 0 0.2rem rgba(74, 222, 128, 0.2);
+}
+
+.btn-submit {
+  background-color: #198754;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-submit:hover {
+  background-color: #157347;
+  transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
   .employee-form-container {
-    max-width: 650px;
-    margin: 80px auto;
+    margin: 30px auto;
   }
 
   .card {
-    border: none;
-    border-radius: 20px;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-    background-color: #ffffff;
-    padding: 30px;
-    animation: fadeIn 0.6s ease;
+    padding: 20px 16px;
+    border-radius: 14px;
   }
 
   h2 {
-    color: #1b263b;
-    font-weight: 700;
-    font-size: 2rem;
-    text-align: center;
+    font-size: 1.5rem;
   }
-
-  .form-control {
-    border-radius: 10px;
-    font-size: 1rem;
-    padding: 0.75rem;
-  }
-
-  .form-control:focus {
-    border-color: #198754;
-    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-  }
-
-  .btn-submit {
-    background-color: #198754;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 12px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .btn-submit:hover {
-    background-color: #157347;
-    transform: translateY(-2px);
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+}

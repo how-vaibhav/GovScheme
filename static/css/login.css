@@ -1,58 +1,116 @@
+/* Login Page — Light & Dark Mode + Mobile Responsive */
+
 body {
-        background: linear-gradient(to right, #11a7ec, #09ec19);
+  background: var(--app-bg, #f8fafc);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 1.5rem;
+}
 
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      }
+.login-container {
+  background: var(--surface, #ffffff);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  border: 1px solid var(--border, #dbe4f2);
+}
 
-      .login-container {
-        margin-left: 540px;
-        background: #ffffff;
-        border-radius: 16px;
-        padding: 40px;
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 480px;
-      }
+html.dark .login-container {
+  background: var(--surface, #111b2e);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  border-color: var(--border, #32445f);
+}
 
-      h2 {
-        font-size: 1.8rem;
-        font-weight: bold;
-      }
+h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--text-1, #0f172a);
+}
 
-      .form-label {
-        font-size: 1rem;
-        font-weight: 500;
-      }
+html.dark h2 {
+  color: var(--text-1, #f8fafc);
+}
 
-      .btn-login {
-        background-color: #28a745;
-        color: white;
-        width: 100%;
-        padding: 12px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        border-radius: 8px;
-        transition: background-color 0.3s ease;
-      }
+.form-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-2, #334155);
+}
 
-      .btn-login:hover {
-        background-color: #218838;
-      }
+html.dark .form-label {
+  color: var(--text-2, #dbe6f7);
+}
 
-      .signup-link a {
-        text-decoration: none;
-        font-size: 1rem;
-        color: #007bff;
-      }
+.form-control {
+  background: var(--surface-2, #f8fafc);
+  border: 1px solid var(--border, #dbe4f2);
+  color: var(--text-1, #0f172a);
+  border-radius: 8px;
+}
 
-      .error {
-        color: #dc3545;
-        font-size: 1rem;
-        font-weight: bold;
-        margin-top: 10px;
-        text-align: center;
-      }
+html.dark .form-control {
+  background: #1b2a43;
+  border-color: #3d5579;
+  color: #f1f5f9;
+}
+
+html.dark .form-control:focus {
+  background: #223552;
+  border-color: #60a5fa;
+  color: #f8fafc;
+}
+
+.btn-login {
+  background-color: #28a745;
+  color: white;
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+  background-color: #218838;
+}
+
+.signup-link a {
+  text-decoration: none;
+  font-size: 1rem;
+  color: #007bff;
+}
+
+html.dark .signup-link a {
+  color: #60a5fa;
+}
+
+.error {
+  color: #dc3545;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 28px 20px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .btn-login {
+    font-size: 1rem;
+    padding: 10px;
+  }
+}

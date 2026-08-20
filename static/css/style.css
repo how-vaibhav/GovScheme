@@ -1,8 +1,7 @@
- body {
-            background: linear-gradient(to right, #1b263b, #1b263b);
+body {
+            background: var(--app-bg, #f8fafc);
         margin: 0;
         font-family: cursive;
-        background-color: #f9f9f9;
       }
 
       .back {

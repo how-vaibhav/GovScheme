@@ -265,13 +265,22 @@
         }
       }
 
-      /* Enhanced Touch Targets for Mobile */
+      /* Enhanced Touch Targets for Mobile — scoped to nav only */
       @media (max-width: 768px) {
-        a,
-        button {
+        nav a,
+        nav button,
+        header button,
+        .btn,
+        .btn-primary,
+        .btn-submit,
+        .btn-apply,
+        .btn-send,
+        .btn-login,
+        .btn-signup,
+        .btn-back,
+        .btn-reply,
+        .btn-home {
           min-height: 44px;
-          min-width: 44px;
-          padding: calc(22px - 0.5em) 1rem;
         }
 
         .icon-btn {
