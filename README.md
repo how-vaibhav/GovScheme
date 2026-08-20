@@ -20,6 +20,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
+- [Screenshots](#screenshots)
 - [Key Features](#key-features)
 - [System Architecture](#system-architecture)
 - [User Role Flow](#user-role-flow)
@@ -56,6 +57,33 @@
 | **Guided Applications** | Step-by-step secure application workflows with field validation |
 | **Data Trust** | Encrypted sensitive fields, CSRF protection, and access-controlled views |
 | **Role-Based Operations** | Separate interfaces for citizens, employees, and administrators |
+
+---
+
+## Screenshots
+
+<div align="center">
+
+### Home Portal and Scheme Discovery
+*Modern dark-mode gateway designed for intuitive citizen access and instant eligibility checking.*
+
+<img src="screenshots/1%20(1).png" alt="GovAid Portal Hero Banner" width="100%" />
+
+<br/><br/>
+
+### Smart Access and Category Architecture
+*Centralized benefit ecosystem featuring trusted updates, category-wide filtering, and real-time support.*
+
+<img src="screenshots/1%20(3).png" alt="Smart Access Feature Section" width="100%" />
+
+<br/><br/>
+
+### Multi-Scheme Comparison Engine
+*Side-by-side comparative analysis of welfare programs, criteria, agency details, and benefits.*
+
+<img src="screenshots/1%20(2).png" alt="Multi-Scheme Comparison Table" width="100%" />
+
+</div>
 
 ---
 
