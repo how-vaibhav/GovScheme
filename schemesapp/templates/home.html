@@ -984,9 +984,9 @@ Schemes Portal{% endblock %} {% block content %}
     <!-- Recommendations Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for rec in recommended_schemes %}
-      <div
-        class="group card p-6 hover-lift animate-fade-in-up stagger-{{ forloop.counter }} transform transition-all duration-300 hover:shadow-2xl dark:hover:shadow-2xl cursor-pointer"
-        onclick="window.location.href='{% url 'scheme_detail' rec.scheme.id %}'"
+      <a
+        href="{% url 'scheme_detail' rec.scheme.id %}"
+        class="block group card p-6 hover-lift animate-fade-in-up stagger-{{ forloop.counter }} transform transition-all duration-300 hover:shadow-2xl dark:hover:shadow-2xl cursor-pointer no-underline"
       >
         <!-- Category Badge -->
         <div class="flex items-start justify-between mb-4">
@@ -1017,7 +1017,7 @@ Schemes Portal{% endblock %} {% block content %}
           <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
             <div
               class="bg-gradient-to-r from-primary-500 to-blue-500 h-2 rounded-full transition-all duration-300"
-              style="width: {{ rec.match_percentage }}%"
+              style="--match-width: {{ rec.match_percentage }}%; width: var(--match-width);"
             ></div>
           </div>
         </div>
@@ -1058,12 +1058,12 @@ Schemes Portal{% endblock %} {% block content %}
         </div>
 
         <!-- CTA Button -->
-        <button
+        <div
           class="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-medium py-2.5 rounded-lg transition-all duration-200 group-hover:shadow-lg flex items-center justify-center gap-2"
         >
           <i class="fas fa-arrow-right"></i>View Details
-        </button>
-      </div>
+        </div>
+      </a>
       {% endfor %}
     </div>
 

@@ -29,6 +29,7 @@ body {
         background-size: 200% auto;
         color: white;
         -webkit-background-clip: text;
+        background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: shine 4s linear infinite;
       }

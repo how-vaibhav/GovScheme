@@ -38,6 +38,7 @@ h1 {
   margin-bottom: 0.5rem;
   background: linear-gradient(90deg, #00796b, #004d40);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: 0.05em;
 }
@@ -45,6 +46,7 @@ h1 {
 html.dark h1 {
   background: linear-gradient(90deg, #34d399, #10b981);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
