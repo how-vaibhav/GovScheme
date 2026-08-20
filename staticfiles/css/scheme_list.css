@@ -1,42 +1,75 @@
+/* Scheme List Page — Light & Dark Mode */
+
 body {
-    background: linear-gradient(to right, #1b263b, #1b263b);
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  }
+  background: var(--app-bg, #f8fafc);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
 
-  .scheme-card {
-    border-radius: 15px;
-    background-color: #f5f9ff;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s;
-  }
+.scheme-card {
+  border-radius: 15px;
+  background-color: var(--surface, #f5f9ff);
+  border: 1px solid var(--border, #dbe4f2);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+}
 
-  .scheme-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  }
+html.dark .scheme-card {
+  background-color: var(--surface, #111b2e);
+  border-color: var(--border, #32445f);
+}
 
-  .card-title {
-    color: #0d6efd;
-  }
+.scheme-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
 
-  .btn-outline-primary {
-    border-color: #0d6efd;
-    color: #0d6efd;
-  }
+html.dark .scheme-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+}
 
-  .btn-outline-primary:hover {
-    background-color: #0d6efd;
-    color: #fff;
-  }
+.card-title {
+  color: #0d6efd;
+}
 
-  .btn-primary {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-  }
+html.dark .card-title {
+  color: #60a5fa;
+}
 
-  .btn-primary:hover {
-    background-color: #063971;
-  }
+.card-text {
+  color: var(--text-2, #334155);
+}
 
-  h1 {
-    color: #ffffff;
-  }
+html.dark .card-text {
+  color: var(--text-2, #b4c3da);
+}
+
+.btn-outline-primary {
+  border-color: #0d6efd;
+  color: #0d6efd;
+}
+
+html.dark .btn-outline-primary {
+  border-color: #60a5fa;
+  color: #60a5fa;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #063971;
+}
+
+h1 {
+  color: var(--text-1, #0f172a);
+}
+
+html.dark h1 {
+  color: var(--text-1, #f8fafc);
+}

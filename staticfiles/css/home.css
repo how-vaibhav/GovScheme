@@ -1,153 +1,245 @@
+/* Home Page — Light & Dark Mode */
+
 body {
-      background: linear-gradient(to right,#1b263b, #1b263b);
-    }
+  background: var(--app-bg, #f8fafc);
+}
 
-    .section-container {
-      background: #e5f0f1;
-      border-radius: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      margin: 40px auto;
-      padding: 30px;
-      max-width: 90%;
-      transition: transform 0.3s ease;
-    }
+.section-container {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, #dbe4f2);
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin: 40px auto;
+  padding: 30px;
+  max-width: 90%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-    .section-container:hover {
-      transform: scale(1.01);
-    }
-#vision{color:brown;}
-    .vision-text {
-      font-size: 1.5rem;
-      line-height: 1.8;
-      text-align: justify;
-    }
+html.dark .section-container {
+  background: var(--surface, #111b2e);
+  border-color: var(--border, #32445f);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
 
-    .carousel-wrapper {
-      max-width: 80%;
-      margin: auto;
-      border: 3px groove #030a16;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
+.section-container:hover {
+  transform: scale(1.01);
+}
 
-    .carousel-inner img {
-      height: 350px;
-      object-fit: cover;
-      border-radius: 10px;
-    }
+#vision {
+  color: #b45309;
+}
 
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-      background-color: #091321;
-      border-radius: 50%;
-      padding: 10px;
-    }
+html.dark #vision {
+  color: #fbbf24;
+}
 
-    .ministry-logos {
-      display: flex;
-      gap: 30px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 30px;
-    }
+.vision-text {
+  font-size: 1.5rem;
+  line-height: 1.8;
+  text-align: justify;
+  color: var(--text-2, #334155);
+}
 
-    .ministry {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 120px;
-    }
+html.dark .vision-text {
+  color: var(--text-2, #dbe6f7);
+}
 
-    .ministry-icon {
-      font-size: 40px;
-      color: #0d6efd;
-      transition: transform 0.3s, color 0.3s;
-    }
+.carousel-wrapper {
+  max-width: 80%;
+  margin: auto;
+  border: 3px groove #030a16;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
 
-    .ministry-icon:hover {
-      color: #063971;
-      transform: scale(1.2);
-    }
+.carousel-inner img {
+  height: 350px;
+  object-fit: cover;
+  border-radius: 10px;
+}
 
-    .ministry p {
-      margin-top: 10px;
-      font-weight: bold;
-    }
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: #091321;
+  border-radius: 50%;
+  padding: 10px;
+}
 
-    /* Chatbot styles */
-    #chatbot-toggle {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      font-size: 28px;
-      padding: 12px;
-      border-radius: 50%;
-      background-color: #0d6efd;
-      color: white;
-      border: none;
-      z-index: 1000;
-    }
+.ministry-logos {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 30px;
+}
 
-    #chatbot {
-      display: none;
-      flex-direction: column;
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 300px;
-      background-color: #fff;
-      border: 2px solid #0d6efd;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      z-index: 999;
-    }
+.ministry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px;
+}
 
-    #chatbot-header {
-      background-color: #0d6efd;
-      color: white;
-      padding: 12px;
-      border-top-left-radius: 15px;
-      border-top-right-radius: 15px;
-      font-weight: bold;
-      position: relative;
-    }
+.ministry-icon {
+  font-size: 40px;
+  color: #0d6efd;
+  transition: transform 0.3s, color 0.3s;
+}
 
-    #chatbot-header .close-btn {
-      position: absolute;
-      top: 8px;
-      right: 12px;
-      cursor: pointer;
-    }
+html.dark .ministry-icon {
+  color: #60a5fa;
+}
 
-    #chatbot-body {
-      padding: 10px;
-      height: 300px;
-      overflow-y: auto;
-    }
+.ministry-icon:hover {
+  color: #063971;
+  transform: scale(1.2);
+}
 
-    .bot-message, .user-message {
-      margin-bottom: 8px;
-      padding: 8px;
-      border-radius: 8px;
-      max-width: 80%;
-    }
+html.dark .ministry-icon:hover {
+  color: #93c5fd;
+}
 
-    .bot-message {
-      background-color: #e1f0ff;
-      align-self: flex-start;
-    }
+.ministry p {
+  margin-top: 10px;
+  font-weight: bold;
+  color: var(--text-1, #0f172a);
+}
 
-    .user-message {
-      background-color: #d4edda;
-      align-self: flex-end;
-    }
+html.dark .ministry p {
+  color: var(--text-1, #f8fafc);
+}
 
-    #chat-input {
-      border: none;
-      border-top: 1px solid #ccc;
-      padding: 10px;
-      outline: none;
-      width: 100%;
-    }
-    
+/* Chatbot styles */
+#chatbot-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 28px;
+  padding: 12px;
+  border-radius: 50%;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4);
+}
+
+#chatbot {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 300px;
+  background-color: var(--surface, #ffffff);
+  border: 2px solid #0d6efd;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  z-index: 999;
+}
+
+html.dark #chatbot {
+  background-color: var(--surface, #111b2e);
+  border-color: #3b82f6;
+}
+
+#chatbot-header {
+  background-color: #0d6efd;
+  color: white;
+  padding: 12px;
+  border-top-left-radius: 13px;
+  border-top-right-radius: 13px;
+  font-weight: bold;
+  position: relative;
+}
+
+#chatbot-header .close-btn {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  cursor: pointer;
+}
+
+#chatbot-body {
+  padding: 10px;
+  height: 300px;
+  overflow-y: auto;
+  background: var(--surface-2, #f8fafc);
+}
+
+html.dark #chatbot-body {
+  background: var(--surface-2, #152238);
+}
+
+.bot-message,
+.user-message {
+  margin-bottom: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  max-width: 80%;
+}
+
+.bot-message {
+  background-color: #dbeafe;
+  align-self: flex-start;
+  color: #1e3a8a;
+}
+
+html.dark .bot-message {
+  background-color: #1e3a8a;
+  color: #dbeafe;
+}
+
+.user-message {
+  background-color: #d4edda;
+  align-self: flex-end;
+  color: #155724;
+}
+
+html.dark .user-message {
+  background-color: #14532d;
+  color: #d1fae5;
+}
+
+#chat-input {
+  border: none;
+  border-top: 1px solid var(--border, #dbe4f2);
+  padding: 10px;
+  outline: none;
+  width: 100%;
+  background: var(--surface, #ffffff);
+  color: var(--text-1, #0f172a);
+}
+
+html.dark #chat-input {
+  background: var(--surface, #111b2e);
+  border-top-color: var(--border, #32445f);
+  color: var(--text-1, #f8fafc);
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .carousel-wrapper {
+    max-width: 100%;
+  }
+
+  .carousel-inner img {
+    height: 200px;
+  }
+
+  .section-container {
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 96%;
+  }
+
+  .vision-text {
+    font-size: 1rem;
+  }
+
+  #chatbot {
+    width: calc(100vw - 40px);
+    right: 20px;
+  }
+}

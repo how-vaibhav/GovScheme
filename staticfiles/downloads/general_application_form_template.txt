@@ -1,0 +1,17 @@
+GovAid - General Application Form Template
+
+1. Applicant Name:
+2. Date of Birth:
+3. Gender:
+4. Address:
+5. Aadhaar Number (last 4 digits):
+6. Mobile Number:
+7. Email ID:
+8. Annual Income:
+9. Caste Category:
+10. Scheme Applying For:
+11. Declaration:
+   I confirm that the information provided is true and accurate.
+
+Signature:
+Date:

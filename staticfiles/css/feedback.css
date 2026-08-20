@@ -1,63 +1,109 @@
-/* Background gradient */
-  body {
-    background: linear-gradient(to right, #1b263b, #1b263b);
-    min-height: 100vh;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  }
+/* Feedback Page — Light & Dark Mode */
 
+body {
+  background: var(--app-bg, #f8fafc);
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.feedback-form-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 0 1rem;
+}
+
+.card {
+  border: 1px solid var(--border, #dbe4f2) !important;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(10, 10, 10, 0.08);
+  background-color: var(--surface, #ffffff) !important;
+}
+
+html.dark .card {
+  background-color: var(--surface, #111b2e) !important;
+  border-color: var(--border, #32445f) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+h2 {
+  color: var(--text-1, #333);
+}
+
+html.dark h2 {
+  color: var(--text-1, #f8fafc);
+}
+
+.card-body label,
+.card-body p,
+.form-label {
+  color: var(--text-2, #334155);
+}
+
+html.dark .card-body label,
+html.dark .card-body p,
+html.dark .form-label {
+  color: var(--text-2, #dbe6f7);
+}
+
+/* Custom buttons */
+.btn-send {
+  background-color: #28a745;
+  color: white;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-send:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+.btn-redirect {
+  background-color: #07a5c5;
+  color: white;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-redirect:hover {
+  background-color: #0798b5;
+  transform: translateY(-2px);
+}
+
+/* Alert message */
+.message {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Form input styling */
+.form-control {
+  border-radius: 8px;
+  background: var(--surface-2, #f8fafc);
+  border: 1px solid var(--border, #dbe4f2);
+  color: var(--text-1, #0f172a);
+}
+
+html.dark .form-control {
+  background: #1b2a43;
+  border-color: #3d5579;
+  color: #f1f5f9;
+}
+
+.form-control:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+html.dark .form-control:focus {
+  border-color: #4ade80;
+  background: #223552;
+  box-shadow: 0 0 0 0.2rem rgba(74, 222, 128, 0.2);
+}
+
+/* Mobile */
+@media (max-width: 640px) {
   .feedback-form-container {
-    max-width: 600px;
-    margin: 60px auto;
+    margin: 20px auto;
   }
-
-  .card {
-    border: none;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(10, 10, 10, 0.08);
-    background-color: #ffffff;
-  }
-
-  h2 {
-    color: #333;
-  }
-
-  /* Custom buttons */
-  .btn-send {
-    background-color: #28a745;
-    color: white;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-
-  .btn-send:hover {
-    background-color: #218838;
-    transform: translateY(-2px);
-  }
-
-  .btn-redirect {
-    background-color: #07a5c5;
-    color: white;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-
-  .btn-redirect:hover {
-    background-color: #0798b5;
-    transform: translateY(-2px);
-  }
-
-  /* Alert message */
-  .message {
-    font-weight: 600;
-    font-size: 16px;
-  }
-
-  /* Form input styling */
-  .form-control {
-    border-radius: 8px;
-  }
-
-  .form-control:focus {
-    border-color: #28a745;
-    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-  }
+}
