@@ -432,6 +432,17 @@ def scrape_page(request):
 
 
 def verhoeff_check(num):
+    """
+    Validate Aadhaar number using the Verhoeff checksum algorithm.
+    Handles raw digits, hyphens, and spaces gracefully.
+    """
+    if not num:
+        return False
+
+    cleaned = ''.join(c for c in str(num) if c.isdigit())
+    if len(cleaned) != 12:
+        return False
+
     # Multiplication table d
     d = [
         [0,1,2,3,4,5,6,7,8,9],
@@ -458,13 +469,8 @@ def verhoeff_check(num):
         [7,0,4,6,9,1,3,2,5,8]
     ]
 
-    # Inverse table inv
-    inv = [0,4,3,2,1,5,6,7,8,9]
-
     c = 0
-    # Reverse the number string
-    num = num[::-1]
-    for i, digit in enumerate(num):
+    for i, digit in enumerate(reversed(cleaned)):
         c = d[c][p[i % 8][int(digit)]]
 
     return c == 0
@@ -480,11 +486,14 @@ def apply_scheme(request):
     schemes = Scheme.objects.all()
 
     if request.method == 'POST':
-        aadhaar = request.POST.get('aadhaar')
+        raw_aadhaar = request.POST.get('aadhaar', '')
         scheme_id = request.POST.get('scheme')
 
+        # Clean non-digit characters
+        aadhaar = ''.join(c for c in str(raw_aadhaar) if c.isdigit())
+
         if not verhoeff_check(aadhaar):
-            messages.error(request, "Invalid Aadhaar number.")
+            messages.error(request, "Invalid Aadhaar number. Please enter a valid 12-digit Aadhaar number.")
             return render(request, 'apply_scheme.html', {'schemes': schemes})
 
         if not scheme_id:
@@ -833,3 +842,90 @@ def privacy_policy(request):
 def terms_of_service(request):
     """Terms of service page"""
     return render(request, 'terms_of_service.html')
+
+
+def robots_txt(request):
+    """Serve robots.txt for search engine crawlers"""
+    domain = request.build_absolute_uri('/')[:-1]
+    content = f"""User-agent: *
+Allow: /
+Allow: /schemes/
+Allow: /scheme/
+Allow: /advanced-search/
+Allow: /comparison/
+Allow: /faq/
+Allow: /central-schemes/
+Allow: /downloads/
+Allow: /mission-vision/
+Allow: /leadership/
+Allow: /partnerships/
+Allow: /transparency/
+Allow: /privacy-policy/
+Allow: /terms-of-service/
+
+# Disallow user private and administrative endpoints
+Disallow: /admin/
+Disallow: /userdetails/
+Disallow: /apply/
+Disallow: /applications/
+Disallow: /feedbacks/
+Disallow: /notifications/
+Disallow: /favorites/
+Disallow: /scrape/
+Disallow: /addemployee/
+
+Sitemap: {domain}/sitemap.xml
+"""
+    return HttpResponse(content.strip(), content_type="text/plain")
+
+
+def sitemap_xml(request):
+    """Generate dynamic XML sitemap for SEO crawlers"""
+    from django.urls import reverse
+    schemes = Scheme.objects.all().order_by('-id')
+    domain = request.build_absolute_uri('/')[:-1]
+    
+    static_pages = [
+        ('home', 'daily', '1.0'),
+        ('scheme_list', 'daily', '0.9'),
+        ('advanced_search', 'weekly', '0.8'),
+        ('comparison', 'weekly', '0.7'),
+        ('central_schemes', 'weekly', '0.7'),
+        ('faq', 'monthly', '0.6'),
+        ('downloads', 'monthly', '0.6'),
+        ('mission_vision', 'monthly', '0.5'),
+        ('leadership', 'monthly', '0.5'),
+        ('partnerships', 'monthly', '0.5'),
+        ('transparency', 'monthly', '0.5'),
+        ('privacy_policy', 'yearly', '0.3'),
+        ('terms_of_service', 'yearly', '0.3'),
+    ]
+    
+    urls = []
+    for name, freq, priority in static_pages:
+        try:
+            url_path = reverse(name)
+            urls.append(f"""  <url>
+    <loc>{domain}{url_path}</loc>
+    <changefreq>{freq}</changefreq>
+    <priority>{priority}</priority>
+  </url>""")
+        except Exception:
+            pass
+
+    for scheme in schemes:
+        try:
+            scheme_url = reverse('scheme_detail', args=[scheme.pk])
+            urls.append(f"""  <url>
+    <loc>{domain}{scheme_url}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>""")
+        except Exception:
+            pass
+            
+    xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{chr(10).join(urls)}
+</urlset>"""
+    return HttpResponse(xml_content, content_type="application/xml")

@@ -1,4 +1,10 @@
-{% extends "base.html" %} {% load group_filters %} {% load static %}
+{% extends "base.html" %}
+{% load group_filters %}
+{% load static %}
+
+{% block title %}Your Feedbacks — Citizen Feedback & Responses | GovAid{% endblock %}
+
+{% block extra_head %}
 <style>
   @keyframes fadeInUp {
     from {
@@ -45,7 +51,9 @@
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   }
 </style>
-{% block title %}Your Feedbacks - GovAid{% endblock %} {% block content %}
+{% endblock %}
+
+{% block content %}
 <!-- Header -->
 <section
   class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12 animate-fade-in-down"
@@ -192,9 +200,10 @@
               class="px-4 py-2 rounded-full font-semibold text-sm {% if feedback.reply %}bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200{% else %}bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200{% endif %}"
             >
               {% if feedback.reply %}
-              <i class="fas fa-check-circle mr-1"></i> Replied {% else %}
-              <i class="fas fa-hourglass-half mr-1"></i> Awaiting Reply {% endif
-              %}
+                <i class="fas fa-check-circle mr-1"></i> Replied
+              {% else %}
+                <i class="fas fa-hourglass-half mr-1"></i> Awaiting Reply
+              {% endif %}
             </span>
           </div>
 

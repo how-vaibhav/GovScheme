@@ -1,5 +1,35 @@
-{% extends "base.html" %} {% load static %} {% block title %}{{ scheme.name }} -
-GovAid{% endblock %} {% block content %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ scheme.name }} — Eligibility, Benefits & Apply | GovAid Sikkim{% endblock %}
+{% block meta_description %}{{ scheme.objective|default:scheme.full_description|default:scheme.benefits|default:"Apply for government welfare scheme in Sikkim."|striptags|truncatewords:28 }}{% endblock %}
+{% block meta_keywords %}{{ scheme.name }}, {{ scheme.get_category_display }}, Sikkim government scheme, eligibility criteria, apply online Sikkim, welfare scheme{% endblock %}
+{% block og_title %}{{ scheme.name }} — Sikkim Welfare Scheme | GovAid{% endblock %}
+{% block og_description %}{{ scheme.objective|default:scheme.full_description|default:scheme.benefits|default:"Apply for government welfare scheme in Sikkim."|striptags|truncatewords:28 }}{% endblock %}
+
+{% block extra_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "GovernmentService",
+  "name": "{{ scheme.name|escapejs }}",
+  "description": "{{ scheme.objective|default:scheme.full_description|default:scheme.benefits|striptags|truncatewords:30|escapejs }}",
+  "serviceType": "{{ scheme.get_category_display|escapejs }}",
+  "provider": {
+    "@type": "GovernmentOrganization",
+    "name": "{{ scheme.agency|default:'Government of Sikkim'|escapejs }}",
+    "areaServed": "Sikkim, India"
+  },
+  "serviceAudience": {
+    "@type": "Audience",
+    "audienceType": "Citizens of Sikkim"
+  },
+  "url": "{{ request.build_absolute_uri }}"
+}
+</script>
+{% endblock %}
+
+{% block content %}
 <style>
   @keyframes fadeInUp {
     from {

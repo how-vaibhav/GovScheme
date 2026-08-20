@@ -1,5 +1,54 @@
-{% extends "base.html" %} {% load static %} {% block title %}FAQs - GovAid{%
-endblock %} {% block content %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Frequently Asked Questions (FAQ) — Sikkim Schemes Portal | GovAid{% endblock %}
+{% block meta_description %}Find answers to common questions about Sikkim government welfare schemes, Aadhaar verification, eligibility matching, and application tracking.{% endblock %}
+{% block meta_keywords %}GovAid FAQ, Sikkim schemes help, how to apply Sikkim scheme, scheme eligibility questions, government welfare support Sikkim{% endblock %}
+
+{% block extra_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is GovAid?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GovAid is a comprehensive online portal that helps citizens of Sikkim discover, understand, and apply for government schemes across education, healthcare, agriculture, and welfare."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I check my eligibility for schemes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Complete your profile by filling in your personal, social, and economic details. Then use our eligibility checker to see which schemes you qualify for in real-time."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my personal information secure?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, we use industry-standard encryption (Fernet field-level cryptography) and Verhoeff checksum validation for sensitive data like Aadhaar numbers. Plaintext sensitive information is never stored."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does it take to process an application?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Processing time varies by scheme, generally taking between 7-15 days. You can track your application status live on the portal."
+      }
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
 <style>
   @keyframes fadeInUp {
     from {
@@ -313,8 +362,8 @@ endblock %} {% block content %}
             class="hidden px-6 pb-6 text-gray-700 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700"
           >
             <p>
-              You can reach our support team via email at support@govaid.in or
-              call us at +91-9876543210. Our team is available 24/7 to help you.
+              You can reach our support team via email at haivaibhav@gmail.com or
+              call us at +916387636285. Our team is available 24/7 to help you.
             </p>
           </div>
         </div>
@@ -332,13 +381,13 @@ endblock %} {% block content %}
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="mailto:support@govaid.in"
+            href="mailto:haivaibhav@gmail.com"
             class="px-6 py-3 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-semibold transition-colors"
           >
             <i class="fas fa-envelope mr-2"></i>Email Us
           </a>
           <a
-            href="tel:+919876543210"
+            href="tel:+916387636285"
             class="px-6 py-3 rounded-lg bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400 font-semibold hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
           >
             <i class="fas fa-phone mr-2"></i>Call Us

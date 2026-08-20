@@ -1,4 +1,9 @@
-{% extends "base.html" %} {% load static %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Applications — Application Status & Tracking | GovAid{% endblock %}
+
+{% block extra_head %}
 <style>
   @keyframes fadeInUp {
     from {
@@ -103,7 +108,9 @@
     opacity: 0.88;
   }
 </style>
-{% block title %}My Applications - GovAid{% endblock %} {% block content %}
+{% endblock %}
+
+{% block content %}
 <!-- Header -->
 <section
   class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12 animate-fade-in-down"
@@ -256,9 +263,11 @@
               Aadhaar (Last 4 digits)
             </p>
             <p class="font-medium text-gray-900 dark:text-white">
-              {% if app.sensitive_data %} ********{{
-              app.sensitive_data|slice:"-4:" }} {% else %} Not Provided {% endif
-              %}
+              {% if app.sensitive_data %}
+                ********{{ app.sensitive_data|slice:"-4:" }}
+              {% else %}
+                Not Provided
+              {% endif %}
             </p>
           </div>
           <div>

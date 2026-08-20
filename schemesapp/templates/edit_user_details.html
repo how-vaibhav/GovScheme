@@ -178,8 +178,8 @@
                   >{{ form.maritial_status.label }}
                   <span class="text-red-500">*</span></label
                 >
-                {{ form.maritial_status }} {% for error in
-                form.maritial_status.errors %}
+                {{ form.maritial_status }}
+                {% for error in form.maritial_status.errors %}
                 <p class="text-sm text-red-600 dark:text-red-400 mt-1">
                   {{ error }}
                 </p>
@@ -200,21 +200,14 @@
                   <span class="text-red-500">*</span></label
                 >
                 <div class="grid grid-cols-2 gap-3">
-                  {% with selected_gender=form.gender.value %} {% for value,
-                  label in form.fields.gender.choices %}
+                  {% with selected_gender=form.gender.value %} {% for value, label in form.fields.gender.choices %}
                   <label class="cursor-pointer choice-wrap">
                     <input
                       type="radio"
                       name="{{ form.gender.html_name }}"
                       value="{{ value }}"
                       class="choice-input"
-                      {%
-                      if
-                      selected_gender=""
-                      ="value"
-                      %}checked{%
-                      endif
-                      %}
+                      {% if selected_gender == value %}checked{% endif %}
                     />
                     <span
                       class="choice-chip mt-1 flex items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold"
@@ -257,21 +250,14 @@
                       {{ form.disability.label }}
                     </p>
                     <div class="inline-flex gap-2">
-                      {% with selected_disability=form.disability.value %} {%
-                      for value, label in form.fields.disability.choices %}
+                      {% with selected_disability=form.disability.value %} {% for value, label in form.fields.disability.choices %}
                       <label class="cursor-pointer choice-wrap">
                         <input
                           type="radio"
                           name="{{ form.disability.html_name }}"
                           value="{{ value }}"
                           class="choice-input"
-                          {%
-                          if
-                          selected_disability=""
-                          ="value"
-                          %}checked{%
-                          endif
-                          %}
+                          {% if selected_disability == value %}checked{% endif %}
                         />
                         <span
                           class="choice-chip mt-1 inline-flex min-w-[72px] justify-center rounded-lg px-4 py-2 text-sm font-semibold"
@@ -300,21 +286,14 @@
                       {{ form.minority.label }}
                     </p>
                     <div class="inline-flex gap-2">
-                      {% with selected_minority=form.minority.value %} {% for
-                      value, label in form.fields.minority.choices %}
+                      {% with selected_minority=form.minority.value %} {% for value, label in form.fields.minority.choices %}
                       <label class="cursor-pointer choice-wrap">
                         <input
                           type="radio"
                           name="{{ form.minority.html_name }}"
                           value="{{ value }}"
                           class="choice-input"
-                          {%
-                          if
-                          selected_minority=""
-                          ="value"
-                          %}checked{%
-                          endif
-                          %}
+                          {% if selected_minority == value %}checked{% endif %}
                         />
                         <span
                           class="choice-chip mt-1 inline-flex min-w-[72px] justify-center rounded-lg px-4 py-2 text-sm font-semibold"
@@ -343,22 +322,14 @@
                       {{ form.below_poverty_line.label }}
                     </p>
                     <div class="inline-flex gap-2">
-                      {% with selected_bpl=form.below_poverty_line.value %} {%
-                      for value, label in form.fields.below_poverty_line.choices
-                      %}
+                      {% with selected_bpl=form.below_poverty_line.value %} {% for value, label in form.fields.below_poverty_line.choices %}
                       <label class="cursor-pointer choice-wrap">
                         <input
                           type="radio"
                           name="{{ form.below_poverty_line.html_name }}"
                           value="{{ value }}"
                           class="choice-input"
-                          {%
-                          if
-                          selected_bpl=""
-                          ="value"
-                          %}checked{%
-                          endif
-                          %}
+                          {% if selected_bpl == value %}checked{% endif %}
                         />
                         <span
                           class="choice-chip mt-1 inline-flex min-w-[72px] justify-center rounded-lg px-4 py-2 text-sm font-semibold"

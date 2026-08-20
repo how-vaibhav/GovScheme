@@ -36,6 +36,7 @@
 - [Quality Assurance](#quality-assurance)
 - [Troubleshooting](#troubleshooting)
 - [Production Checklist](#production-checklist)
+- [Authors](#authors)
 - [License](#license)
 
 ---
@@ -619,6 +620,14 @@ graph LR
 | **Database** | Replace SQLite with PostgreSQL or MySQL |
 | **Services** | Standardize all bot/translation port and endpoint config |
 | **Process** | Use Gunicorn or uWSGI behind Nginx |
+
+---
+
+## Authors
+
+- **Vaibhav Tiwari** — [@how-vaibhav](https://github.com/how-vaibhav)
+- **Akshat Agarwal** — [@Akshat774](https://github.com/Akshat774)
+- **Abhigya Dulal** — [@SkylerOnRadio](https://github.com/SkylerOnRadio)
 
 ---
 
