@@ -591,25 +591,7 @@ python test_notifications.py
 
 ---
 
-## Production Checklist
 
-```mermaid
-graph LR
-    A[Config] --> A1[Set DEBUG=False]
-    A --> A2[Restrict ALLOWED_HOSTS]
-    A --> A3[Rotate SECRET_KEY and FIELD_ENCRYPTION_KEY]
-
-    B[Security] --> B1[Enable HTTPS and SSL redirect]
-    B --> B2[Set secure cookie flags]
-    B --> B3[Configure HSTS headers]
-
-    C[Database] --> C1[Migrate to PostgreSQL or MySQL]
-    C --> C2[Run collectstatic]
-
-    D[Services] --> D1[Standardize port config]
-    D --> D2[Set up Gunicorn or uWSGI]
-    D --> D3[Configure Nginx reverse proxy]
-```
 
 | Category | Task |
 |----------|------|
