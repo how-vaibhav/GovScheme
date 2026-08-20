@@ -116,6 +116,21 @@
 
     <!-- Custom Global Styles for Enhanced Dark Mode, Branding & Mobile Optimization -->
     <style>
+      /* Magic UI Animated Theme Toggler via View Transitions API */
+      ::view-transition-old(root),
+      ::view-transition-new(root) {
+        animation: none;
+        mix-blend-mode: normal;
+      }
+
+      html[data-magicui-theme-vt="active"]::view-transition-group(root) {
+        animation-duration: var(--magicui-theme-toggle-vt-duration, 450ms);
+      }
+
+      html[data-magicui-theme-vt="active"]::view-transition-new(root) {
+        clip-path: var(--magicui-theme-vt-clip-from, circle(0% at 50% 50%));
+      }
+
       /* Enhanced Dark Mode Color Scheme */
       :root {
         --app-bg: #f8fafc;
@@ -542,20 +557,21 @@
           </a>
 
           <!-- Right Side Controls -->
-          <div class="flex items-center space-x-2 md:space-x-4">
-            <!-- Dark Mode Toggle -->
-            <div class="relative group">
-              <label
-                for="darkModeToggle"
-                class="cursor-pointer flex items-center space-x-2 bg-white/10 hover:bg-white/20 dark:bg-gray-700 dark:hover:bg-gray-600 px-3 py-2 rounded-lg transition-all duration-200"
-                data-tooltip="Toggle Dark Mode"
+          <div class="flex items-center space-x-2 md:space-x-3">
+            <!-- Animated Theme Toggle Button (Magic UI View Transitions) -->
+            <div class="relative">
+              <button
+                type="button"
+                id="animatedThemeToggler"
+                onclick="window.toggleAnimatedTheme(event)"
+                class="relative flex items-center justify-center w-10 h-10 bg-white/10 hover:bg-white/20 dark:bg-gray-700/80 dark:hover:bg-gray-600 rounded-xl transition-all duration-200 focus-outline group shadow-sm hover:scale-105"
+                aria-label="Toggle Theme"
+                title="Toggle Dark / Light Mode"
               >
-                <i
-                  class="fas fa-sun text-yellow-300 text-lg hidden dark:block"
-                ></i>
-                <i class="fas fa-moon text-gray-200 text-lg dark:hidden"></i>
-                <input type="checkbox" id="darkModeToggle" class="sr-only" />
-              </label>
+                <i class="fas fa-sun text-yellow-300 text-lg hidden dark:block group-hover:rotate-45 transition-transform duration-300"></i>
+                <i class="fas fa-moon text-blue-100 text-lg dark:hidden group-hover:-rotate-12 transition-transform duration-300"></i>
+                <span class="sr-only">Toggle theme</span>
+              </button>
             </div>
 
             <!-- Notifications -->
@@ -563,21 +579,19 @@
               <a
                 href="{% url 'notification_center' %}"
                 id="notification-button"
-                class="relative p-2.5 bg-white/10 hover:bg-white/20 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-all duration-200 focus-outline group"
+                class="relative flex items-center justify-center w-10 h-10 bg-white/10 hover:bg-white/20 dark:bg-gray-700/80 dark:hover:bg-gray-600 rounded-xl transition-all duration-200 focus-outline group shadow-sm hover:scale-105"
                 aria-label="Notifications"
-                data-tooltip="Notifications"
+                title="Notification Center"
               >
                 <i
-                  class="fas fa-bell text-white text-lg group-hover:animate-pulse"
+                  class="fas fa-bell text-white text-base group-hover:rotate-12 transition-transform duration-200"
                 ></i>
                 {% if unread_notifications_count > 0 %}
-                <span
-                  class="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-primary-700 dark:border-gray-800 animate-pulse"
-                ></span>
-                <span
-                  class="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center -mt-1 -mr-1"
-                >
-                  {{ unread_notifications_count }}
+                <span class="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center pointer-events-none">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                  <span class="relative inline-flex items-center justify-center rounded-full h-4 min-w-[16px] px-1 bg-gradient-to-r from-rose-500 to-red-600 text-white text-[10px] font-extrabold shadow-sm border border-white dark:border-gray-800 leading-none">
+                    {% if unread_notifications_count > 9 %}9+{% else %}{{ unread_notifications_count }}{% endif %}
+                  </span>
                 </span>
                 {% endif %}
               </a>
@@ -1484,6 +1498,7 @@
         }
       });
     </script>
+    <script src="{% static 'js/main.js' %}"></script>
     {% endblock %}
   </body>
 </html>

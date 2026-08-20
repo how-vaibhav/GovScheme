@@ -1,29 +1,209 @@
-// Dark Mode Toggle with System Preference
-function initDarkMode() {
-  const darkModeToggle = document.getElementById("darkModeToggle");
-  const html = document.documentElement;
+// ==========================================
+// Magic UI Animated Theme Toggler Engine (View Transitions API)
+// ==========================================
 
-  // Check for saved theme preference or default to system preference
-  const savedTheme = localStorage.getItem("theme");
-  const systemPrefersDark = window.matchMedia(
-    "(prefers-color-scheme: dark)",
-  ).matches;
+function polygonCollapsed(point, vertexCount) {
+  const pairs = Array.from({ length: vertexCount }, () => point).join(", ");
+  return `polygon(${pairs})`;
+}
 
-  if (savedTheme === "dark" || (!savedTheme && systemPrefersDark)) {
-    html.classList.add("dark");
-    if (darkModeToggle) darkModeToggle.checked = true;
+function getThemeTransitionClipPaths(variant, cx, cy, maxRadius, viewportWidth, viewportHeight) {
+  const toX = (x) => `${(x / viewportWidth) * 100}%`;
+  const toY = (y) => `${(y / viewportHeight) * 100}%`;
+  const point = (x, y) => `${toX(x)} ${toY(y)}`;
+  const toRadius = (r) => `${(r / (Math.hypot(viewportWidth, viewportHeight) / Math.SQRT2)) * 100}%`;
+
+  const shape = variant || "circle";
+
+  switch (shape) {
+    case "circle":
+      return [
+        `circle(0% at ${point(cx, cy)})`,
+        `circle(${toRadius(maxRadius)} at ${point(cx, cy)})`,
+      ];
+    case "square": {
+      const halfW = Math.max(cx, viewportWidth - cx);
+      const halfH = Math.max(cy, viewportHeight - cy);
+      const halfSide = Math.max(halfW, halfH) * 1.05;
+      const end = [
+        point(cx - halfSide, cy - halfSide),
+        point(cx + halfSide, cy - halfSide),
+        point(cx + halfSide, cy + halfSide),
+        point(cx - halfSide, cy + halfSide),
+      ].join(", ");
+      return [polygonCollapsed(point(cx, cy), 4), `polygon(${end})`];
+    }
+    case "triangle": {
+      const scale = maxRadius * 2.2;
+      const dx = (Math.sqrt(3) / 2) * scale;
+      const verts = [
+        point(cx, cy - scale),
+        point(cx + dx, cy + 0.5 * scale),
+        point(cx - dx, cy + 0.5 * scale),
+      ].join(", ");
+      return [polygonCollapsed(point(cx, cy), 3), `polygon(${verts})`];
+    }
+    case "diamond": {
+      const R = maxRadius * Math.SQRT2;
+      const end = [
+        point(cx, cy - R),
+        point(cx + R, cy),
+        point(cx, cy + R),
+        point(cx - R, cy),
+      ].join(", ");
+      return [polygonCollapsed(point(cx, cy), 4), `polygon(${end})`];
+    }
+    case "hexagon": {
+      const R = maxRadius * Math.SQRT2;
+      const verts = [];
+      for (let i = 0; i < 6; i++) {
+        const a = -Math.PI / 2 + (i * Math.PI) / 3;
+        verts.push(point(cx + R * Math.cos(a), cy + R * Math.sin(a)));
+      }
+      return [polygonCollapsed(point(cx, cy), 6), `polygon(${verts.join(", ")})`];
+    }
+    case "rectangle": {
+      const halfW = Math.max(cx, viewportWidth - cx);
+      const halfH = Math.max(cy, viewportHeight - cy);
+      const end = [
+        point(cx - halfW, cy - halfH),
+        point(cx + halfW, cy - halfH),
+        point(cx + halfW, cy + halfH),
+        point(cx - halfW, cy + halfH),
+      ].join(", ");
+      return [polygonCollapsed(point(cx, cy), 4), `polygon(${end})`];
+    }
+    case "star": {
+      const R = maxRadius * Math.SQRT2 * 1.03;
+      const innerRatio = 0.42;
+      const starPolygon = (radius) => {
+        const verts = [];
+        for (let i = 0; i < 5; i++) {
+          const outerA = -Math.PI / 2 + (i * 2 * Math.PI) / 5;
+          verts.push(point(cx + radius * Math.cos(outerA), cy + radius * Math.sin(outerA)));
+          const innerA = outerA + Math.PI / 5;
+          verts.push(point(cx + radius * innerRatio * Math.cos(innerA), cy + radius * innerRatio * Math.sin(innerA)));
+        }
+        return `polygon(${verts.join(", ")})`;
+      };
+      const startR = Math.max(2, R * 0.025);
+      return [starPolygon(startR), starPolygon(R)];
+    }
+    default:
+      return [
+        `circle(0% at ${point(cx, cy)})`,
+        `circle(${toRadius(maxRadius)} at ${point(cx, cy)})`,
+      ];
+  }
+}
+
+let isThemeTransitioning = false;
+let activeThemeAnimation = null;
+
+window.toggleAnimatedTheme = function (event, options = {}) {
+  const root = document.documentElement;
+  if (isThemeTransitioning || root.dataset.magicuiThemeVt === "active") return;
+
+  const duration = options.duration || 450;
+  const shape = options.variant || "circle";
+  const fromCenter = options.fromCenter || false;
+
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
+  let x, y;
+  const btn = event && (event.currentTarget || event.target?.closest("button") || event.target);
+  if (fromCenter || !btn || typeof btn.getBoundingClientRect !== "function") {
+    x = viewportWidth / 2;
+    y = viewportHeight / 2;
+  } else {
+    const rect = btn.getBoundingClientRect();
+    x = rect.left + rect.width / 2;
+    y = rect.top + rect.height / 2;
   }
 
-  // Toggle dark mode
+  const maxRadius = Math.hypot(
+    Math.max(x, viewportWidth - x),
+    Math.max(y, viewportHeight - y)
+  );
+
+  const applyTheme = () => {
+    const isDark = root.classList.toggle("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+
+    const darkModeToggle = document.getElementById("darkModeToggle");
+    if (darkModeToggle) darkModeToggle.checked = isDark;
+  };
+
+  // Fallback for browsers without View Transitions API
+  if (typeof document.startViewTransition !== "function") {
+    applyTheme();
+    return;
+  }
+
+  const clipPath = getThemeTransitionClipPaths(shape, x, y, maxRadius, viewportWidth, viewportHeight);
+
+  root.dataset.magicuiThemeVt = "active";
+  root.style.setProperty("--magicui-theme-toggle-vt-duration", `${duration}ms`);
+  root.style.setProperty("--magicui-theme-vt-clip-from", clipPath[0]);
+
+  const cleanup = () => {
+    isThemeTransitioning = false;
+    delete root.dataset.magicuiThemeVt;
+    root.style.removeProperty("--magicui-theme-toggle-vt-duration");
+    root.style.removeProperty("--magicui-theme-vt-clip-from");
+    if (activeThemeAnimation) {
+      activeThemeAnimation.cancel();
+      activeThemeAnimation = null;
+    }
+  };
+
+  isThemeTransitioning = true;
+  const transition = document.startViewTransition(() => {
+    applyTheme();
+  });
+
+  if (transition && typeof transition.finished?.finally === "function") {
+    transition.finished.finally(cleanup).catch(() => {});
+  } else {
+    cleanup();
+  }
+
+  if (transition?.ready && typeof transition.ready.then === "function") {
+    transition.ready
+      .then(() => {
+        activeThemeAnimation = document.documentElement.animate(
+          { clipPath },
+          {
+            duration,
+            easing: shape === "star" ? "linear" : "ease-in-out",
+            fill: "forwards",
+            pseudoElement: "::view-transition-new(root)",
+          }
+        );
+      })
+      .catch(() => {});
+  }
+};
+
+// Initialize Theme on load
+function initDarkMode() {
+  const html = document.documentElement;
+  const savedTheme = localStorage.getItem("theme");
+  const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+  const isDark = savedTheme === "dark" || (!savedTheme && systemPrefersDark);
+  if (isDark) {
+    html.classList.add("dark");
+  } else {
+    html.classList.remove("dark");
+  }
+
+  const darkModeToggle = document.getElementById("darkModeToggle");
   if (darkModeToggle) {
-    darkModeToggle.addEventListener("change", function () {
-      if (this.checked) {
-        html.classList.add("dark");
-        localStorage.setItem("theme", "dark");
-      } else {
-        html.classList.remove("dark");
-        localStorage.setItem("theme", "light");
-      }
+    darkModeToggle.checked = isDark;
+    darkModeToggle.addEventListener("change", function (e) {
+      window.toggleAnimatedTheme(e);
     });
   }
 }
