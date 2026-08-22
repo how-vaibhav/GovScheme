@@ -129,203 +129,33 @@
 
 ## System Architecture
 
-```mermaid
-graph TB
-    subgraph CLIENT["Client Layer"]
-        B[Browser]
-    end
-
-    subgraph DJANGO["Django Application — Port 8000"]
-        direction TB
-        MW[Middleware Stack<br/>CSRF · Auth · Session]
-        ROUTER[URL Router]
-        VIEWS[Views Layer]
-        ENGINE[Eligibility Engine<br/>+ Recommendation Layer]
-        ORM[Django ORM]
-        SIGNALS[Signal Handlers<br/>post_save → Notifications]
-        CRYPTO[Fernet Encryption<br/>Aadhaar Fields]
-    end
-
-    subgraph DATA["Data Layer"]
-        DB[(SQLite / Production DB)]
-        STATIC[Static Files<br/>CSS · JS · Images]
-    end
-
-    subgraph EXT["External Services"]
-        TRANS[Translation Service<br/>:5000]
-        RASA[Rasa Chatbot<br/>:5005 / :5055]
-    end
-
-    B -->|HTTPS Request| MW
-    MW --> ROUTER
-    ROUTER --> VIEWS
-    VIEWS --> ENGINE
-    VIEWS --> ORM
-    VIEWS --> CRYPTO
-    ENGINE --> ORM
-    ORM --> DB
-    SIGNALS --> DB
-    B <-->|Translation API| TRANS
-    B <-->|Chat API| RASA
-    STATIC --> B
-```
+<div align="center">
+<img src="Flow%20Chart/Flow%20chart%20(5).png" alt="GovAid system architecture flow chart" width="75%" />
+</div>
 
 ---
 
 ## User Role Flow
 
-```mermaid
-flowchart LR
-    subgraph CITIZEN["Citizen"]
-        C1[Register / Login]
-        C2[Complete Profile]
-        C3[Browse Schemes]
-        C4[Check Eligibility]
-        C5[Apply for Scheme]
-        C6[Track Application]
-        C7[Submit Feedback]
-    end
-
-    subgraph EMPLOYEE["Employee"]
-        E1[View Applications]
-        E2[Accept / Reject]
-        E3[Reply to Feedback]
-    end
-
-    subgraph ADMIN["Admin"]
-        A1[Manage Users]
-        A2[Add / Edit Schemes]
-        A3[Assign Employees]
-    end
-
-    C1 --> C2 --> C3 --> C4 --> C5 --> C6
-    C5 --> E1 --> E2 --> C6
-    C7 --> E3
-    A1 & A2 & A3 --> EMPLOYEE & CITIZEN
-```
+<div align="center">
+<img src="Flow%20Chart/Flow%20chart%20(4).png" alt="GovAid user role flow chart" width="100%" />
+</div>
 
 ---
 
 ## Application Flow
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant View as Django View
-    participant Val as Verhoeff Validator
-    participant Enc as Fernet Encryptor
-    participant DB as Database
-    participant Notif as Notification Engine
-
-    User->>View: POST /apply/ with Aadhaar + scheme_id
-    View->>Val: validate_aadhaar(aadhaar)
-    alt Invalid Aadhaar
-        Val-->>View: Checksum failed
-        View-->>User: Re-render form with error
-    else Valid
-        Val-->>View: Checksum passed
-        View->>Enc: encrypt(aadhaar)
-        Enc-->>View: encrypted_blob
-        View->>DB: Application.save(status=pending)
-        DB-->>View: Application ID
-        View->>View: session masked_aadhaar = XXXX-XXXX-1234
-        View-->>User: Redirect to success page
-    end
-
-    Note over DB,Notif: Employee reviews later
-    DB->>Notif: Status changed
-    Notif->>DB: Create Notification for User
-    Notif-->>User: In-app notification
-```
+<div align="center">
+<img src="Flow%20Chart/Flow%20chart%20(3).png" alt="GovAid application submission and notification flow chart" width="100%" />
+</div>
 
 ---
 
 ## Data Model
 
-```mermaid
-erDiagram
-    USER {
-        int id PK
-        string username
-        string email
-        string password_hash
-    }
-    USERDETAILS {
-        int id PK
-        int user_id FK
-        string name
-        int age
-        string gender
-        string category
-        string state
-        decimal income
-        string occupation
-        bool is_student
-        bool is_farmer
-        bool is_differently_abled
-    }
-    SCHEME {
-        int id PK
-        string name
-        string category
-        string description
-        string eligibility_criteria
-        int min_age
-        int max_age
-        decimal max_income
-        string gender
-        string state
-        string department
-    }
-    APPLICATION {
-        int id PK
-        int user_id FK
-        int scheme_id FK
-        string status
-        string sensitive_data
-        datetime created_at
-        datetime updated_at
-    }
-    APPLICATIONTIMELINE {
-        int id PK
-        int application_id FK
-        string status
-        datetime changed_at
-        string note
-    }
-    NOTIFICATION {
-        int id PK
-        int user_id FK
-        int scheme_id FK
-        string message
-        bool is_read
-        datetime created_at
-    }
-    FEEDBACK {
-        int id PK
-        int user_id FK
-        int scheme_id FK
-        string message
-        string reply
-        datetime created_at
-    }
-    FAVORITE {
-        int id PK
-        int user_id FK
-        int scheme_id FK
-    }
-
-    USER ||--|| USERDETAILS : "has profile"
-    USER ||--o{ APPLICATION : "submits"
-    USER ||--o{ NOTIFICATION : "receives"
-    USER ||--o{ FEEDBACK : "writes"
-    USER ||--o{ FAVORITE : "bookmarks"
-    SCHEME ||--o{ APPLICATION : "receives"
-    SCHEME ||--o{ NOTIFICATION : "triggers"
-    SCHEME ||--o{ FEEDBACK : "receives"
-    SCHEME ||--o{ FAVORITE : "saved in"
-    APPLICATION ||--o{ APPLICATIONTIMELINE : "tracks"
-```
+<div align="center">
+<img src="Flow%20Chart/Flow%20chart%20(2).png" alt="GovAid entity relationship data model" width="100%" />
+</div>
 
 ---
 
@@ -546,18 +376,9 @@ python manage.py update_full_descriptions
 
 ## Security
 
-```mermaid
-flowchart LR
-    A[User Input<br/>Aadhaar Number] -->|Verhoeff Checksum| B{Valid?}
-    B -->|Fail| C[Error Returned<br/>Not Stored]
-    B -->|Pass| D[Fernet Encrypt]
-    D --> E[(Encrypted Blob in DB)]
-    E -->|Decrypt on demand| F[Authorized View Only]
-
-    G[All Routes] --> H[CSRF Middleware]
-    G --> I[login_required Decorator]
-    G --> J[Group and Role Checks]
-```
+<div align="center">
+<img src="Flow%20Chart/Flow%20chart%20(1).png" alt="GovAid data protection and access security flow chart" width="100%" />
+</div>
 
 | Control | Implementation |
 |---------|---------------|
