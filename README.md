@@ -53,13 +53,13 @@
 
 ### Strategic Goals
 
-| Goal | Description |
-|------|-------------|
-| **Centralize Discovery** | One place for all government schemes across departments |
-| **Instant Eligibility** | Real-time per-scheme and bulk eligibility matching against user profiles |
-| **Guided Applications** | Step-by-step secure application workflows with field validation |
-| **Data Trust** | Encrypted sensitive fields, CSRF protection, and access-controlled views |
-| **Role-Based Operations** | Separate interfaces for citizens, employees, and administrators |
+| Goal                      | Description                                                              |
+| ------------------------- | ------------------------------------------------------------------------ |
+| **Centralize Discovery**  | One place for all government schemes across departments                  |
+| **Instant Eligibility**   | Real-time per-scheme and bulk eligibility matching against user profiles |
+| **Guided Applications**   | Step-by-step secure application workflows with field validation          |
+| **Data Trust**            | Encrypted sensitive fields, CSRF protection, and access-controlled views |
+| **Role-Based Operations** | Separate interfaces for citizens, employees, and administrators          |
 
 ---
 
@@ -68,21 +68,24 @@
 <div align="center">
 
 ### Home Portal and Scheme Discovery
-*Modern dark-mode gateway designed for intuitive citizen access and instant eligibility checking.*
+
+_Modern dark-mode gateway designed for intuitive citizen access and instant eligibility checking._
 
 <img src="screenshots/1%20(1).png" alt="GovAid Portal Hero Banner" width="100%" />
 
 <br/><br/>
 
 ### Smart Access and Category Architecture
-*Centralized benefit ecosystem featuring trusted updates, category-wide filtering, and real-time support.*
+
+_Centralized benefit ecosystem featuring trusted updates, category-wide filtering, and real-time support._
 
 <img src="screenshots/1%20(3).png" alt="Smart Access Feature Section" width="100%" />
 
 <br/><br/>
 
 ### Multi-Scheme Comparison Engine
-*Side-by-side comparative analysis of welfare programs, criteria, agency details, and benefits.*
+
+_Side-by-side comparative analysis of welfare programs, criteria, agency details, and benefits._
 
 <img src="screenshots/1%20(2).png" alt="Multi-Scheme Comparison Table" width="100%" />
 
@@ -97,6 +100,7 @@
 <td width="33%">
 
 ### Citizens
+
 - Register & manage profile (`UserDetails`)
 - Discover and filter schemes
 - Run eligibility checks (single or all)
@@ -108,6 +112,7 @@
 <td width="33%">
 
 ### Employees
+
 - Review and reply to user feedback
 - Process applications (`pending → accepted / rejected`)
 - Trigger status-change notifications to users
@@ -116,6 +121,7 @@
 <td width="33%">
 
 ### Administrators
+
 - Full Django admin access
 - Manage users, schemes, and employees
 - Seed and import scheme data
@@ -161,18 +167,18 @@
 
 ## Tech Stack
 
-| Layer | Technology | Version | Role |
-|-------|-----------|---------|------|
-| **Runtime** | Python | 3.12+ | Application execution |
-| **Framework** | Django | 5.2.1 | Routing, ORM, auth, middleware, admin |
-| **Database** | SQLite | Default | Persistent domain storage |
-| **UI Rendering** | Django Templates + Vanilla JS | — | Server-rendered pages + interactivity |
-| **Design System** | Tailwind CSS | 3.4.1 | Utility-first styling |
-| **Configuration** | python-decouple | 3.8 | `.env`-based settings |
-| **Cryptography** | cryptography (Fernet) | 45.0.2 | Field-level Aadhaar encryption |
-| **HTTP Client** | requests | 2.32.3 | External API calls |
-| **Parsing** | beautifulsoup4 + lxml | 4.13.4 / 5.4.0 | HTML scraping support |
-| **CSS Pipeline** | npm + Tailwind CLI | — | Build & watch CSS compilation |
+| Layer             | Technology                    | Version        | Role                                  |
+| ----------------- | ----------------------------- | -------------- | ------------------------------------- |
+| **Runtime**       | Python                        | 3.12+          | Application execution                 |
+| **Framework**     | Django                        | 5.2.1          | Routing, ORM, auth, middleware, admin |
+| **Database**      | SQLite                        | Default        | Persistent domain storage             |
+| **UI Rendering**  | Django Templates + Vanilla JS | —              | Server-rendered pages + interactivity |
+| **Design System** | Tailwind CSS                  | 3.4.1          | Utility-first styling                 |
+| **Configuration** | python-decouple               | 3.8            | `.env`-based settings                 |
+| **Cryptography**  | cryptography (Fernet)         | 45.0.2         | Field-level Aadhaar encryption        |
+| **HTTP Client**   | requests                      | 2.32.3         | External API calls                    |
+| **Parsing**       | beautifulsoup4 + lxml         | 4.13.4 / 5.4.0 | HTML scraping support                 |
+| **CSS Pipeline**  | npm + Tailwind CLI            | —              | Build & watch CSS compilation         |
 
 ### Dependency Groups
 
@@ -250,11 +256,13 @@ python -m venv .venv
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
 **macOS / Linux:**
+
 ```bash
 source .venv/bin/activate
 ```
@@ -293,11 +301,11 @@ npm run watch:css
 python manage.py runserver
 ```
 
-| Environment | URL | Description |
-|-------------|-----|-------------|
-| **Live Production** | [https://govaid-5n3k.onrender.com/](https://govaid-5n3k.onrender.com/) | Deployed live web application |
-| **Local Development** | `http://127.0.0.1:8000/` | Local server instance |
-| **Admin Panel** | [https://govaid-5n3k.onrender.com/admin/](https://govaid-5n3k.onrender.com/admin/) | Django administrative dashboard |
+| Environment           | URL                                                                                | Description                     |
+| --------------------- | ---------------------------------------------------------------------------------- | ------------------------------- |
+| **Live Production**   | [https://govaid-5n3k.onrender.com/](https://govaid-5n3k.onrender.com/)             | Deployed live web application   |
+| **Local Development** | `http://127.0.0.1:8000/`                                                           | Local server instance           |
+| **Admin Panel**       | [https://govaid-5n3k.onrender.com/admin/](https://govaid-5n3k.onrender.com/admin/) | Django administrative dashboard |
 
 ---
 
@@ -326,15 +334,15 @@ Generate a `FIELD_ENCRYPTION_KEY`:
 python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
 ```
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `SECRET_KEY` | Yes | Django cryptographic key |
-| `FIELD_ENCRYPTION_KEY` | Yes | Fernet key for Aadhaar field encryption |
-| `DEBUG` | Yes | `True` for dev, `False` for production |
-| `ALLOWED_HOSTS` | Yes | Comma-separated allowed hostnames |
-| `SECURE_SSL_REDIRECT` | Optional | Enable in production with HTTPS |
-| `SESSION_COOKIE_SECURE` | Optional | Enable in production |
-| `CSRF_COOKIE_SECURE` | Optional | Enable in production |
+| Variable                | Required | Description                             |
+| ----------------------- | -------- | --------------------------------------- |
+| `SECRET_KEY`            | Yes      | Django cryptographic key                |
+| `FIELD_ENCRYPTION_KEY`  | Yes      | Fernet key for Aadhaar field encryption |
+| `DEBUG`                 | Yes      | `True` for dev, `False` for production  |
+| `ALLOWED_HOSTS`         | Yes      | Comma-separated allowed hostnames       |
+| `SECURE_SSL_REDIRECT`   | Optional | Enable in production with HTTPS         |
+| `SESSION_COOKIE_SECURE` | Optional | Enable in production                    |
+| `CSRF_COOKIE_SECURE`    | Optional | Enable in production                    |
 
 ---
 
@@ -355,22 +363,22 @@ python manage.py update_full_descriptions
 
 ## API Routes
 
-| Route | Method | Access | Purpose |
-|-------|--------|--------|---------|
-| `/` | GET | Public | Home page |
-| `/schemes/` | GET | Public | Scheme index / listing |
-| `/scheme/<id>/` | GET | Public | Scheme detail view |
-| `/advanced-search/` | GET | Public | Multi-criteria filtering |
-| `/check-eligibility/` | GET | Auth | User-wide eligibility results |
-| `/apply/` | GET, POST | Auth | Scheme application submission |
-| `/applications/` | GET, POST | Employee | Application management |
-| `/favorites/` | GET | Auth | User bookmarked schemes |
-| `/comparison/` | GET | Public | Side-by-side scheme comparison |
-| `/notifications/` | GET | Auth | Notification center |
-| `/feedback/` | GET, POST | Auth | Submit feedback |
-| `/feedbacks/` | GET | Employee | View & reply to feedback |
-| `/userdetails/` | GET, POST | Auth | Edit user profile |
-| `/admin/` | GET | Superuser | Django admin panel |
+| Route                 | Method    | Access    | Purpose                        |
+| --------------------- | --------- | --------- | ------------------------------ |
+| `/`                   | GET       | Public    | Home page                      |
+| `/schemes/`           | GET       | Public    | Scheme index / listing         |
+| `/scheme/<id>/`       | GET       | Public    | Scheme detail view             |
+| `/advanced-search/`   | GET       | Public    | Multi-criteria filtering       |
+| `/check-eligibility/` | GET       | Auth      | User-wide eligibility results  |
+| `/apply/`             | GET, POST | Auth      | Scheme application submission  |
+| `/applications/`      | GET, POST | Employee  | Application management         |
+| `/favorites/`         | GET       | Auth      | User bookmarked schemes        |
+| `/comparison/`        | GET       | Public    | Side-by-side scheme comparison |
+| `/notifications/`     | GET       | Auth      | Notification center            |
+| `/feedback/`          | GET, POST | Auth      | Submit feedback                |
+| `/feedbacks/`         | GET       | Employee  | View & reply to feedback       |
+| `/userdetails/`       | GET, POST | Auth      | Edit user profile              |
+| `/admin/`             | GET       | Superuser | Django admin panel             |
 
 ---
 
@@ -380,33 +388,35 @@ python manage.py update_full_descriptions
 <img src="Flow%20Chart/Flow%20chart%20(1).png" alt="GovAid data protection and access security flow chart" width="100%" />
 </div>
 
-| Control | Implementation |
-|---------|---------------|
+| Control                | Implementation                                           |
+| ---------------------- | -------------------------------------------------------- |
 | **Aadhaar Encryption** | `cryptography.Fernet` — field-level symmetric encryption |
-| **Aadhaar Validation** | Verhoeff checksum algorithm before any persistence |
-| **Access Control** | `@login_required` + Django group membership checks |
-| **CSRF Protection** | Django `CsrfViewMiddleware` enabled globally |
-| **Session Security** | Configurable secure cookies for production |
+| **Aadhaar Validation** | Verhoeff checksum algorithm before any persistence       |
+| **Access Control**     | `@login_required` + Django group membership checks       |
+| **CSRF Protection**    | Django `CsrfViewMiddleware` enabled globally             |
+| **Session Security**   | Configurable secure cookies for production               |
 
 ---
 
 ## Integrations
 
 ### Translation Service
+
 - Endpoint: `http://localhost:5000/translate`
 - Used by: `translate_page` view for in-browser language switching
 
 ### Rasa Chatbot
+
 - Management command: `python manage.py run_rasa_server`
 - Ports: `5005` (HTTP) / `5055` (action server)
 
 ### Startup Scripts
 
-| Script | Platform | Purpose |
-|--------|----------|---------|
+| Script               | Platform       | Purpose                            |
+| -------------------- | -------------- | ---------------------------------- |
 | `run_all_servers.py` | Cross-platform | Launch Django + auxiliary services |
-| `START_SERVERS.bat` | Windows | Batch launcher |
-| `start_servers.sh` | macOS/Linux | Shell launcher |
+| `START_SERVERS.bat`  | Windows        | Batch launcher                     |
+| `start_servers.sh`   | macOS/Linux    | Shell launcher                     |
 
 > **Important:** Startup scripts contain machine-specific absolute paths (e.g., `C:\Users\...`). Update these before running on a new machine. Standardize ports `5000`, `5005`, `5055` across all scripts to avoid runtime mismatches.
 
@@ -432,29 +442,27 @@ python test_notifications.py
 
 ## Troubleshooting
 
-| Issue | Resolution |
-|-------|-----------|
-| `SECRET_KEY` or `FIELD_ENCRYPTION_KEY` missing | Verify `.env` exists in project root with both keys set |
-| CSS changes not reflected | Run `npm run build:css` or keep `npm run watch:css` active |
-| Empty scheme list | Run `python manage.py populate_schemes` or `python manage.py import_csv` |
-| Startup script failures on new machine | Replace hardcoded absolute paths with local paths |
-| No eligibility results showing | Complete user profile at `/userdetails/` |
-| Port conflicts | Ensure ports `8000`, `5000`, `5005`, `5055` are free |
-| Translation not working | Verify translation service is running on `localhost:5000` |
+| Issue                                          | Resolution                                                               |
+| ---------------------------------------------- | ------------------------------------------------------------------------ |
+| `SECRET_KEY` or `FIELD_ENCRYPTION_KEY` missing | Verify `.env` exists in project root with both keys set                  |
+| CSS changes not reflected                      | Run `npm run build:css` or keep `npm run watch:css` active               |
+| Empty scheme list                              | Run `python manage.py populate_schemes` or `python manage.py import_csv` |
+| Startup script failures on new machine         | Replace hardcoded absolute paths with local paths                        |
+| No eligibility results showing                 | Complete user profile at `/userdetails/`                                 |
+| Port conflicts                                 | Ensure ports `8000`, `5000`, `5005`, `5055` are free                     |
+| Translation not working                        | Verify translation service is running on `localhost:5000`                |
 
 ---
 
-
-
-| Category | Task |
-|----------|------|
-| **Configuration** | Set `DEBUG=False`, restrict `ALLOWED_HOSTS` |
-| **Secrets** | Rotate `SECRET_KEY` and `FIELD_ENCRYPTION_KEY` |
-| **Security** | Enforce HTTPS, secure cookie flags, HSTS headers |
-| **Assets** | Run `python manage.py collectstatic` |
-| **Database** | Replace SQLite with PostgreSQL or MySQL |
-| **Services** | Standardize all bot/translation port and endpoint config |
-| **Process** | Use Gunicorn or uWSGI behind Nginx |
+| Category          | Task                                                     |
+| ----------------- | -------------------------------------------------------- |
+| **Configuration** | Set `DEBUG=False`, restrict `ALLOWED_HOSTS`              |
+| **Secrets**       | Rotate `SECRET_KEY` and `FIELD_ENCRYPTION_KEY`           |
+| **Security**      | Enforce HTTPS, secure cookie flags, HSTS headers         |
+| **Assets**        | Run `python manage.py collectstatic`                     |
+| **Database**      | Replace SQLite with PostgreSQL or MySQL                  |
+| **Services**      | Standardize all bot/translation port and endpoint config |
+| **Process**       | Use Gunicorn or uWSGI behind Nginx                       |
 
 ---
 
@@ -476,6 +484,6 @@ This project is licensed under the terms described in [LICENSE](LICENSE).
 
 **Built for the citizens of Sikkim**
 
-*GovAid — Bridging the gap between citizens and the benefits they deserve*
+_GovAid — Bridging the gap between citizens and the benefits they deserve_
 
 </div>
