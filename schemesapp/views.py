@@ -264,10 +264,19 @@ def scheme_list(request):
     schemes = Scheme.objects.all()
     return render(request, 'scheme_list.html', {'schemes': schemes})
 
-def scheme_detail(request, pk):
+def scheme_detail_redirect(request, pk):
+    """301 redirect from old ID-based URL to the canonical slug URL."""
     scheme = get_object_or_404(Scheme, pk=pk)
+    from django.http import HttpResponsePermanentRedirect
+    from django.urls import reverse
+    return HttpResponsePermanentRedirect(reverse('scheme_detail_slug', kwargs={'slug': scheme.slug}))
 
-    feedbacks = Feedback.objects.all().order_by('-submitted_at')  # get all feedback for this scheme
+
+def scheme_detail_slug(request, slug):
+    """Canonical scheme detail view using slug-based URL for SEO."""
+    scheme = get_object_or_404(Scheme, slug=slug)
+
+    feedbacks = Feedback.objects.filter(scheme=scheme).order_by('-submitted_at')
 
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
@@ -276,16 +285,29 @@ def scheme_detail(request, pk):
             feedback.scheme = scheme
             feedback.user = request.user
             feedback.save()
-            return redirect('schemesapp/scheme_detail', pk=pk)  # Redirect to avoid resubmission on refresh
+            return redirect('scheme_detail_slug', slug=slug)
     else:
         form = FeedbackForm()
+
+    # Build breadcrumb data for JSON-LD
+    breadcrumbs = [
+        {'name': 'Home', 'url': request.build_absolute_uri('/')[:-1] + '/'},
+        {'name': 'All Schemes', 'url': request.build_absolute_uri('/')[:-1] + '/schemes/'},
+        {'name': scheme.name, 'url': request.build_absolute_uri()},
+    ]
 
     context = {
         'scheme': scheme,
         'feedbacks': feedbacks,
         'form': form,
+        'breadcrumbs': breadcrumbs,
     }
     return render(request, 'schemesapp/scheme_detail.html', context)
+
+
+# Keep old name as alias for any internal references
+def scheme_detail(request, pk):
+    return scheme_detail_redirect(request, pk)
 
 @login_required
 @user_passes_test(is_employee)
@@ -880,39 +902,50 @@ Disallow: /favorites/
 Disallow: /scrape/
 Disallow: /addemployee/
 
+# Disallow filtered/search query URLs to prevent duplicate content
+Disallow: /schemes/?*
+Disallow: /advanced-search/?*
+
+# Rate limit hint for well-behaved bots
+Crawl-delay: 2
+
 Sitemap: {domain}/sitemap.xml
 """
     return HttpResponse(content.strip(), content_type="text/plain")
 
 
 def sitemap_xml(request):
-    """Generate dynamic XML sitemap for SEO crawlers"""
+    """Generate dynamic XML sitemap for SEO crawlers with lastmod and image entries."""
     from django.urls import reverse
-    schemes = Scheme.objects.all().order_by('-id')
+    from datetime import datetime, timezone as dt_timezone
+
+    schemes = Scheme.objects.all().order_by('-updated_at', '-id')
     domain = request.build_absolute_uri('/')[:-1]
-    
+    today = datetime.now(dt_timezone.utc).strftime('%Y-%m-%d')
+
     static_pages = [
-        ('home', 'daily', '1.0'),
-        ('scheme_list', 'daily', '0.9'),
-        ('advanced_search', 'weekly', '0.8'),
-        ('comparison', 'weekly', '0.7'),
-        ('central_schemes', 'weekly', '0.7'),
-        ('faq', 'monthly', '0.6'),
-        ('downloads', 'monthly', '0.6'),
-        ('mission_vision', 'monthly', '0.5'),
-        ('leadership', 'monthly', '0.5'),
-        ('partnerships', 'monthly', '0.5'),
-        ('transparency', 'monthly', '0.5'),
-        ('privacy_policy', 'yearly', '0.3'),
-        ('terms_of_service', 'yearly', '0.3'),
+        ('home', 'daily', '1.0', today),
+        ('scheme_list', 'daily', '0.9', today),
+        ('advanced_search', 'weekly', '0.8', today),
+        ('comparison', 'weekly', '0.7', today),
+        ('central_schemes', 'weekly', '0.7', today),
+        ('faq', 'monthly', '0.6', today),
+        ('downloads', 'monthly', '0.6', today),
+        ('mission_vision', 'monthly', '0.5', today),
+        ('leadership', 'monthly', '0.5', today),
+        ('partnerships', 'monthly', '0.5', today),
+        ('transparency', 'monthly', '0.5', today),
+        ('privacy_policy', 'yearly', '0.3', today),
+        ('terms_of_service', 'yearly', '0.3', today),
     ]
-    
+
     urls = []
-    for name, freq, priority in static_pages:
+    for name, freq, priority, lastmod in static_pages:
         try:
             url_path = reverse(name)
             urls.append(f"""  <url>
     <loc>{domain}{url_path}</loc>
+    <lastmod>{lastmod}</lastmod>
     <changefreq>{freq}</changefreq>
     <priority>{priority}</priority>
   </url>""")
@@ -921,17 +954,28 @@ def sitemap_xml(request):
 
     for scheme in schemes:
         try:
-            scheme_url = reverse('scheme_detail', args=[scheme.pk])
+            if not scheme.slug:
+                continue
+            scheme_url = reverse('scheme_detail_slug', kwargs={'slug': scheme.slug})
+            lastmod = scheme.updated_at.strftime('%Y-%m-%d') if scheme.updated_at else today
+            image_block = f"""
+    <image:image>
+      <image:loc>{domain}/static/images/logo.png</image:loc>
+      <image:title>{scheme.name} — Sikkim Government Scheme</image:title>
+    </image:image>"""
             urls.append(f"""  <url>
     <loc>{domain}{scheme_url}</loc>
+    <lastmod>{lastmod}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.85</priority>{image_block}
   </url>""")
         except Exception:
             pass
-            
+
     xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 {chr(10).join(urls)}
 </urlset>"""
-    return HttpResponse(xml_content, content_type="application/xml")
+    return HttpResponse(xml_content, content_type="application/xml")
+

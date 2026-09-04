@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
+from django.utils.text import slugify
 
 class UserDetails(models.Model):
     GENDER_CHOICES = [
@@ -62,6 +63,7 @@ class Scheme(models.Model):
     ]
 
     name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=300, unique=True, blank=True)
     objective = models.TextField()
     benefits = models.TextField()
     agency = models.CharField(max_length=255)
@@ -71,6 +73,8 @@ class Scheme(models.Model):
     contact_email = models.EmailField(blank=True, null=True)
     contact_phone = models.CharField(max_length=20, blank=True, null=True)
     application_deadline = models.DateField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     GENDER_CHOICES = [
     ('M' ,'Male'),
@@ -151,6 +155,22 @@ class Scheme(models.Model):
         'below_poverty_line': lambda: details.below_poverty_line == self.below_poverty_line if self.below_poverty_line is not None else True,
         }
         return all(check() for check in checks.values())
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('scheme_detail_slug', kwargs={'slug': self.slug})
+
+    def save(self, *args, **kwargs):
+        """Auto-generate slug from name if not set, ensuring uniqueness."""
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+            while Scheme.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

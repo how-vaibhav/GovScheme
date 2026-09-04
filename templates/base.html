@@ -12,14 +12,24 @@
     <title>{% block title %}GovAid — Sikkim Government Schemes & Welfare Portal{% endblock %}</title>
     
     <!-- Primary SEO Meta Tags -->
-    <meta name="description" content="{% block meta_description %}GovAid is the unified government welfare schemes portal for citizens of Sikkim. Discover state & central schemes, evaluate instant eligibility, and apply securely.{% endblock %}" />
+    <meta name="description" content="{% block meta_description %}GovAid is the unified government welfare schemes portal for citizens of Sikkim. Discover state &amp; central schemes, evaluate instant eligibility, and apply securely.{% endblock %}" />
     <meta name="keywords" content="{% block meta_keywords %}Sikkim government schemes, GovAid, welfare schemes Sikkim, citizen portal, scholarship schemes, agriculture subsidies, health welfare, government aid{% endblock %}" />
     <meta name="author" content="GovAid Sikkim" />
     <meta name="robots" content="{% block meta_robots %}index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1{% endblock %}" />
+
+    <!-- Geographic / Local SEO -->
+    <meta name="geo.region" content="IN-SK" />
+    <meta name="geo.placename" content="Sikkim, India" />
+    <meta name="geo.position" content="27.5330;88.5122" />
+    <meta name="ICBM" content="27.5330, 88.5122" />
     
     <!-- Canonical URL -->
     <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}" />
     <link rel="icon" href="{% static 'images/favicon.ico' %}" />
+
+    <!-- Preload critical resources for LCP -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" crossorigin="anonymous" />
+
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="{% block og_type %}website{% endblock %}" />

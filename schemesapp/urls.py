@@ -13,7 +13,9 @@ urlpatterns = [
       path('feedbacks/respond/<int:feedback_id>/', views.reply_feedback, name="reply_feedback"),
       path("translate/", views.translate_page, name="translate_text"),
       path('schemes/', views.scheme_list, name='scheme_list'),
-      path('scheme/<int:pk>/', views.scheme_detail, name='scheme_detail'),
+      path('scheme/<slug:slug>/', views.scheme_detail_slug, name='scheme_detail_slug'),
+      path('scheme/<int:pk>/', views.scheme_detail_redirect, name='scheme_detail'),  # 301 redirect to slug URL
+
       path('schemeadd/', views.scheme_input, name='add_scheme'),
       path('userdetails/', views.user_detail_input, name='user_detail'),
       path('eligibility/<int:pk>/', views.scheme_eligibility, name='user_eligibility'),

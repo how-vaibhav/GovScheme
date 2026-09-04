@@ -1,31 +1,64 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ scheme.name }} — Eligibility, Benefits & Apply | GovAid Sikkim{% endblock %}
+{% block title %}{{ scheme.name }} — Eligibility, Benefits &amp; Apply | GovAid Sikkim{% endblock %}
 {% block meta_description %}{{ scheme.objective|default:scheme.full_description|default:scheme.benefits|default:"Apply for government welfare scheme in Sikkim."|striptags|truncatewords:28 }}{% endblock %}
 {% block meta_keywords %}{{ scheme.name }}, {{ scheme.get_category_display }}, Sikkim government scheme, eligibility criteria, apply online Sikkim, welfare scheme{% endblock %}
 {% block og_title %}{{ scheme.name }} — Sikkim Welfare Scheme | GovAid{% endblock %}
 {% block og_description %}{{ scheme.objective|default:scheme.full_description|default:scheme.benefits|default:"Apply for government welfare scheme in Sikkim."|striptags|truncatewords:28 }}{% endblock %}
 
+{# Canonical URL uses the clean slug URL — prevents duplicate content from query params #}
+{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{% url 'scheme_detail_slug' slug=scheme.slug %}{% endblock %}
+
 {% block extra_schema %}
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "GovernmentService",
-  "name": "{{ scheme.name|escapejs }}",
-  "description": "{{ scheme.objective|default:scheme.full_description|default:scheme.benefits|striptags|truncatewords:30|escapejs }}",
-  "serviceType": "{{ scheme.get_category_display|escapejs }}",
-  "provider": {
-    "@type": "GovernmentOrganization",
-    "name": "{{ scheme.agency|default:'Government of Sikkim'|escapejs }}",
-    "areaServed": "Sikkim, India"
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "GovernmentService",
+    "name": "{{ scheme.name|escapejs }}",
+    "description": "{{ scheme.objective|default:scheme.full_description|default:scheme.benefits|striptags|truncatewords:30|escapejs }}",
+    "serviceType": "{{ scheme.get_category_display|escapejs }}",
+    "provider": {
+      "@type": "GovernmentOrganization",
+      "name": "{{ scheme.agency|default:'Government of Sikkim'|escapejs }}",
+      "areaServed": "Sikkim, India"
+    },
+    "areaServed": {
+      "@type": "AdministrativeArea",
+      "name": "Sikkim",
+      "containedInPlace": {"@type": "Country", "name": "India"}
+    },
+    "serviceAudience": {
+      "@type": "Audience",
+      "audienceType": "Citizens of Sikkim"
+    },
+    "availableChannel": {
+      "@type": "ServiceChannel",
+      "serviceUrl": "{{ request.build_absolute_uri }}",
+      "serviceLocation": {"@type": "Place", "name": "Sikkim, India"}
+    },
+    {% if scheme.benefits %}"serviceOutput": "{{ scheme.benefits|striptags|truncatewords:20|escapejs }}",{% endif %}
+    {% if scheme.min_age or scheme.max_age or scheme.max_income %}
+    "eligibilityRequirements": "{% if scheme.min_age %}Minimum age: {{ scheme.min_age }} years. {% endif %}{% if scheme.max_age %}Maximum age: {{ scheme.max_age }} years. {% endif %}{% if scheme.max_income %}Maximum annual income: ₹{{ scheme.max_income }}. {% endif %}",
+    {% endif %}
+    "url": "{{ request.build_absolute_uri }}"
   },
-  "serviceAudience": {
-    "@type": "Audience",
-    "audienceType": "Citizens of Sikkim"
-  },
-  "url": "{{ request.build_absolute_uri }}"
-}
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {% for crumb in breadcrumbs %}
+      {
+        "@type": "ListItem",
+        "position": {{ forloop.counter }},
+        "name": "{{ crumb.name|escapejs }}",
+        "item": "{{ crumb.url }}"
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+]
 </script>
 {% endblock %}
 
@@ -242,7 +275,7 @@
           <div class="space-y-2">
             <p class="text-sm text-gray-600 dark:text-gray-400">Category</p>
             <p class="font-semibold text-gray-900 dark:text-white">
-              Government
+              {{ scheme.get_category_display }}
             </p>
           </div>
 
