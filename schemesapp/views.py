@@ -289,11 +289,17 @@ def scheme_detail_slug(request, slug):
     else:
         form = FeedbackForm()
 
+    # Fetch related schemes in same category for internal linking & crawl discovery
+    related_schemes = Scheme.objects.filter(category=scheme.category).exclude(id=scheme.id).order_by('-updated_at')[:3]
+    if not related_schemes.exists():
+        related_schemes = Scheme.objects.exclude(id=scheme.id).order_by('-updated_at')[:3]
+
     # Build breadcrumb data for JSON-LD
+    clean_base = request.build_absolute_uri('/')[:-1]
     breadcrumbs = [
-        {'name': 'Home', 'url': request.build_absolute_uri('/')[:-1] + '/'},
-        {'name': 'All Schemes', 'url': request.build_absolute_uri('/')[:-1] + '/schemes/'},
-        {'name': scheme.name, 'url': request.build_absolute_uri()},
+        {'name': 'Home', 'url': f"{clean_base}/"},
+        {'name': 'All Schemes', 'url': f"{clean_base}/schemes/"},
+        {'name': scheme.name, 'url': f"{clean_base}/scheme/{scheme.slug}/"},
     ]
 
     context = {
@@ -301,6 +307,7 @@ def scheme_detail_slug(request, slug):
         'feedbacks': feedbacks,
         'form': form,
         'breadcrumbs': breadcrumbs,
+        'related_schemes': related_schemes,
     }
     return render(request, 'schemesapp/scheme_detail.html', context)
 
@@ -873,7 +880,7 @@ def terms_of_service(request):
 
 
 def robots_txt(request):
-    """Serve robots.txt for search engine crawlers"""
+    """Serve robots.txt for search engine crawlers with comprehensive disallow rules."""
     domain = request.build_absolute_uri('/')[:-1]
     content = f"""User-agent: *
 Allow: /
@@ -891,8 +898,12 @@ Allow: /transparency/
 Allow: /privacy-policy/
 Allow: /terms-of-service/
 
-# Disallow user private and administrative endpoints
+# Disallow user private, action, and administrative endpoints
 Disallow: /admin/
+Disallow: /login/
+Disallow: /register/
+Disallow: /logout/
+Disallow: /translate/
 Disallow: /userdetails/
 Disallow: /apply/
 Disallow: /applications/
@@ -902,16 +913,15 @@ Disallow: /favorites/
 Disallow: /scrape/
 Disallow: /addemployee/
 
-# Disallow filtered/search query URLs to prevent duplicate content
-Disallow: /schemes/?*
-Disallow: /advanced-search/?*
-
-# Rate limit hint for well-behaved bots
-Crawl-delay: 2
+# Disallow dynamic search parameter combinations to prevent duplicate index bloat
+Disallow: /*?*
+Disallow: /*?
 
 Sitemap: {domain}/sitemap.xml
 """
-    return HttpResponse(content.strip(), content_type="text/plain")
+    response = HttpResponse(content.strip(), content_type="text/plain; charset=utf-8")
+    response['Cache-Control'] = 'public, max-age=86400'
+    return response
 
 
 def sitemap_xml(request):
@@ -929,7 +939,7 @@ def sitemap_xml(request):
         ('advanced_search', 'weekly', '0.8', today),
         ('comparison', 'weekly', '0.7', today),
         ('central_schemes', 'weekly', '0.7', today),
-        ('faq', 'monthly', '0.6', today),
+        ('faq', 'monthly', '0.7', today),
         ('downloads', 'monthly', '0.6', today),
         ('mission_vision', 'monthly', '0.5', today),
         ('leadership', 'monthly', '0.5', today),
@@ -960,7 +970,7 @@ def sitemap_xml(request):
             lastmod = scheme.updated_at.strftime('%Y-%m-%d') if scheme.updated_at else today
             image_block = f"""
     <image:image>
-      <image:loc>{domain}/static/images/logo.png</image:loc>
+      <image:loc>{domain}/static/images/sikkim.jpg</image:loc>
       <image:title>{scheme.name} — Sikkim Government Scheme</image:title>
     </image:image>"""
             urls.append(f"""  <url>
@@ -977,5 +987,23 @@ def sitemap_xml(request):
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 {chr(10).join(urls)}
 </urlset>"""
-    return HttpResponse(xml_content, content_type="application/xml")
+    response = HttpResponse(xml_content, content_type="application/xml; charset=utf-8")
+    response['Cache-Control'] = 'public, max-age=3600'
+    return response
+
+
+def opensearch_xml(request):
+    """Serve OpenSearch XML description for browser address bar search and discovery."""
+    domain = request.build_absolute_uri('/')[:-1]
+    xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>GovAid</ShortName>
+  <Description>Search Sikkim Government Schemes &amp; Welfare Programs on GovAid</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image width="16" height="16" type="image/x-icon">{domain}/static/images/favicon.ico</Image>
+  <Url type="text/html" template="{domain}/schemes/?q={{searchTerms}}"/>
+</OpenSearchDescription>"""
+    response = HttpResponse(xml_content, content_type="application/opensearchdescription+xml; charset=utf-8")
+    response['Cache-Control'] = 'public, max-age=86400'
+    return response
 

@@ -1,5 +1,40 @@
-{% extends "base.html" %} {% load static %} {% block title %}Downloads -
-GovAid{% endblock %} {% block content %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Scheme Application Forms & Guidelines Download — Sikkim Welfare | GovAid{% endblock %}
+{% block meta_description %}Download official PDF application forms, guidelines, eligibility certificates, and declaration templates for Sikkim state and central government welfare schemes.{% endblock %}
+{% block meta_keywords %}Sikkim scheme application download, welfare scheme pdf forms, scholarship form download Sikkim, government scheme guidelines{% endblock %}
+{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{% url 'downloads' %}{% endblock %}
+{% block og_title %}Scheme Application Forms & Guidelines Download | GovAid Sikkim{% endblock %}
+{% block og_description %}Download official PDF application forms, guidelines, eligibility certificates, and declaration templates for Sikkim state and central government welfare schemes.{% endblock %}
+{% block twitter_title %}Scheme Application Forms & Guidelines Download | GovAid Sikkim{% endblock %}
+{% block twitter_description %}Download official PDF application forms, guidelines, eligibility certificates, and declaration templates for Sikkim state and central government welfare schemes.{% endblock %}
+
+{% block extra_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "{{ request.scheme }}://{{ request.get_host }}{% url 'downloads' %}#webpage",
+      "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'downloads' %}",
+      "name": "Scheme Application Forms & Guidelines Download — GovAid Sikkim",
+      "description": "Downloadable citizen resources, application forms, and user guides for government welfare schemes in Sikkim."
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ request.scheme }}://{{ request.get_host }}/"},
+        {"@type": "ListItem", "position": 2, "name": "Downloads", "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'downloads' %}"}
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
 <style>
   @keyframes fadeInUp {
     from {

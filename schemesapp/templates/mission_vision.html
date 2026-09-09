@@ -1,5 +1,40 @@
-{% extends "base.html" %} {% load static %} {% block title %}Mission & Vision -
-GovAid{% endblock %} {% block content %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Our Mission & Vision — Digital Welfare Delivery in Sikkim | GovAid{% endblock %}
+{% block meta_description %}Discover GovAid's mission to bridge the gap between government welfare initiatives and citizens of Sikkim through transparent, accessible digital governance.{% endblock %}
+{% block meta_keywords %}GovAid mission, Sikkim digital governance, citizen welfare mission, transparent government schemes Sikkim{% endblock %}
+{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{% url 'mission_vision' %}{% endblock %}
+{% block og_title %}Our Mission & Vision | GovAid Sikkim{% endblock %}
+{% block og_description %}Discover GovAid's mission to bridge the gap between government welfare initiatives and citizens of Sikkim through transparent, accessible digital governance.{% endblock %}
+{% block twitter_title %}Our Mission & Vision | GovAid Sikkim{% endblock %}
+{% block twitter_description %}Discover GovAid's mission to bridge the gap between government welfare initiatives and citizens of Sikkim through transparent, accessible digital governance.{% endblock %}
+
+{% block extra_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "AboutPage",
+      "@id": "{{ request.scheme }}://{{ request.get_host }}{% url 'mission_vision' %}#webpage",
+      "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'mission_vision' %}",
+      "name": "Our Mission and Vision — GovAid Sikkim",
+      "description": "The foundational objectives and values powering GovAid Sikkim's unified government welfare distribution portal."
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ request.scheme }}://{{ request.get_host }}/"},
+        {"@type": "ListItem", "position": 2, "name": "Mission & Vision", "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'mission_vision' %}"}
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
 <style>
   @keyframes fadeInUp {
     from {

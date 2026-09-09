@@ -1,5 +1,40 @@
-{% extends "base.html" %} {% load static %} {% block title %}Central Schemes -
-GovAid{% endblock %} {% block content %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Central Government Schemes in Sikkim — National Welfare Programs | GovAid{% endblock %}
+{% block meta_description %}Explore Central Government schemes available to citizens of Sikkim including PM-KISAN, Ayushman Bharat, PMAY, and national scholarship programs.{% endblock %}
+{% block meta_keywords %}central government schemes Sikkim, PM-KISAN Sikkim, Ayushman Bharat Sikkim, national scholarship Sikkim, central welfare programs{% endblock %}
+{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{% url 'central_schemes' %}{% endblock %}
+{% block og_title %}Central Government Schemes in Sikkim | GovAid{% endblock %}
+{% block og_description %}Explore Central Government schemes available to citizens of Sikkim including PM-KISAN, Ayushman Bharat, PMAY, and national scholarship programs.{% endblock %}
+{% block twitter_title %}Central Government Schemes in Sikkim | GovAid{% endblock %}
+{% block twitter_description %}Explore Central Government schemes available to citizens of Sikkim including PM-KISAN, Ayushman Bharat, PMAY, and national scholarship programs.{% endblock %}
+
+{% block extra_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": "{{ request.scheme }}://{{ request.get_host }}{% url 'central_schemes' %}#webpage",
+      "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'central_schemes' %}",
+      "name": "Central Government Schemes in Sikkim — GovAid",
+      "description": "Comprehensive guide to Central Government welfare initiatives accessible to residents of Sikkim."
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ request.scheme }}://{{ request.get_host }}/"},
+        {"@type": "ListItem", "position": 2, "name": "Central Schemes", "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'central_schemes' %}"}
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
 <style>
   @keyframes fadeInUp {
     from {

@@ -1,5 +1,7 @@
-{% extends "base.html" %} {% load static %} {% block title %}My Favorites -
-GovAid{% endblock %} {% block content %}
+{% extends "base.html" %} {% load static %}
+{% block title %}My Saved Schemes — GovAid Sikkim{% endblock %}
+{% block meta_robots %}noindex, nofollow{% endblock %}
+{% block content %}
 <style>
   @keyframes fadeInUp {
     from {
@@ -172,8 +174,9 @@ GovAid{% endblock %} {% block content %}
           <!-- Action Buttons -->
           <div class="flex gap-2">
             <a
-              href="{% url 'scheme_detail' favorite.scheme.pk %}"
+              href="{% if favorite.scheme.slug %}{% url 'scheme_detail_slug' slug=favorite.scheme.slug %}{% else %}{% url 'scheme_detail' favorite.scheme.pk %}{% endif %}"
               class="flex-1 btn-outline py-2 text-sm rounded-lg text-center font-medium"
+              aria-label="View details for {{ favorite.scheme.name }}"
             >
               <i class="fas fa-info-circle mr-1"></i> Details
             </a>

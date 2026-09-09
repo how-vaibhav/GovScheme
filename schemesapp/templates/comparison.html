@@ -4,8 +4,36 @@
 
 {% block title %}Compare Welfare Schemes Side-by-Side | GovAid Sikkim{% endblock %}
 {% block meta_description %}Compare eligibility criteria, benefits, subsidies, and required documents of multiple Sikkim government welfare schemes side-by-side.{% endblock %}
+{% block meta_keywords %}compare schemes Sikkim, welfare scheme comparison, government subsidy compare, eligibility comparison Sikkim{% endblock %}
+{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{% url 'comparison' %}{% endblock %}
+{% block og_title %}Compare Welfare Schemes Side-by-Side | GovAid Sikkim{% endblock %}
+{% block og_description %}Compare eligibility criteria, benefits, subsidies, and required documents of multiple Sikkim government welfare schemes side-by-side.{% endblock %}
+{% block twitter_title %}Compare Welfare Schemes Side-by-Side | GovAid Sikkim{% endblock %}
+{% block twitter_description %}Compare eligibility criteria, benefits, subsidies, and required documents of multiple Sikkim government welfare schemes side-by-side.{% endblock %}
 
-{% block content %}
+{% block extra_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "{{ request.scheme }}://{{ request.get_host }}{% url 'comparison' %}#webpage",
+      "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'comparison' %}",
+      "name": "Compare Welfare Schemes Side-by-Side — GovAid Sikkim",
+      "description": "Interactive comparison tool to analyze eligibility criteria, benefits, and requirements across Sikkim welfare schemes."
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ request.scheme }}://{{ request.get_host }}/"},
+        {"@type": "ListItem", "position": 2, "name": "Compare Schemes", "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'comparison' %}"}
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
 
 <style>
   @keyframes slideInDown {
@@ -451,8 +479,9 @@
             <td class="px-4 py-4">
               <div class="flex flex-col gap-2">
                 <a
-                  href="{% url 'scheme_detail' scheme.pk %}"
+                  href="{% if scheme.slug %}{% url 'scheme_detail_slug' slug=scheme.slug %}{% else %}{% url 'scheme_detail' scheme.pk %}{% endif %}"
                   class="btn-outline py-2 text-xs rounded-lg text-center"
+                  aria-label="View full details for {{ scheme.name }}"
                 >
                   <i class="fas fa-info-circle mr-1"></i>View Details
                 </a>

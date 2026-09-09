@@ -6,6 +6,9 @@
 {% block meta_keywords %}{{ scheme.name }}, {{ scheme.get_category_display }}, Sikkim government scheme, eligibility criteria, apply online Sikkim, welfare scheme{% endblock %}
 {% block og_title %}{{ scheme.name }} — Sikkim Welfare Scheme | GovAid{% endblock %}
 {% block og_description %}{{ scheme.objective|default:scheme.full_description|default:scheme.benefits|default:"Apply for government welfare scheme in Sikkim."|striptags|truncatewords:28 }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block twitter_title %}{{ scheme.name }} — Sikkim Welfare Scheme | GovAid{% endblock %}
+{% block twitter_description %}{{ scheme.objective|default:scheme.full_description|default:scheme.benefits|default:"Apply for government welfare scheme in Sikkim."|striptags|truncatewords:28 }}{% endblock %}
 
 {# Canonical URL uses the clean slug URL — prevents duplicate content from query params #}
 {% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{% url 'scheme_detail_slug' slug=scheme.slug %}{% endblock %}
@@ -35,14 +38,14 @@
     },
     "availableChannel": {
       "@type": "ServiceChannel",
-      "serviceUrl": "{{ request.build_absolute_uri }}",
+      "serviceUrl": "{{ request.scheme }}://{{ request.get_host }}{% url 'scheme_detail_slug' slug=scheme.slug %}",
       "serviceLocation": {"@type": "Place", "name": "Sikkim, India"}
     },
     {% if scheme.benefits %}"serviceOutput": "{{ scheme.benefits|striptags|truncatewords:20|escapejs }}",{% endif %}
     {% if scheme.min_age or scheme.max_age or scheme.max_income %}
     "eligibilityRequirements": "{% if scheme.min_age %}Minimum age: {{ scheme.min_age }} years. {% endif %}{% if scheme.max_age %}Maximum age: {{ scheme.max_age }} years. {% endif %}{% if scheme.max_income %}Maximum annual income: ₹{{ scheme.max_income }}. {% endif %}",
     {% endif %}
-    "url": "{{ request.build_absolute_uri }}"
+    "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'scheme_detail_slug' slug=scheme.slug %}"
   },
   {
     "@context": "https://schema.org",
@@ -114,14 +117,36 @@
   class="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-800 dark:to-gray-900 py-12 animate-fade-in-down"
 >
   <div class="container mx-auto px-4">
-    <div class="flex items-center space-x-4 mb-4">
-      <a
-        href="{% url 'scheme_list' %}"
-        class="text-primary-100 hover:text-white transition-colors flex items-center gap-1"
-      >
-        <i class="fas fa-arrow-left"></i> Back to Schemes
-      </a>
-    </div>
+    <!-- Semantic Breadcrumbs -->
+    <nav aria-label="Breadcrumb" class="mb-4">
+      <ol class="flex flex-wrap items-center space-x-2 text-sm text-primary-200" itemscope itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="{% url 'home' %}" itemprop="item" class="hover:text-white transition-colors flex items-center gap-1">
+            <i class="fas fa-home text-xs"></i>
+            <span itemprop="name">Home</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li class="text-primary-300">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="{% url 'scheme_list' %}" itemprop="item" class="hover:text-white transition-colors">
+            <span itemprop="name">All Schemes</span>
+          </a>
+          <meta itemprop="position" content="2" />
+        </li>
+        {% if scheme.category %}
+        <li class="text-primary-300">/</li>
+        <li>
+          <span class="text-primary-100">{{ scheme.get_category_display }}</span>
+        </li>
+        {% endif %}
+        <li class="text-primary-300">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="text-white font-medium truncate max-w-md" aria-current="page">
+          <span itemprop="name">{{ scheme.name }}</span>
+          <meta itemprop="position" content="3" />
+        </li>
+      </ol>
+    </nav>
     <h1 class="text-4xl md:text-5xl font-bold text-white">{{ scheme.name }}</h1>
     <p class="text-lg text-primary-100 dark:text-gray-300 mt-3 max-w-3xl">
       {{ scheme.objective }}
@@ -310,8 +335,59 @@
         </div>
       </div>
     </div>
+</section>
+
+<!-- Related Schemes Section (SEO Internal Linking) -->
+{% if related_schemes %}
+<section class="py-12 bg-white dark:bg-gray-800/60 border-t border-b border-gray-100 dark:border-gray-800">
+  <div class="container mx-auto px-4 max-w-6xl">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+          Related Welfare Schemes in Sikkim
+        </h2>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          Explore similar government aid programs in the {{ scheme.get_category_display }} category.
+        </p>
+      </div>
+      <a href="{% url 'scheme_list' %}" class="hidden sm:inline-flex items-center text-primary-600 dark:text-primary-400 hover:underline font-medium text-sm">
+        View All Schemes <i class="fas fa-arrow-right ml-1 text-xs"></i>
+      </a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {% for rel in related_schemes %}
+      <div class="card p-6 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+        <div>
+          <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary-50 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300 mb-3">
+            {{ rel.get_category_display }}
+          </span>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2 mb-2">
+            <a href="{% url 'scheme_detail_slug' slug=rel.slug %}">
+              {{ rel.name }}
+            </a>
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-4">
+            {{ rel.objective }}
+          </p>
+        </div>
+        <div class="pt-4 border-t border-gray-100 dark:border-gray-700/60 flex items-center justify-between">
+          <span class="text-xs text-green-600 dark:text-green-400 font-semibold flex items-center gap-1">
+            <i class="fas fa-circle-check text-xs"></i> Active
+          </span>
+          <a
+            href="{% url 'scheme_detail_slug' slug=rel.slug %}"
+            class="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 flex items-center gap-1"
+            aria-label="View eligibility and details for {{ rel.name }}"
+          >
+            Details <i class="fas fa-chevron-right text-[10px]"></i>
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
   </div>
 </section>
+{% endif %}
 
 <!-- Feedback Section -->
 <section class="py-12 bg-white dark:bg-gray-800">

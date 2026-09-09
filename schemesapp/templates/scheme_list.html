@@ -4,15 +4,48 @@
 {% block title %}All Government Schemes in Sikkim — Browse Welfare Programs | GovAid{% endblock %}
 {% block meta_description %}Explore all state and central government welfare schemes available in Sikkim. Filter by category, department, age, and income criteria.{% endblock %}
 {% block meta_keywords %}Sikkim government schemes list, welfare programs Sikkim, scholarship schemes, agriculture schemes, citizen benefits Sikkim{% endblock %}
+{% block og_title %}All Government Schemes in Sikkim — Browse Welfare Programs | GovAid{% endblock %}
+{% block og_description %}Explore all state and central government welfare schemes available in Sikkim. Filter by category, department, age, and income criteria.{% endblock %}
+{% block twitter_title %}All Government Schemes in Sikkim | GovAid{% endblock %}
+{% block twitter_description %}Explore all state and central government welfare schemes available in Sikkim. Filter by category, department, age, and income criteria.{% endblock %}
+{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{% url 'scheme_list' %}{% endblock %}
 
 {% block extra_schema %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ request.scheme }}://{{ request.get_host }}/"},
-    {"@type": "ListItem", "position": 2, "name": "All Schemes", "item": "{{ request.build_absolute_uri }}"}
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": "{{ request.scheme }}://{{ request.get_host }}{% url 'scheme_list' %}#collection",
+      "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'scheme_list' %}",
+      "name": "Sikkim Government Schemes and Welfare Programs",
+      "description": "Comprehensive catalog of Sikkim state and central government welfare schemes.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "{{ request.scheme }}://{{ request.get_host }}/#website"
+      }
+    },
+    {
+      "@type": "ItemList",
+      "itemListElement": [
+        {% for s in schemes|slice:":30" %}
+        {
+          "@type": "ListItem",
+          "position": {{ forloop.counter }},
+          "name": "{{ s.name|escapejs }}",
+          "url": "{{ request.scheme }}://{{ request.get_host }}{% if s.slug %}{% url 'scheme_detail_slug' slug=s.slug %}{% else %}{% url 'scheme_detail' s.pk %}{% endif %}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ request.scheme }}://{{ request.get_host }}/"},
+        {"@type": "ListItem", "position": 2, "name": "All Schemes", "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'scheme_list' %}"}
+      ]
+    }
   ]
 }
 </script>
@@ -408,7 +441,9 @@
           <h3
             class="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300"
           >
-            {{ scheme.name }}
+            <a href="{% if scheme.slug %}{% url 'scheme_detail_slug' slug=scheme.slug %}{% else %}{% url 'scheme_detail' scheme.pk %}{% endif %}">
+              {{ scheme.name }}
+            </a>
           </h3>
 
           <p
@@ -461,14 +496,16 @@
           <!-- Action Buttons with Enhanced Design -->
           <div class="flex gap-3">
             <a
-              href="{% url 'scheme_detail' scheme.pk %}"
+              href="{% if scheme.slug %}{% url 'scheme_detail_slug' slug=scheme.slug %}{% else %}{% url 'scheme_detail' scheme.pk %}{% endif %}"
               class="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 py-3 px-4 text-sm rounded-xl text-center font-medium transition-all duration-300 hover:scale-105"
+              aria-label="View eligibility and details for {{ scheme.name }}"
             >
               <i class="fas fa-info-circle mr-2"></i>Details
             </a>
             <a
               href="{% url 'user_eligibility' scheme.pk %}"
               class="flex-1 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white py-3 px-4 text-sm rounded-xl text-center font-medium transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
+              aria-label="Check eligibility for {{ scheme.name }}"
             >
               <i class="fas fa-check-circle mr-2"></i>Check
             </a>

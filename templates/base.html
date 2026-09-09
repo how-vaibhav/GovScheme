@@ -23,28 +23,36 @@
     <meta name="geo.position" content="27.5330;88.5122" />
     <meta name="ICBM" content="27.5330, 88.5122" />
     
-    <!-- Canonical URL -->
-    <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}" />
-    <link rel="icon" href="{% static 'images/favicon.ico' %}" />
+    <!-- Canonical & Multilingual Alternates (strip query parameters by default) -->
+    <link rel="canonical" href="{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}" />
+    <link rel="alternate" hreflang="en-IN" href="{% block hreflang_url %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}" />
+    <link rel="alternate" hreflang="x-default" href="{% block hreflang_default %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}" />
+
+    <!-- Favicon & PWA Icons -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" />
+    <link rel="apple-touch-icon" href="{% static 'images/favicon.ico' %}" />
+    <link rel="manifest" href="{% static 'site.webmanifest' %}" />
+    <link rel="search" type="application/opensearchdescription+xml" title="GovAid Scheme Search" href="/opensearch.xml" />
 
     <!-- Preload critical resources for LCP -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" crossorigin="anonymous" />
-
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style" crossorigin="anonymous" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="{% block og_type %}website{% endblock %}" />
     <meta property="og:site_name" content="GovAid Sikkim" />
     <meta property="og:locale" content="en_IN" />
-    <meta property="og:title" content="{% block og_title %}{% block title_plain %}GovAid — Sikkim Government Schemes & Welfare Portal{% endblock %}{% endblock %}" />
+    <meta property="og:title" content="{% block og_title %}GovAid — Sikkim Government Schemes & Welfare Portal{% endblock %}" />
     <meta property="og:description" content="{% block og_description %}Discover welfare schemes, evaluate real-time eligibility based on profile, and submit secure government scheme applications in Sikkim.{% endblock %}" />
-    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/logo.png' %}{% endblock %}" />
+    <meta property="og:url" content="{% block og_url %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}" />
+    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/sikkim.jpg' %}{% endblock %}" />
+    <meta property="og:image:alt" content="{% block og_image_alt %}GovAid Sikkim Government Welfare Portal{% endblock %}" />
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="{% block twitter_title %}{% block title_twitter_plain %}GovAid — Sikkim Government Schemes Portal{% endblock %}{% endblock %}" />
+    <meta name="twitter:site" content="@GovAidSikkim" />
+    <meta name="twitter:title" content="{% block twitter_title %}GovAid — Sikkim Government Schemes Portal{% endblock %}" />
     <meta name="twitter:description" content="{% block twitter_description %}Discover welfare schemes, evaluate real-time eligibility based on profile, and submit secure government scheme applications in Sikkim.{% endblock %}" />
-    <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/logo.png' %}{% endblock %}" />
+    <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/sikkim.jpg' %}{% endblock %}" />
 
     <!-- Global JSON-LD Structured Data (Organization & WebSite) -->
     <script type="application/ld+json">
@@ -56,7 +64,15 @@
           "@id": "{{ request.scheme }}://{{ request.get_host }}/#organization",
           "name": "GovAid — Sikkim Welfare Portal",
           "url": "{{ request.scheme }}://{{ request.get_host }}/",
-          "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'images/logo.png' %}",
+          "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'images/sikkim.jpg' %}",
+          "description": "Unified Government Welfare Schemes and Citizen Benefit Portal for the State of Sikkim.",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Gangtok",
+            "addressRegion": "Sikkim",
+            "postalCode": "737101",
+            "addressCountry": "IN"
+          },
           "areaServed": {
             "@type": "AdministrativeArea",
             "name": "Sikkim, India"
@@ -66,7 +82,8 @@
             "email": "haivaibhav@gmail.com",
             "telephone": "+916387636285",
             "contactType": "Customer Support",
-            "areaServed": "IN"
+            "areaServed": "IN",
+            "availableLanguage": ["English", "Hindi", "Nepali"]
           }
         },
         {
@@ -78,6 +95,7 @@
           "publisher": {
             "@id": "{{ request.scheme }}://{{ request.get_host }}/#organization"
           },
+          "inLanguage": "en-IN",
           "potentialAction": {
             "@type": "SearchAction",
             "target": {

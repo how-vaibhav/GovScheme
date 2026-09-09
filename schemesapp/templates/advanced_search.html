@@ -4,8 +4,35 @@
 {% block title %}Advanced Scheme Search & Filter — Sikkim Welfare Programs | GovAid{% endblock %}
 {% block meta_description %}Search and filter government schemes in Sikkim by age, income, caste category, occupation, and department criteria to find relevant welfare benefits.{% endblock %}
 {% block meta_keywords %}search government schemes Sikkim, scheme filter, welfare search, eligibility search GovAid{% endblock %}
+{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{% url 'advanced_search' %}{% endblock %}
+{% block og_title %}Advanced Scheme Search & Filter — Sikkim Welfare Programs | GovAid{% endblock %}
+{% block og_description %}Search and filter government schemes in Sikkim by age, income, caste category, occupation, and department criteria to find relevant welfare benefits.{% endblock %}
+{% block twitter_title %}Advanced Scheme Search & Filter | GovAid Sikkim{% endblock %}
+{% block twitter_description %}Search and filter government schemes in Sikkim by age, income, caste category, occupation, and department criteria to find relevant welfare benefits.{% endblock %}
 
-{% block content %}
+{% block extra_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "{{ request.scheme }}://{{ request.get_host }}{% url 'advanced_search' %}#searchpage",
+      "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'advanced_search' %}",
+      "name": "Advanced Scheme Search & Filter — GovAid Sikkim",
+      "description": "Multi-criteria search filter for citizens of Sikkim to locate government schemes by demographic and economic factors."
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ request.scheme }}://{{ request.get_host }}/"},
+        {"@type": "ListItem", "position": 2, "name": "Advanced Search", "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'advanced_search' %}"}
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
 
 <style>
   @keyframes fadeInUp {
@@ -529,8 +556,9 @@
           <!-- Actions -->
           <div class="flex gap-2">
             <a
-              href="{% url 'scheme_detail' scheme.pk %}"
+              href="{% if scheme.slug %}{% url 'scheme_detail_slug' slug=scheme.slug %}{% else %}{% url 'scheme_detail' scheme.pk %}{% endif %}"
               class="flex-1 btn-outline py-2 text-sm rounded-lg text-center font-medium"
+              aria-label="View eligibility and details for {{ scheme.name }}"
             >
               <i class="fas fa-info-circle mr-1"></i> Details
             </a>

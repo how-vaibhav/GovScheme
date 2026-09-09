@@ -1,5 +1,7 @@
-{% extends "base.html" %} {% load static %} {% block title %}Application
-Timeline - GovAid{% endblock %} {% block content %}
+{% extends "base.html" %} {% load static %}
+{% block title %}Application Timeline — GovAid Sikkim{% endblock %}
+{% block meta_robots %}noindex, nofollow{% endblock %}
+{% block content %}
 <style>
   @keyframes fadeInUp {
     from {
@@ -112,8 +114,9 @@ Timeline - GovAid{% endblock %} {% block content %}
           <!-- Actions -->
           <div class="flex flex-col gap-2">
             <a
-              href="{% url 'scheme_detail' application.scheme.pk %}"
+              href="{% if application.scheme.slug %}{% url 'scheme_detail_slug' slug=application.scheme.slug %}{% else %}{% url 'scheme_detail' application.scheme.pk %}{% endif %}"
               class="btn-outline text-sm"
+              aria-label="View scheme details for {{ application.scheme.name }}"
             >
               <i class="fas fa-info-circle mr-2"></i>View Scheme
             </a>

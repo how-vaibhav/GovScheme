@@ -1,5 +1,40 @@
-{% extends "base.html" %} {% load static %} {% block title %}Terms of Service -
-GovAid{% endblock %} {% block content %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Terms of Service & Portal Usage Agreement | GovAid Sikkim{% endblock %}
+{% block meta_description %}Review the Terms of Service governing user accounts, eligibility verifications, and welfare scheme application submissions on GovAid Sikkim.{% endblock %}
+{% block meta_keywords %}GovAid terms of service, portal usage rules Sikkim, welfare application terms, citizen agreement GovAid{% endblock %}
+{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{% url 'terms_of_service' %}{% endblock %}
+{% block og_title %}Terms of Service | GovAid Sikkim{% endblock %}
+{% block og_description %}Review the Terms of Service governing user accounts, eligibility verifications, and welfare scheme application submissions on GovAid Sikkim.{% endblock %}
+{% block twitter_title %}Terms of Service | GovAid Sikkim{% endblock %}
+{% block twitter_description %}Review the Terms of Service governing user accounts, eligibility verifications, and welfare scheme application submissions on GovAid Sikkim.{% endblock %}
+
+{% block extra_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "{{ request.scheme }}://{{ request.get_host }}{% url 'terms_of_service' %}#webpage",
+      "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'terms_of_service' %}",
+      "name": "Terms of Service — GovAid Sikkim",
+      "description": "Rules, citizen rights, and responsibilities governing use of the GovAid Sikkim portal."
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ request.scheme }}://{{ request.get_host }}/"},
+        {"@type": "ListItem", "position": 2, "name": "Terms of Service", "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'terms_of_service' %}"}
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
 <style>
   @keyframes fadeInUp {
     from {

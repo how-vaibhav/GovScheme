@@ -4,6 +4,11 @@
 {% block title %}GovAid — Sikkim Government Schemes & Welfare Portal{% endblock %}
 {% block meta_description %}GovAid is the unified welfare portal for Sikkim citizens. Discover government schemes across education, healthcare, agriculture, and welfare, check instant eligibility, and apply online.{% endblock %}
 {% block meta_keywords %}Sikkim government schemes, GovAid, Sikkim welfare portal, apply government scheme Sikkim, scholarship Sikkim, farmer subsidies Sikkim, check scheme eligibility{% endblock %}
+{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}/{% endblock %}
+{% block og_title %}GovAid — Sikkim Government Schemes & Welfare Portal{% endblock %}
+{% block og_description %}GovAid is the unified welfare portal for Sikkim citizens. Discover government schemes across education, healthcare, agriculture, and welfare, check instant eligibility, and apply online.{% endblock %}
+{% block twitter_title %}GovAid — Sikkim Government Schemes Portal{% endblock %}
+{% block twitter_description %}GovAid is the unified welfare portal for Sikkim citizens. Discover government schemes across education, healthcare, agriculture, and welfare, check instant eligibility, and apply online.{% endblock %}
 
 {% block content %}
 
@@ -1019,8 +1024,9 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for rec in recommended_schemes %}
       <a
-        href="{% url 'scheme_detail' rec.scheme.id %}"
+        href="{% if rec.scheme.slug %}{% url 'scheme_detail_slug' slug=rec.scheme.slug %}{% else %}{% url 'scheme_detail' rec.scheme.id %}{% endif %}"
         class="block group card p-6 hover-lift animate-fade-in-up stagger-{{ forloop.counter }} transform transition-all duration-300 hover:shadow-2xl dark:hover:shadow-2xl cursor-pointer no-underline"
+        aria-label="View eligibility and details for {{ rec.scheme.name }}"
       >
         <!-- Category Badge -->
         <div class="flex items-start justify-between mb-4">

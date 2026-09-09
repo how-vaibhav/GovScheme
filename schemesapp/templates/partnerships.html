@@ -1,5 +1,40 @@
-{% extends "base.html" %} {% load static %} {% block title %}Partnerships -
-GovAid{% endblock %} {% block content %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Institutional Partnerships & Government Collaborations | GovAid Sikkim{% endblock %}
+{% block meta_description %}Explore our strategic partnerships with banks, CSC centers, educational boards, and non-profits empowering citizens across Sikkim.{% endblock %}
+{% block meta_keywords %}GovAid partners, Sikkim government collaboration, CSC network Sikkim, banking partners welfare DBT{% endblock %}
+{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{% url 'partnerships' %}{% endblock %}
+{% block og_title %}Institutional Partnerships & Collaborations | GovAid Sikkim{% endblock %}
+{% block og_description %}Explore our strategic partnerships with banks, CSC centers, educational boards, and non-profits empowering citizens across Sikkim.{% endblock %}
+{% block twitter_title %}Institutional Partnerships & Collaborations | GovAid Sikkim{% endblock %}
+{% block twitter_description %}Explore our strategic partnerships with banks, CSC centers, educational boards, and non-profits empowering citizens across Sikkim.{% endblock %}
+
+{% block extra_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "AboutPage",
+      "@id": "{{ request.scheme }}://{{ request.get_host }}{% url 'partnerships' %}#webpage",
+      "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'partnerships' %}",
+      "name": "Institutional Partnerships — GovAid Sikkim",
+      "description": "Collaborations with financial institutions, government departments, and grassroots networks in Sikkim."
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ request.scheme }}://{{ request.get_host }}/"},
+        {"@type": "ListItem", "position": 2, "name": "Partnerships", "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'partnerships' %}"}
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
 <style>
   @keyframes fadeInUp {
     from {
