@@ -600,6 +600,89 @@
     border-color: rgba(99, 102, 241, 0.35);
     color: #93c5fd;
   }
+  
+  /* Cultural Collage Section */
+  .collage-section {
+    position: relative;
+    width: 100%;
+    min-height: 80vh;
+    overflow: hidden;
+    background: #c34b3e; /* A warm reddish/terracotta color based on reference */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+  }
+
+  .dark .collage-section {
+    background: #7a261a;
+  }
+
+  .collage-container {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+  }
+
+  .collage-item {
+    position: absolute;
+    transform-origin: center;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), z-index 0s;
+    cursor: pointer;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    will-change: transform;
+    background: transparent;
+  }
+
+  .collage-item:hover {
+    z-index: 100 !important;
+  }
+
+  .collage-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  /* Different cutout styles */
+  .cutout-1 { clip-path: polygon(8% 0, 100% 5%, 95% 100%, 0 92%); }
+  .cutout-2 { border-radius: 45% 55% 70% 30% / 40% 50% 60% 50%; border: 4px solid #fff; overflow: hidden; background: #fff;}
+  .cutout-3 { border: 12px solid #fff; border-bottom-width: 45px; border-radius: 4px; background: #fff;} /* Polaroid */
+  .cutout-4 { border-radius: 50%; border: 6px solid #fff; overflow: hidden; background: #fff;}
+  .cutout-5 { clip-path: polygon(50% 0%, 100% 25%, 90% 100%, 10% 100%, 0% 25%); }
+  
+  .collage-text {
+    position: relative;
+    z-index: 50;
+    text-align: center;
+    color: #fff;
+    pointer-events: none;
+    text-shadow: 0 5px 25px rgba(0,0,0,0.6);
+  }
+  
+  .collage-text h2 {
+    font-size: 7rem;
+    font-weight: 900;
+    font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    margin-bottom: 0;
+  }
+  
+  .collage-text p {
+    font-size: 1.8rem;
+    font-weight: 500;
+    margin-top: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 768px) {
+    .collage-section { min-height: 60vh; }
+    .collage-text h2 { font-size: 4rem; }
+    .collage-text p { font-size: 1.2rem; }
+    .collage-item { transform: scale(0.6) !important; }
+  }
+
 </style>
 
 <!-- Hero Section with Parallax Effect -->
@@ -713,6 +796,111 @@
     </svg>
   </div>
 </section>
+
+<!-- Cultural Collage Section -->
+<section class="collage-section">
+  <div class="collage-container" id="parallax-collage">
+    <!-- Layer 1: Background small items -->
+    <div class="collage-item cutout-4" style="width: 140px; height: 140px; top: 10%; right: 25%; transform: rotate(15deg); z-index: 2;" data-speed="-0.02" data-base-rot="15deg">
+      <img src="{% static 'images/scheme1.jpg' %}" alt="Scheme">
+    </div>
+    <div class="collage-item cutout-1" style="width: 160px; height: 120px; bottom: 20%; left: 15%; transform: rotate(-10deg); z-index: 3;" data-speed="0.03" data-base-rot="-10deg">
+      <img src="{% static 'images/scheme2.jpg' %}" alt="Scheme">
+    </div>
+    <div class="collage-item cutout-2" style="width: 180px; height: 180px; top: 55%; left: 5%; transform: rotate(20deg); z-index: 4;" data-speed="-0.04" data-base-rot="20deg">
+      <img src="{% static 'images/scheme3.jpg' %}" alt="Scheme">
+    </div>
+
+    <!-- Layer 2: Midground items -->
+    <div class="collage-item cutout-3" style="width: 220px; height: 260px; top: 5%; left: 10%; transform: rotate(-15deg); z-index: 10;" data-speed="0.05" data-base-rot="-15deg">
+      <img src="{% static 'images/scheme4.jpg' %}" alt="Scheme">
+    </div>
+    <div class="collage-item cutout-5" style="width: 240px; height: 240px; bottom: 10%; right: 15%; transform: rotate(25deg); z-index: 11;" data-speed="-0.06" data-base-rot="25deg">
+      <img src="{% static 'images/scheme5.jpg' %}" alt="Scheme">
+    </div>
+    <div class="collage-item cutout-2" style="width: 200px; height: 200px; top: -5%; left: 40%; transform: rotate(-5deg); z-index: 12;" data-speed="0.04" data-base-rot="-5deg">
+      <img src="{% static 'images/scheme6.jpg' %}" alt="Scheme">
+    </div>
+    <div class="collage-item cutout-1" style="width: 250px; height: 200px; top: 40%; right: 5%; transform: rotate(-12deg); z-index: 13;" data-speed="0.07" data-base-rot="-12deg">
+      <img src="{% static 'images/scheme7.jpg' %}" alt="Scheme">
+    </div>
+
+    <!-- Layer 3: Foreground large items -->
+    <div class="collage-item cutout-3" style="width: 280px; height: 320px; top: 15%; right: 8%; transform: rotate(8deg); z-index: 20;" data-speed="-0.08" data-base-rot="8deg">
+      <img src="{% static 'images/sikkim.jpg' %}" alt="Sikkim">
+    </div>
+    <div class="collage-item cutout-4" style="width: 220px; height: 220px; bottom: 5%; left: 25%; transform: rotate(-8deg); z-index: 21;" data-speed="0.09" data-base-rot="-8deg">
+      <img src="{% static 'images/scheme8.jpg' %}" alt="Scheme">
+    </div>
+    <div class="collage-item cutout-2" style="width: 260px; height: 260px; top: 45%; left: 35%; transform: rotate(12deg); z-index: 22;" data-speed="-0.05" data-base-rot="12deg">
+      <img src="{% static 'images/scheme1.jpg' %}" alt="Scheme">
+    </div>
+    <div class="collage-item cutout-3" style="width: 200px; height: 240px; top: 25%; left: 60%; transform: rotate(-22deg); z-index: 23;" data-speed="0.06" data-base-rot="-22deg">
+      <img src="{% static 'images/scheme2.jpg' %}" alt="Scheme">
+    </div>
+  </div>
+  
+  <div class="collage-text">
+    <h2 class="animate-fade-in-up">india</h2>
+    <p class="animate-fade-in-up stagger-1">Diversity in every scheme.</p>
+  </div>
+</section>
+
+<!-- Collage Parallax Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const collageSection = document.querySelector('.collage-section');
+    const items = document.querySelectorAll('.collage-item');
+    
+    if(collageSection) {
+      collageSection.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        
+        items.forEach(item => {
+          const speed = item.getAttribute('data-speed');
+          const xOffset = (x - 0.5) * 150 * speed;
+          const yOffset = (y - 0.5) * 150 * speed;
+          
+          const baseRot = item.getAttribute('data-base-rot');
+          
+          item.style.transform = `translate(${xOffset}px, ${yOffset}px) rotate(${baseRot})`;
+        });
+      });
+      
+      // Reset on mouse leave
+      collageSection.addEventListener('mouseleave', () => {
+        items.forEach(item => {
+          const baseRot = item.getAttribute('data-base-rot');
+          item.style.transform = `translate(0px, 0px) rotate(${baseRot})`;
+        });
+      });
+
+      // Add specific hover interaction to scale up slightly but keep rotation
+      items.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+           const baseRot = item.getAttribute('data-base-rot');
+           const currentTransform = item.style.transform;
+           // If it has translate, keep it, just add scale
+           const hasTranslate = currentTransform.includes('translate');
+           if (hasTranslate) {
+               const translatePart = currentTransform.split('rotate')[0];
+               item.style.transform = `${translatePart} rotate(${baseRot}) scale(1.15)`;
+           } else {
+               item.style.transform = `rotate(${baseRot}) scale(1.15)`;
+           }
+        });
+        
+        item.addEventListener('mouseleave', () => {
+           const baseRot = item.getAttribute('data-base-rot');
+           const currentTransform = item.style.transform;
+           const translatePart = currentTransform.includes('translate') ? currentTransform.split('rotate')[0] : '';
+           item.style.transform = `${translatePart} rotate(${baseRot}) scale(1)`;
+        });
+      });
+    }
+  });
+</script>
 
 <!-- Orbiting Feature Section -->
 <section class="orbit-showcase py-16 md:py-20">
