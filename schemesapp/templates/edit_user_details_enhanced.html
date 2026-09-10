@@ -8,14 +8,8 @@
 <style>
   /* Page-specific animations */
   @keyframes pageEnter {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   .profile-form {
@@ -23,21 +17,37 @@
   }
 
   .section-divider {
-    @apply relative my-8;
+    position: relative;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
 
   .section-divider::before {
-    @apply absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent;
     content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #d1d5db, transparent);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .section-divider::before {
+      background: linear-gradient(to right, transparent, #374151, transparent);
+    }
+  }
+
+  .html.dark .section-divider::before {
+    background: linear-gradient(to right, transparent, #374151, transparent);
   }
 
   /* Form section styling */
   .form-section {
-    @apply transition-all duration-300;
+    transition: all 300ms;
   }
 
   .form-section:hover {
-    @apply transform scale-[1.001];
+    transform: scale(1.001);
   }
 </style>
 
