@@ -235,8 +235,7 @@ document.addEventListener("DOMContentLoaded", function () {
   handleAuthMessages();
   initScrollReveal();
 
-  // Add page transition effect
-  document.body.classList.add("page-transition");
+  // Page transitions are handled by page-curtains.js
 
   // Initialize tooltips
   const tooltips = document.querySelectorAll("[data-tooltip]");
