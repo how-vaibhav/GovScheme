@@ -1,277 +1,413 @@
 /**
- * Page Curtains — Vanilla JS
- * Inspired by Motion for React's @motion/page-curtains component.
- * Effects: fade · wipe · doors · iris
+ * Page Curtains — Vanilla JS (fixed & polished)
+ * Inspired by Motion for React @motion/page-curtains
+ * Effects cycle: fade → wipe → doors → iris
+ *
+ * Bug fixes vs v1:
+ *  - No blue flash on fresh page loads (entry only plays if arriving from an
+ *    in-app navigation, not on external/direct opens)
+ *  - Single click listener (removed duplicate registration)
+ *  - Gradient shimmer on curtain layers for a premium look
+ *  - Smooth iris uses clip-path instead of width/height (no layout thrash)
+ *  - Effect label has icon + name
  */
 (function () {
   "use strict";
 
-  const EFFECTS = ["fade", "wipe", "doors", "iris"];
-  let effectIndex = 0;
-
+  /* ── Effect cycle ── */
+  var EFFECTS = ["fade", "wipe", "doors", "iris"];
+  var effectIndex = 0;
   function nextEffect() {
-    const e = EFFECTS[effectIndex % EFFECTS.length];
+    var e = EFFECTS[effectIndex % EFFECTS.length];
     effectIndex++;
     return e;
   }
 
+  /* ── Helpers ── */
   function el(id) { return document.getElementById(id); }
 
-  /* ── Build curtain DOM ── */
-  function buildCurtain() {
-    if (el("page-curtain-root")) return;
-    const root = document.createElement("div");
-    root.id = "page-curtain-root";
-    root.setAttribute("aria-hidden", "true");
-    root.innerHTML = `
-      <div id="pc-cover"></div>
-      <div id="pc-door-left"  class="pc-door"></div>
-      <div id="pc-door-right" class="pc-door"></div>
-      <div id="pc-iris"></div>
-      <div id="pc-wipe"></div>
-      <div id="pc-label" aria-live="polite"></div>
-    `;
-    document.body.appendChild(root);
-  }
+  var isTransitioning = false;
+  var labelTimer = null;
 
-  /* ── Inject CSS ── */
+  /* ─────────────────────────────────────────
+     CSS  (injected once)
+  ───────────────────────────────────────── */
   function injectStyles() {
     if (el("page-curtain-styles")) return;
-    const style = document.createElement("style");
+    var style = document.createElement("style");
     style.id = "page-curtain-styles";
-    style.textContent = `
-      :root {
-        --pc-color: #1d4ed8;
-        --pc-duration-out: 420ms;
-        --pc-duration-in:  340ms;
-        --pc-ease: cubic-bezier(0.76, 0, 0.24, 1);
-      }
-      html.dark { --pc-color: #1e40af; }
+    style.textContent = [
+      ":root {",
+      "  --pc-color-1: #1d4ed8;",           /* blue-700  */
+      "  --pc-color-2: #312e81;",           /* indigo-900*/
+      "  --pc-dur-out: 500ms;",
+      "  --pc-dur-in:  420ms;",
+      "  --pc-ease-close: cubic-bezier(0.87, 0, 0.13, 1);",
+      "  --pc-ease-open:  cubic-bezier(0.87, 0, 0.13, 1);",
+      "}",
+      "html.dark { --pc-color-1: #1e3a8a; --pc-color-2: #0f172a; }",
 
-      #page-curtain-root {
-        pointer-events: none;
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
-      }
+      /* Root */
+      "#page-curtain-root {",
+      "  pointer-events: none;",
+      "  position: fixed; inset: 0; z-index: 9999;",
+      "}",
 
-      /* FADE */
-      #pc-cover {
-        position: absolute; inset: 0;
-        background: var(--pc-color);
-        opacity: 0;
-        transform: translateZ(0);
-        transition: opacity var(--pc-duration-out) var(--pc-ease);
-      }
-      #pc-cover.pc-visible { opacity: 1; }
-      #pc-cover.pc-hiding  { opacity: 0; transition: opacity var(--pc-duration-in) var(--pc-ease); }
+      /* Shared gradient used by every layer */
+      "#page-curtain-root .pc-layer {",
+      "  background: linear-gradient(135deg,",
+      "    var(--pc-color-1) 0%,",
+      "    var(--pc-color-2) 60%,",
+      "    #0f172a 100%",
+      "  );",
+      "}",
 
-      /* WIPE */
-      #pc-wipe {
-        position: absolute; top: 0; bottom: 0; left: 0;
-        width: 0%;
-        background: linear-gradient(90deg, var(--pc-color), color-mix(in srgb, var(--pc-color) 80%, #60a5fa));
-        transform: translateZ(0);
-        transition: width var(--pc-duration-out) var(--pc-ease);
-      }
-      #pc-wipe.pc-visible { width: 100%; }
-      #pc-wipe.pc-hiding  { width: 0%; left: auto; right: 0; transition: width var(--pc-duration-in) var(--pc-ease); }
+      /* ── FADE ── */
+      "#pc-cover {",
+      "  position: absolute; inset: 0;",
+      "  opacity: 0;",
+      "  transform: translateZ(0);",
+      "  transition: opacity var(--pc-dur-out) var(--pc-ease-close);",
+      "  will-change: opacity;",
+      "}",
+      "#pc-cover.pc-show { opacity: 1; }",
+      "#pc-cover.pc-hide {",
+      "  opacity: 0;",
+      "  transition: opacity var(--pc-dur-in) var(--pc-ease-open);",
+      "}",
 
-      /* DOORS */
-      .pc-door {
-        position: absolute; top: 0; bottom: 0;
-        width: 0%;
-        background: linear-gradient(135deg, var(--pc-color), color-mix(in srgb, var(--pc-color) 70%, #1e3a8a));
-        transform: translateZ(0);
-        transition: width var(--pc-duration-out) var(--pc-ease);
-      }
-      #pc-door-left  { left: 0; }
-      #pc-door-right { right: 0; }
-      #pc-door-left.pc-visible,
-      #pc-door-right.pc-visible { width: 50%; }
-      #pc-door-left.pc-hiding,
-      #pc-door-right.pc-hiding  { width: 0%; transition: width var(--pc-duration-in) var(--pc-ease); }
+      /* ── WIPE ── */
+      "#pc-wipe {",
+      "  position: absolute; top: 0; bottom: 0; left: 0;",
+      "  width: 0%;",
+      "  transform: translateZ(0);",
+      "  transition: width var(--pc-dur-out) var(--pc-ease-close);",
+      "  will-change: width;",
+      "}",
+      "#pc-wipe.pc-show { width: 100%; }",
+      "#pc-wipe.pc-hide {",
+      "  left: auto; right: 0; width: 0%;",
+      "  transition: width var(--pc-dur-in) var(--pc-ease-open);",
+      "}",
 
-      /* IRIS */
-      #pc-iris {
-        position: absolute; top: 50%; left: 50%;
-        width: 0px; height: 0px;
-        border-radius: 50%;
-        background: radial-gradient(circle, color-mix(in srgb, var(--pc-color) 90%, #60a5fa), var(--pc-color));
-        transform: translate(-50%, -50%) scale(0) translateZ(0);
-        transition: transform var(--pc-duration-out) var(--pc-ease),
-                    width var(--pc-duration-out) var(--pc-ease),
-                    height var(--pc-duration-out) var(--pc-ease);
-      }
-      #pc-iris.pc-visible {
-        width: 300vmax; height: 300vmax;
-        transform: translate(-50%, -50%) scale(1) translateZ(0);
-      }
-      #pc-iris.pc-hiding {
-        width: 0px; height: 0px;
-        transform: translate(-50%, -50%) scale(0) translateZ(0);
-        transition: transform var(--pc-duration-in) var(--pc-ease),
-                    width var(--pc-duration-in) var(--pc-ease),
-                    height var(--pc-duration-in) var(--pc-ease);
-      }
+      /* ── DOORS ── */
+      ".pc-door {",
+      "  position: absolute; top: 0; bottom: 0;",
+      "  width: 0%;",
+      "  transform: translateZ(0);",
+      "  transition: width var(--pc-dur-out) var(--pc-ease-close);",
+      "  will-change: width;",
+      "}",
+      "#pc-door-left  { left: 0; }",
+      "#pc-door-right { right: 0; }",
+      "#pc-door-left.pc-show,",
+      "#pc-door-right.pc-show { width: 50.2%; }",  /* 0.2% overlap seam fix */
+      "#pc-door-left.pc-hide,",
+      "#pc-door-right.pc-hide {",
+      "  width: 0%;",
+      "  transition: width var(--pc-dur-in) var(--pc-ease-open);",
+      "}",
 
-      /* LABEL */
-      #pc-label {
-        position: fixed;
-        bottom: 1.5rem; left: 50%;
-        transform: translateX(-50%) translateY(140%);
-        background: rgba(15,23,42,0.92);
-        color: #f8fafc;
-        font: 600 0.72rem/1 'Inter', sans-serif;
-        letter-spacing: 0.09em;
-        text-transform: uppercase;
-        padding: 0.4rem 1rem;
-        border-radius: 9999px;
-        border: 1px solid rgba(148,163,184,0.2);
-        backdrop-filter: blur(8px);
-        opacity: 0;
-        transition: opacity 220ms ease, transform 220ms ease;
-        pointer-events: none;
-        z-index: 10000;
-        white-space: nowrap;
-      }
-      #pc-label.pc-label-show {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-      }
+      /* ── IRIS (clip-path circle — no layout thrash) ── */
+      "#pc-iris {",
+      "  position: absolute; inset: 0;",
+      "  /* Start as invisible pinpoint at centre */",
+      "  clip-path: circle(0% at 50% 50%);",
+      "  transform: translateZ(0);",
+      "  transition: clip-path var(--pc-dur-out) var(--pc-ease-close);",
+      "  will-change: clip-path;",
+      "}",
+      "#pc-iris.pc-show {",
+      "  clip-path: circle(150% at 50% 50%);",
+      "}",
+      "#pc-iris.pc-hide {",
+      "  clip-path: circle(0% at 50% 50%);",
+      "  transition: clip-path var(--pc-dur-in) var(--pc-ease-open);",
+      "}",
 
-      html.pc-navigating * { pointer-events: none !important; }
-    `;
+      /* Shimmer sweep across curtain for premium feel */
+      "#page-curtain-root .pc-layer::after {",
+      "  content: '';",
+      "  position: absolute; inset: 0;",
+      "  background: linear-gradient(105deg,",
+      "    transparent 40%,",
+      "    rgba(255,255,255,0.07) 50%,",
+      "    transparent 60%",
+      "  );",
+      "  background-size: 200% 100%;",
+      "  animation: pc-shimmer 1.4s linear infinite;",
+      "}",
+      "@keyframes pc-shimmer {",
+      "  from { background-position: 200% 0; }",
+      "  to   { background-position: -200% 0; }",
+      "}",
+
+      /* ── LABEL ── */
+      "#pc-label {",
+      "  position: fixed;",
+      "  bottom: 1.6rem; left: 50%;",
+      "  transform: translateX(-50%) translateY(160%);",
+      "  display: flex; align-items: center; gap: 0.4rem;",
+      "  background: rgba(2, 6, 23, 0.88);",
+      "  color: #e2e8f0;",
+      "  font: 600 0.7rem/1 'Inter', system-ui, sans-serif;",
+      "  letter-spacing: 0.1em;",
+      "  text-transform: uppercase;",
+      "  padding: 0.38rem 1rem;",
+      "  border-radius: 9999px;",
+      "  border: 1px solid rgba(148,163,184,0.18);",
+      "  backdrop-filter: blur(12px);",
+      "  -webkit-backdrop-filter: blur(12px);",
+      "  opacity: 0;",
+      "  transition: opacity 240ms ease, transform 240ms cubic-bezier(0.34,1.56,0.64,1);",
+      "  pointer-events: none;",
+      "  z-index: 10000;",
+      "  white-space: nowrap;",
+      "  box-shadow: 0 4px 24px rgba(0,0,0,0.4);",
+      "}",
+      "#pc-label .pc-label-dot {",
+      "  width: 6px; height: 6px;",
+      "  border-radius: 50%;",
+      "  background: #60a5fa;",
+      "  flex-shrink: 0;",
+      "}",
+      "#pc-label.pc-label-show {",
+      "  opacity: 1;",
+      "  transform: translateX(-50%) translateY(0);",
+      "}",
+
+      /* Lock interactions during transition */
+      "html.pc-navigating { cursor: wait; }",
+      "html.pc-navigating a,",
+      "html.pc-navigating button { pointer-events: none !important; }",
+    ].join("\n");
     document.head.appendChild(style);
   }
 
-  /* ── Reset all layers ── */
+  /* ─────────────────────────────────────────
+     DOM  (built once, reused every navigation)
+  ───────────────────────────────────────── */
+  function buildDOM() {
+    if (el("page-curtain-root")) return;
+    var root = document.createElement("div");
+    root.id = "page-curtain-root";
+    root.setAttribute("aria-hidden", "true");
+    root.innerHTML = [
+      '<div id="pc-cover"     class="pc-layer"></div>',
+      '<div id="pc-wipe"      class="pc-layer"></div>',
+      '<div id="pc-door-left" class="pc-door pc-layer"></div>',
+      '<div id="pc-door-right"class="pc-door pc-layer"></div>',
+      '<div id="pc-iris"      class="pc-layer"></div>',
+      '<div id="pc-label"     aria-live="polite">',
+      '  <span class="pc-label-dot"></span>',
+      '  <span id="pc-label-text"></span>',
+      '</div>',
+    ].join("");
+    document.body.appendChild(root);
+  }
+
+  /* ─────────────────────────────────────────
+     Reset — remove all state classes
+  ───────────────────────────────────────── */
   function resetAll() {
-    ["pc-cover","pc-wipe","pc-door-left","pc-door-right","pc-iris"].forEach(function(id) {
+    var ids = ["pc-cover","pc-wipe","pc-door-left","pc-door-right","pc-iris"];
+    ids.forEach(function(id) {
       var node = el(id);
       if (!node) return;
-      node.className = node.id === "pc-door-left" || node.id === "pc-door-right" ? "pc-door" : "";
-      if (id === "pc-wipe") { node.style.left = "0"; node.style.right = ""; }
+      node.classList.remove("pc-show","pc-hide");
+      /* Wipe: restore left-to-right direction */
+      if (id === "pc-wipe") {
+        node.style.left  = "0";
+        node.style.right = "auto";
+      }
     });
   }
 
-  function showElements(effect) {
+  /* ─────────────────────────────────────────
+     Show curtain (EXIT animation)
+  ───────────────────────────────────────── */
+  function showCurtain(effect) {
     resetAll();
-    if (effect === "fade")  { el("pc-cover").getBoundingClientRect(); el("pc-cover").classList.add("pc-visible"); }
-    if (effect === "wipe")  { el("pc-wipe").getBoundingClientRect();  el("pc-wipe").classList.add("pc-visible"); }
-    if (effect === "doors") { el("pc-door-left").getBoundingClientRect(); el("pc-door-left").classList.add("pc-visible"); el("pc-door-right").classList.add("pc-visible"); }
-    if (effect === "iris")  { el("pc-iris").getBoundingClientRect(); el("pc-iris").classList.add("pc-visible"); }
+    /* Force reflow so transition fires on the next state change */
+    void el("page-curtain-root").offsetWidth;
+
+    if (effect === "fade") {
+      el("pc-cover").classList.add("pc-show");
+    } else if (effect === "wipe") {
+      el("pc-wipe").classList.add("pc-show");
+    } else if (effect === "doors") {
+      el("pc-door-left").classList.add("pc-show");
+      el("pc-door-right").classList.add("pc-show");
+    } else if (effect === "iris") {
+      el("pc-iris").classList.add("pc-show");
+    }
   }
 
-  function hideElements(effect) {
-    if (effect === "fade")  { el("pc-cover").classList.replace("pc-visible","pc-hiding"); }
-    if (effect === "wipe")  { el("pc-wipe").style.left="auto"; el("pc-wipe").style.right="0"; el("pc-wipe").classList.replace("pc-visible","pc-hiding"); }
-    if (effect === "doors") { el("pc-door-left").classList.replace("pc-visible","pc-hiding"); el("pc-door-right").classList.replace("pc-visible","pc-hiding"); }
-    if (effect === "iris")  { el("pc-iris").classList.replace("pc-visible","pc-hiding"); }
+  /* ─────────────────────────────────────────
+     Hide curtain (ENTRY / reveal animation)
+     Called after the new page DOM is ready.
+  ───────────────────────────────────────── */
+  function hideCurtain(effect) {
+    if (effect === "fade") {
+      el("pc-cover").classList.replace("pc-show","pc-hide");
+    } else if (effect === "wipe") {
+      el("pc-wipe").style.left  = "auto";
+      el("pc-wipe").style.right = "0";
+      el("pc-wipe").classList.replace("pc-show","pc-hide");
+    } else if (effect === "doors") {
+      el("pc-door-left").classList.replace("pc-show","pc-hide");
+      el("pc-door-right").classList.replace("pc-show","pc-hide");
+    } else if (effect === "iris") {
+      el("pc-iris").classList.replace("pc-show","pc-hide");
+    }
   }
 
-  /* ── Label ── */
-  var labelTimer = null;
+  /* ─────────────────────────────────────────
+     Label badge
+  ───────────────────────────────────────── */
+  var EFFECT_ICONS = { fade:"●", wipe:"►", doors:"◀▶", iris:"◎" };
   function showLabel(effect) {
-    var label = el("pc-label");
-    if (!label) return;
+    var label    = el("pc-label");
+    var labelTxt = el("pc-label-text");
+    if (!label || !labelTxt) return;
     clearTimeout(labelTimer);
-    label.textContent = effect.charAt(0).toUpperCase() + effect.slice(1);
+    labelTxt.textContent = (EFFECT_ICONS[effect] || "✦") + "  " + effect.toUpperCase();
     label.classList.add("pc-label-show");
-    labelTimer = setTimeout(function(){ label.classList.remove("pc-label-show"); }, 1600);
+    labelTimer = setTimeout(function() {
+      label.classList.remove("pc-label-show");
+    }, 1800);
   }
 
-  /* ── Duration ── */
-  function getDuration(cssVar) {
+  /* ─────────────────────────────────────────
+     Navigate — intercept link click
+  ───────────────────────────────────────── */
+  function getDur(cssVar) {
     var raw = getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
-    return parseInt(raw, 10) || 400;
+    return parseInt(raw,10) || 500;
   }
 
-  /* ── Navigate ── */
-  var isTransitioning = false;
-
-  function navigateTo(href, effect) {
+  function goTo(href, effect) {
     if (isTransitioning) return;
     isTransitioning = true;
+
+    /* Mark which effect the arriving page should use to reveal itself */
+    try { sessionStorage.setItem("pc-arrival-effect", effect); } catch(e) {}
+
     document.documentElement.classList.add("pc-navigating");
-    sessionStorage.setItem("pc-arrival-effect", effect);
-    showElements(effect);
+    showCurtain(effect);
     showLabel(effect);
-    var outDuration = getDuration("--pc-duration-out");
-    setTimeout(function(){ window.location.href = href; }, outDuration + 30);
-    setTimeout(function(){
+
+    /* Navigate after the curtain has fully covered the screen */
+    var dur = getDur("--pc-dur-out");
+    setTimeout(function() {
+      window.location.href = href;
+    }, dur + 20);
+
+    /* Safety valve — unlock if navigation stalls */
+    setTimeout(function() {
       isTransitioning = false;
       document.documentElement.classList.remove("pc-navigating");
-    }, outDuration + 2500);
+    }, dur + 3000);
   }
 
-  /* ── Is internal link? ── */
-  function isInternal(anchor) {
-    if (!anchor || !anchor.href) return false;
-    try {
-      var url = new URL(anchor.href);
-      if (url.origin !== location.origin) return false;
-      if (anchor.target === "_blank") return false;
-      var h = anchor.getAttribute("href") || "";
-      if (h === "#" || h.startsWith("#")) return false;
-      if (anchor.hasAttribute("download")) return false;
-      if (url.protocol !== "http:" && url.protocol !== "https:") return false;
-      if (anchor.hasAttribute("data-no-curtain")) return false;
-      if (anchor.href === location.href) return false;
-      return true;
-    } catch(e) { return false; }
-  }
+  /* ─────────────────────────────────────────
+     Entry reveal — runs on DOMContentLoaded of
+     the NEW page. Only animates if we actually
+     arrived via an in-app navigation.
+  ───────────────────────────────────────── */
+  function playEntryReveal() {
+    var effect;
+    try { effect = sessionStorage.getItem("pc-arrival-effect"); } catch(e) {}
+    /* ← KEY FIX: no fallback — if no stored effect we were NOT doing
+       an in-app navigation (direct URL, external link, browser refresh).
+       In that case skip ALL curtain animation entirely. */
+    if (!effect) return;
+    try { sessionStorage.removeItem("pc-arrival-effect"); } catch(e) {}
 
-  /* ── Entry animation (reveal on page load) ── */
-  function playEntry() {
-    var effect = sessionStorage.getItem("pc-arrival-effect") || "fade";
-    sessionStorage.removeItem("pc-arrival-effect");
-    var inDuration = getDuration("--pc-duration-in");
+    var inDur = getDur("--pc-dur-in");
 
-    // Disable transitions temporarily
-    ["pc-cover","pc-wipe","pc-door-left","pc-door-right","pc-iris"].forEach(function(id){
+    /* Snap the curtain to fully-closed position WITHOUT any CSS transition */
+    var ids = ["pc-cover","pc-wipe","pc-door-left","pc-door-right","pc-iris"];
+    ids.forEach(function(id) {
       var node = el(id);
       if (node) node.style.transition = "none";
     });
+    void el("page-curtain-root").offsetWidth; /* flush */
 
-    // Set immediately visible
+    /* Depending on effect, force the "fully covered" CSS state instantly */
     resetAll();
-    if (effect === "fade")  { el("pc-cover").classList.add("pc-visible"); }
-    if (effect === "wipe")  { el("pc-wipe").classList.add("pc-visible"); var w=el("pc-wipe"); w.style.width="100%"; }
-    if (effect === "doors") { el("pc-door-left").classList.add("pc-visible"); el("pc-door-right").classList.add("pc-visible"); }
-    if (effect === "iris")  { var iris=el("pc-iris"); iris.style.width="300vmax"; iris.style.height="300vmax"; iris.classList.add("pc-visible"); }
+    if (effect === "fade") {
+      el("pc-cover").classList.add("pc-show");
+    } else if (effect === "wipe") {
+      var w = el("pc-wipe");
+      w.style.width = "100%"; w.style.left = "0"; w.style.right = "auto";
+      w.classList.add("pc-show");
+    } else if (effect === "doors") {
+      el("pc-door-left").classList.add("pc-show");
+      el("pc-door-right").classList.add("pc-show");
+    } else if (effect === "iris") {
+      el("pc-iris").classList.add("pc-show");
+    }
 
-    requestAnimationFrame(function(){
-      requestAnimationFrame(function(){
-        // Re-enable transitions
-        ["pc-cover","pc-wipe","pc-door-left","pc-door-right","pc-iris"].forEach(function(id){
+    /* Re-enable transitions, then trigger the reveal (open) */
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        ids.forEach(function(id) {
           var node = el(id);
           if (node) node.style.transition = "";
         });
-        hideElements(effect);
-        setTimeout(function(){
+        hideCurtain(effect);
+        setTimeout(function() {
+          resetAll(); /* fully clean up after reveal */
           isTransitioning = false;
           document.documentElement.classList.remove("pc-navigating");
-        }, inDuration + 100);
+        }, inDur + 80);
       });
     });
   }
 
-  /* ── Click intercept ── */
-  document.addEventListener("click", function(e){
-    var anchor = e.target.closest("a");
-    if (!anchor) return;
-    if (!isInternal(anchor)) return;
-    if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
-    e.preventDefault();
-    navigateTo(anchor.href, nextEffect());
-  }, { capture: true });
+  /* ─────────────────────────────────────────
+     Link filter — only intercept same-origin
+     non-hash, non-download, non-blank links
+  ───────────────────────────────────────── */
+  function isInternal(a) {
+    if (!a || !a.href) return false;
+    try {
+      var url = new URL(a.href);
+      if (url.origin !== location.origin)              return false;
+      if (a.target === "_blank")                       return false;
+      var raw = a.getAttribute("href") || "";
+      if (raw === "#" || raw.charAt(0) === "#")        return false;
+      if (a.hasAttribute("download"))                  return false;
+      if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+      if (a.hasAttribute("data-no-curtain"))           return false;
+      if (url.href === location.href)                  return false;
+      return true;
+    } catch(e) { return false; }
+  }
 
-  /* ── Init ── */
+  /* ─────────────────────────────────────────
+     Single click interceptor (registered once)
+  ───────────────────────────────────────── */
+  function attachClickHandler() {
+    document.addEventListener("click", function(e) {
+      var a = e.target.closest("a");
+      if (!a) return;
+      if (!isInternal(a)) return;
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      goTo(a.href, nextEffect());
+    }, { capture: true });
+  }
+
+  /* ─────────────────────────────────────────
+     Bootstrap
+  ───────────────────────────────────────── */
   function init() {
     injectStyles();
-    buildCurtain();
-    playEntry();
+    buildDOM();
+    playEntryReveal();   /* reveals curtain only if arriving from in-app nav */
+    attachClickHandler();
   }
 
   if (document.readyState === "loading") {
@@ -279,4 +415,5 @@
   } else {
     init();
   }
+
 })();

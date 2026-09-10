@@ -1515,8 +1515,8 @@
 
     <!-- Main JS utilities -->
     <script src="{% static 'js/main.js' %}" defer></script>
-    <!-- Page Curtains — fade · wipe · doors · iris page transitions -->
-    <script src="{% static 'js/page-curtains.js' %}" defer></script>
+    <!-- Page Curtains — fade · wipe · doors · iris transitions (no defer: must run early) -->
+    <script src="{% static 'js/page-curtains.js' %}"></script>
     {% endblock %}
   </body>
 </html>
