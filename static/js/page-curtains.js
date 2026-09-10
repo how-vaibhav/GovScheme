@@ -1,413 +1,366 @@
 /**
- * Page Curtains — Vanilla JS (fixed & polished)
- * Inspired by Motion for React @motion/page-curtains
- * Effects cycle: fade → wipe → doors → iris
- *
- * Bug fixes vs v1:
- *  - No blue flash on fresh page loads (entry only plays if arriving from an
- *    in-app navigation, not on external/direct opens)
- *  - Single click listener (removed duplicate registration)
- *  - Gradient shimmer on curtain layers for a premium look
- *  - Smooth iris uses clip-path instead of width/height (no layout thrash)
- *  - Effect label has icon + name
+ * GovAid — Professional Page Curtains
+ * Effects: fade · wipe (multi-stripe) · doors · iris
  */
 (function () {
   "use strict";
 
-  /* ── Effect cycle ── */
   var EFFECTS = ["fade", "wipe", "doors", "iris"];
-  var effectIndex = 0;
+  var DUR_OUT = 500;
+  var DUR_IN  = 400;
+  var STRIPES = 5;          // number of wipe stripes
+
+  var effectIndex     = 0;
+  var isTransitioning = false;
+  var prefersReduced  = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function el(id) { return document.getElementById(id); }
   function nextEffect() {
     var e = EFFECTS[effectIndex % EFFECTS.length];
     effectIndex++;
     return e;
   }
 
-  /* ── Helpers ── */
-  function el(id) { return document.getElementById(id); }
-
-  var isTransitioning = false;
-  var labelTimer = null;
-
-  /* ─────────────────────────────────────────
-     CSS  (injected once)
-  ───────────────────────────────────────── */
+  /* ───────────── CSS ───────────── */
   function injectStyles() {
-    if (el("page-curtain-styles")) return;
-    var style = document.createElement("style");
-    style.id = "page-curtain-styles";
-    style.textContent = [
-      ":root {",
-      "  --pc-color-1: #1d4ed8;",           /* blue-700  */
-      "  --pc-color-2: #312e81;",           /* indigo-900*/
-      "  --pc-dur-out: 500ms;",
-      "  --pc-dur-in:  420ms;",
-      "  --pc-ease-close: cubic-bezier(0.87, 0, 0.13, 1);",
-      "  --pc-ease-open:  cubic-bezier(0.87, 0, 0.13, 1);",
-      "}",
-      "html.dark { --pc-color-1: #1e3a8a; --pc-color-2: #0f172a; }",
+    if (el("pc-styles")) return;
+    var s = document.createElement("style");
+    s.id = "pc-styles";
 
-      /* Root */
-      "#page-curtain-root {",
-      "  pointer-events: none;",
-      "  position: fixed; inset: 0; z-index: 9999;",
-      "}",
+    /* Build per-stripe keyframe delays */
+    var stripeCSS = "";
+    for (var i = 0; i < STRIPES; i++) {
+      var delay = Math.round(i * (DUR_OUT / STRIPES / 2));
+      stripeCSS += [
+        "#pc-wipe .pc-stripe:nth-child(" + (i + 1) + ") {",
+        "  transition-delay: " + delay + "ms;",
+        "}",
+      ].join("");
+    }
 
-      /* Shared gradient used by every layer */
-      "#page-curtain-root .pc-layer {",
-      "  background: linear-gradient(135deg,",
-      "    var(--pc-color-1) 0%,",
-      "    var(--pc-color-2) 60%,",
-      "    #0f172a 100%",
-      "  );",
+    s.textContent = [
+      ":root{",
+      "  --pc-dur-out:" + DUR_OUT + "ms;",
+      "  --pc-dur-in:"  + DUR_IN  + "ms;",
+      "  --pc-ease-close:cubic-bezier(0.87,0,0.13,1);",
+      "  --pc-ease-open:cubic-bezier(0.87,0,0.13,1);",
+      "  --pc-c1:#0a0f1e;",
+      "  --pc-c2:#1e3a8a;",
+      "  --pc-c3:#1d4ed8;",
       "}",
+      "html.dark{--pc-c1:#020617;--pc-c2:#0f172a;--pc-c3:#1e40af;}",
 
-      /* ── FADE ── */
-      "#pc-cover {",
-      "  position: absolute; inset: 0;",
-      "  opacity: 0;",
-      "  transform: translateZ(0);",
-      "  transition: opacity var(--pc-dur-out) var(--pc-ease-close);",
-      "  will-change: opacity;",
-      "}",
-      "#pc-cover.pc-show { opacity: 1; }",
-      "#pc-cover.pc-hide {",
-      "  opacity: 0;",
-      "  transition: opacity var(--pc-dur-in) var(--pc-ease-open);",
-      "}",
+      /* root */
+      "#pc-root{pointer-events:none;position:fixed;inset:0;z-index:9998;}",
 
-      /* ── WIPE ── */
-      "#pc-wipe {",
-      "  position: absolute; top: 0; bottom: 0; left: 0;",
-      "  width: 0%;",
-      "  transform: translateZ(0);",
-      "  transition: width var(--pc-dur-out) var(--pc-ease-close);",
-      "  will-change: width;",
+      /* ═════ FADE ═════ */
+      "#pc-fade{",
+      "  position:absolute;inset:0;",
+      "  background:linear-gradient(160deg,var(--pc-c1) 0%,var(--pc-c2) 45%,var(--pc-c3) 100%);",
+      "  opacity:0;transform:translateZ(0);will-change:opacity;",
+      "  transition:opacity var(--pc-dur-out) var(--pc-ease-close);",
       "}",
-      "#pc-wipe.pc-show { width: 100%; }",
-      "#pc-wipe.pc-hide {",
-      "  left: auto; right: 0; width: 0%;",
-      "  transition: width var(--pc-dur-in) var(--pc-ease-open);",
-      "}",
+      "#pc-fade.pc-show{opacity:1;}",
+      "#pc-fade.pc-hide{opacity:0;transition:opacity var(--pc-dur-in) var(--pc-ease-open);}",
 
-      /* ── DOORS ── */
-      ".pc-door {",
-      "  position: absolute; top: 0; bottom: 0;",
-      "  width: 0%;",
-      "  transform: translateZ(0);",
-      "  transition: width var(--pc-dur-out) var(--pc-ease-close);",
-      "  will-change: width;",
+      /* ═════ MULTI-STRIPE WIPE ═════ */
+      /* Container */
+      "#pc-wipe{",
+      "  position:absolute;inset:0;",
+      "  display:flex;flex-direction:row;",
+      "  pointer-events:none;",
       "}",
-      "#pc-door-left  { left: 0; }",
-      "#pc-door-right { right: 0; }",
-      "#pc-door-left.pc-show,",
-      "#pc-door-right.pc-show { width: 50.2%; }",  /* 0.2% overlap seam fix */
-      "#pc-door-left.pc-hide,",
-      "#pc-door-right.pc-hide {",
-      "  width: 0%;",
-      "  transition: width var(--pc-dur-in) var(--pc-ease-open);",
+      /* Each stripe */
+      "#pc-wipe .pc-stripe{",
+      "  flex:1;",
+      "  position:relative;",
+      "  transform:scaleY(0);",
+      "  transform-origin:bottom center;",
+      "  transition:transform var(--pc-dur-out) var(--pc-ease-close);",
+      "  will-change:transform;",
+      "  overflow:hidden;",
       "}",
+      /* Gradient fill on each stripe */
+      "#pc-wipe .pc-stripe::before{",
+      "  content:'';",
+      "  position:absolute;inset:0;",
+      "  background:linear-gradient(180deg,var(--pc-c3) 0%,var(--pc-c2) 60%,var(--pc-c1) 100%);",
+      "}",
+      /* Subtle shimmer line at leading edge of each stripe */
+      "#pc-wipe .pc-stripe::after{",
+      "  content:'';",
+      "  position:absolute;",
+      "  top:0;left:0;right:0;height:3px;",
+      "  background:linear-gradient(90deg,transparent,rgba(147,197,253,.7),transparent);",
+      "  opacity:0;",
+      "  transition:opacity 150ms ease;",
+      "}",
+      "#pc-wipe.pc-show .pc-stripe::after{opacity:1;}",
+      /* Show: stripes unfold from bottom */
+      "#pc-wipe.pc-show .pc-stripe{transform:scaleY(1);}",
+      /* Hide: stripes fold back from top (reverse origin) */
+      "#pc-wipe.pc-hide .pc-stripe{",
+      "  transform:scaleY(0);",
+      "  transform-origin:top center;",
+      "  transition:transform var(--pc-dur-in) var(--pc-ease-open);",
+      "}",
+      /* Stagger delays (generated above) */
+      stripeCSS,
+      /* Reverse stagger on hide (mirror) */
+      (function(){
+        var r="";
+        for(var i=0;i<STRIPES;i++){
+          var d = Math.round((STRIPES-1-i)*(DUR_IN/STRIPES/2));
+          r+="#pc-wipe.pc-hide .pc-stripe:nth-child("+(i+1)+"){transition-delay:"+d+"ms;}";
+        }
+        return r;
+      })(),
 
-      /* ── IRIS (clip-path circle — no layout thrash) ── */
-      "#pc-iris {",
-      "  position: absolute; inset: 0;",
-      "  /* Start as invisible pinpoint at centre */",
-      "  clip-path: circle(0% at 50% 50%);",
-      "  transform: translateZ(0);",
-      "  transition: clip-path var(--pc-dur-out) var(--pc-ease-close);",
-      "  will-change: clip-path;",
+      /* ═════ DOORS ═════ */
+      "#pc-dl,#pc-dr{",
+      "  position:absolute;top:0;bottom:0;width:0%;",
+      "  background:linear-gradient(160deg,var(--pc-c1) 0%,var(--pc-c2) 45%,var(--pc-c3) 100%);",
+      "  transform:translateZ(0);will-change:width;",
+      "  transition:width var(--pc-dur-out) var(--pc-ease-close);",
       "}",
-      "#pc-iris.pc-show {",
-      "  clip-path: circle(150% at 50% 50%);",
-      "}",
-      "#pc-iris.pc-hide {",
-      "  clip-path: circle(0% at 50% 50%);",
-      "  transition: clip-path var(--pc-dur-in) var(--pc-ease-open);",
-      "}",
+      "#pc-dl{left:0;background:linear-gradient(135deg,var(--pc-c1),var(--pc-c2));}",
+      "#pc-dr{right:0;background:linear-gradient(225deg,var(--pc-c1),var(--pc-c2));}",
+      /* Door edge glows */
+      "#pc-dl::after{content:'';position:absolute;top:0;bottom:0;right:0;width:3px;background:linear-gradient(180deg,transparent,#60a5fa,transparent);}",
+      "#pc-dr::after{content:'';position:absolute;top:0;bottom:0;left:0;width:3px;background:linear-gradient(180deg,transparent,#60a5fa,transparent);}",
+      "#pc-dl.pc-show,#pc-dr.pc-show{width:51%;}",
+      "#pc-dl.pc-hide,#pc-dr.pc-hide{width:0%;transition:width var(--pc-dur-in) var(--pc-ease-open);}",
 
-      /* Shimmer sweep across curtain for premium feel */
-      "#page-curtain-root .pc-layer::after {",
-      "  content: '';",
-      "  position: absolute; inset: 0;",
-      "  background: linear-gradient(105deg,",
-      "    transparent 40%,",
-      "    rgba(255,255,255,0.07) 50%,",
-      "    transparent 60%",
-      "  );",
-      "  background-size: 200% 100%;",
-      "  animation: pc-shimmer 1.4s linear infinite;",
+      /* ═════ IRIS ═════ */
+      "#pc-iris{",
+      "  position:absolute;inset:0;",
+      "  background:radial-gradient(circle at 50% 46%,var(--pc-c3) 0%,var(--pc-c2) 40%,var(--pc-c1) 100%);",
+      "  clip-path:circle(0% at 50% 46%);",
+      "  transform:translateZ(0);will-change:clip-path;",
+      "  transition:clip-path var(--pc-dur-out) var(--pc-ease-close);",
       "}",
-      "@keyframes pc-shimmer {",
-      "  from { background-position: 200% 0; }",
-      "  to   { background-position: -200% 0; }",
-      "}",
+      "#pc-iris.pc-show{clip-path:circle(150% at 50% 46%);}",
+      "#pc-iris.pc-hide{clip-path:circle(0% at 50% 46%);transition:clip-path var(--pc-dur-in) var(--pc-ease-open);}",
 
-      /* ── LABEL ── */
-      "#pc-label {",
-      "  position: fixed;",
-      "  bottom: 1.6rem; left: 50%;",
-      "  transform: translateX(-50%) translateY(160%);",
-      "  display: flex; align-items: center; gap: 0.4rem;",
-      "  background: rgba(2, 6, 23, 0.88);",
-      "  color: #e2e8f0;",
-      "  font: 600 0.7rem/1 'Inter', system-ui, sans-serif;",
-      "  letter-spacing: 0.1em;",
-      "  text-transform: uppercase;",
-      "  padding: 0.38rem 1rem;",
-      "  border-radius: 9999px;",
-      "  border: 1px solid rgba(148,163,184,0.18);",
-      "  backdrop-filter: blur(12px);",
-      "  -webkit-backdrop-filter: blur(12px);",
-      "  opacity: 0;",
-      "  transition: opacity 240ms ease, transform 240ms cubic-bezier(0.34,1.56,0.64,1);",
-      "  pointer-events: none;",
-      "  z-index: 10000;",
-      "  white-space: nowrap;",
-      "  box-shadow: 0 4px 24px rgba(0,0,0,0.4);",
+      /* ═════ Brand badge (centre) ═════ */
+      "#pc-brand{",
+      "  position:absolute;top:50%;left:50%;",
+      "  transform:translate(-50%,-54%);",
+      "  display:flex;flex-direction:column;align-items:center;gap:.9rem;",
+      "  opacity:0;transition:opacity 180ms ease 220ms;",
+      "  pointer-events:none;z-index:2;",
       "}",
-      "#pc-label .pc-label-dot {",
-      "  width: 6px; height: 6px;",
-      "  border-radius: 50%;",
-      "  background: #60a5fa;",
-      "  flex-shrink: 0;",
+      "#pc-brand.pc-brand-show{opacity:1;}",
+      "#pc-brand .pc-logo{",
+      "  width:52px;height:52px;border-radius:50%;",
+      "  background:rgba(255,255,255,.08);",
+      "  border:1px solid rgba(255,255,255,.15);",
+      "  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);",
+      "  display:flex;align-items:center;justify-content:center;",
+      "  box-shadow:0 0 32px rgba(59,130,246,.45),inset 0 1px 0 rgba(255,255,255,.12);",
       "}",
-      "#pc-label.pc-label-show {",
-      "  opacity: 1;",
-      "  transform: translateX(-50%) translateY(0);",
-      "}",
+      "#pc-brand .pc-logo i{font-size:1.35rem;color:#93c5fd;animation:pc-pulse 1.5s ease-in-out infinite;}",
+      "@keyframes pc-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.65;transform:scale(.9)}}",
+      "#pc-brand .pc-name{font:700 1rem/1 'Inter',system-ui,sans-serif;color:#f0f9ff;letter-spacing:.07em;}",
+      "#pc-brand .pc-sub{font:400 .62rem/1 'Inter',system-ui,sans-serif;color:#93c5fd;letter-spacing:.14em;text-transform:uppercase;margin-top:-.35rem;}",
+      "#pc-spinner{width:32px;height:32px;border-radius:50%;border:2px solid rgba(147,197,253,.15);border-top-color:#60a5fa;animation:pc-spin .7s linear infinite;}",
+      "@keyframes pc-spin{to{transform:rotate(360deg)}}",
 
-      /* Lock interactions during transition */
-      "html.pc-navigating { cursor: wait; }",
-      "html.pc-navigating a,",
-      "html.pc-navigating button { pointer-events: none !important; }",
+      /* ═════ Progress bar ═════ */
+      "#pc-progress{",
+      "  position:fixed;top:0;left:0;height:2.5px;",
+      "  background:linear-gradient(90deg,#3b82f6,#60a5fa,#bfdbfe);",
+      "  width:0%;z-index:10001;opacity:0;",
+      "  transition:width .18s ease,opacity .3s ease;",
+      "  box-shadow:0 0 8px rgba(59,130,246,.8),0 0 20px rgba(59,130,246,.35);",
+      "}",
+      "#pc-progress.pc-bar-on{opacity:1;}",
+      "#pc-progress.pc-bar-done{opacity:0;width:100%!important;transition:width .12s ease,opacity .45s ease .12s;}",
+
+      /* ═════ Content entrance ═════ */
+      ".pc-enter{animation:pc-enter " + (DUR_IN + 120) + "ms cubic-bezier(0.22,1,0.36,1) both;}",
+      "@keyframes pc-enter{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}",
+
+      "html.pc-busy a,html.pc-busy button{pointer-events:none!important;}",
+      "html.pc-busy{cursor:wait;}",
     ].join("\n");
-    document.head.appendChild(style);
+    document.head.appendChild(s);
   }
 
-  /* ─────────────────────────────────────────
-     DOM  (built once, reused every navigation)
-  ───────────────────────────────────────── */
+  /* ───────────── DOM ───────────── */
   function buildDOM() {
-    if (el("page-curtain-root")) return;
+    if (el("pc-root")) return;
+
+    var bar = document.createElement("div");
+    bar.id = "pc-progress";
+    document.body.appendChild(bar);
+
     var root = document.createElement("div");
-    root.id = "page-curtain-root";
-    root.setAttribute("aria-hidden", "true");
+    root.id = "pc-root";
+    root.setAttribute("aria-hidden","true");
+
+    /* Build stripe divs */
+    var stripeHTML = "";
+    for (var i = 0; i < STRIPES; i++) {
+      stripeHTML += '<div class="pc-stripe"></div>';
+    }
+
     root.innerHTML = [
-      '<div id="pc-cover"     class="pc-layer"></div>',
-      '<div id="pc-wipe"      class="pc-layer"></div>',
-      '<div id="pc-door-left" class="pc-door pc-layer"></div>',
-      '<div id="pc-door-right"class="pc-door pc-layer"></div>',
-      '<div id="pc-iris"      class="pc-layer"></div>',
-      '<div id="pc-label"     aria-live="polite">',
-      '  <span class="pc-label-dot"></span>',
-      '  <span id="pc-label-text"></span>',
+      '<div id="pc-fade"></div>',
+      '<div id="pc-wipe">' + stripeHTML + '</div>',
+      '<div id="pc-dl"></div>',
+      '<div id="pc-dr"></div>',
+      '<div id="pc-iris"></div>',
+      '<div id="pc-brand">',
+      '  <div class="pc-logo"><i class="fas fa-landmark"></i></div>',
+      '  <div class="pc-name">GovAid</div>',
+      '  <div class="pc-sub">Sikkim Portal</div>',
+      '  <div id="pc-spinner"></div>',
       '</div>',
     ].join("");
     document.body.appendChild(root);
   }
 
-  /* ─────────────────────────────────────────
-     Reset — remove all state classes
-  ───────────────────────────────────────── */
-  function resetAll() {
-    var ids = ["pc-cover","pc-wipe","pc-door-left","pc-door-right","pc-iris"];
-    ids.forEach(function(id) {
-      var node = el(id);
-      if (!node) return;
-      node.classList.remove("pc-show","pc-hide");
-      /* Wipe: restore left-to-right direction */
-      if (id === "pc-wipe") {
-        node.style.left  = "0";
-        node.style.right = "auto";
-      }
+  /* ───────────── Layer state ───────────── */
+  function resetLayers() {
+    ["pc-fade","pc-wipe","pc-dl","pc-dr","pc-iris"].forEach(function(id){
+      var n = el(id);
+      if (n) n.classList.remove("pc-show","pc-hide");
     });
+    var brand = el("pc-brand");
+    if (brand) brand.classList.remove("pc-brand-show");
   }
 
-  /* ─────────────────────────────────────────
-     Show curtain (EXIT animation)
-  ───────────────────────────────────────── */
   function showCurtain(effect) {
-    resetAll();
-    /* Force reflow so transition fires on the next state change */
-    void el("page-curtain-root").offsetWidth;
-
-    if (effect === "fade") {
-      el("pc-cover").classList.add("pc-show");
-    } else if (effect === "wipe") {
-      el("pc-wipe").classList.add("pc-show");
-    } else if (effect === "doors") {
-      el("pc-door-left").classList.add("pc-show");
-      el("pc-door-right").classList.add("pc-show");
-    } else if (effect === "iris") {
-      el("pc-iris").classList.add("pc-show");
-    }
+    resetLayers();
+    void el("pc-root").offsetWidth;
+    el("pc-" + (effect === "doors" ? "dl" : effect)).classList.add("pc-show");
+    if (effect === "doors") el("pc-dr").classList.add("pc-show");
+    setTimeout(function(){
+      var b = el("pc-brand");
+      if (b) b.classList.add("pc-brand-show");
+    }, DUR_OUT * 0.45);
   }
 
-  /* ─────────────────────────────────────────
-     Hide curtain (ENTRY / reveal animation)
-     Called after the new page DOM is ready.
-  ───────────────────────────────────────── */
   function hideCurtain(effect) {
-    if (effect === "fade") {
-      el("pc-cover").classList.replace("pc-show","pc-hide");
-    } else if (effect === "wipe") {
-      el("pc-wipe").style.left  = "auto";
-      el("pc-wipe").style.right = "0";
-      el("pc-wipe").classList.replace("pc-show","pc-hide");
-    } else if (effect === "doors") {
-      el("pc-door-left").classList.replace("pc-show","pc-hide");
-      el("pc-door-right").classList.replace("pc-show","pc-hide");
-    } else if (effect === "iris") {
-      el("pc-iris").classList.replace("pc-show","pc-hide");
-    }
+    var brand = el("pc-brand");
+    if (brand) brand.classList.remove("pc-brand-show");
+    el("pc-" + (effect === "doors" ? "dl" : effect)).classList.replace("pc-show","pc-hide");
+    if (effect === "doors") el("pc-dr").classList.replace("pc-show","pc-hide");
   }
 
-  /* ─────────────────────────────────────────
-     Label badge
-  ───────────────────────────────────────── */
-  var EFFECT_ICONS = { fade:"●", wipe:"►", doors:"◀▶", iris:"◎" };
-  function showLabel(effect) {
-    var label    = el("pc-label");
-    var labelTxt = el("pc-label-text");
-    if (!label || !labelTxt) return;
-    clearTimeout(labelTimer);
-    labelTxt.textContent = (EFFECT_ICONS[effect] || "✦") + "  " + effect.toUpperCase();
-    label.classList.add("pc-label-show");
-    labelTimer = setTimeout(function() {
-      label.classList.remove("pc-label-show");
-    }, 1800);
+  /* ───────────── Progress bar ───────────── */
+  function barStart() {
+    var b = el("pc-progress");
+    if (!b) return;
+    b.style.width = "0%";
+    b.classList.remove("pc-bar-done");
+    void b.offsetWidth;
+    b.classList.add("pc-bar-on");
+    setTimeout(function(){ b.style.width="28%"; }, 40);
+    setTimeout(function(){ b.style.width="52%"; }, 180);
+    setTimeout(function(){ b.style.width="70%"; }, 340);
+    setTimeout(function(){ b.style.width="86%"; }, 520);
+  }
+  function barDone() {
+    var b = el("pc-progress");
+    if (!b) return;
+    b.style.width = "100%";
+    b.classList.add("pc-bar-done");
+    setTimeout(function(){ b.classList.remove("pc-bar-on","pc-bar-done"); b.style.width="0%"; }, 700);
   }
 
-  /* ─────────────────────────────────────────
-     Navigate — intercept link click
-  ───────────────────────────────────────── */
-  function getDur(cssVar) {
-    var raw = getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
-    return parseInt(raw,10) || 500;
+  /* ───────────── Content entrance ───────────── */
+  function animateContent() {
+    if (prefersReduced) return;
+    var main = document.querySelector("main") || document.querySelector(".container");
+    if (!main) return;
+    main.classList.add("pc-enter");
+    main.addEventListener("animationend", function(){ main.classList.remove("pc-enter"); }, { once:true });
   }
 
+  /* ───────────── Navigate ───────────── */
   function goTo(href, effect) {
     if (isTransitioning) return;
+    if (prefersReduced) { window.location.href = href; return; }
     isTransitioning = true;
-
-    /* Mark which effect the arriving page should use to reveal itself */
     try { sessionStorage.setItem("pc-arrival-effect", effect); } catch(e) {}
-
-    document.documentElement.classList.add("pc-navigating");
+    document.documentElement.classList.add("pc-busy");
+    barStart();
     showCurtain(effect);
-    showLabel(effect);
-
-    /* Navigate after the curtain has fully covered the screen */
-    var dur = getDur("--pc-dur-out");
-    setTimeout(function() {
-      window.location.href = href;
-    }, dur + 20);
-
-    /* Safety valve — unlock if navigation stalls */
-    setTimeout(function() {
+    setTimeout(function(){ window.location.href = href; }, DUR_OUT + 30);
+    setTimeout(function(){
       isTransitioning = false;
-      document.documentElement.classList.remove("pc-navigating");
-    }, dur + 3000);
+      document.documentElement.classList.remove("pc-busy");
+    }, DUR_OUT + 4000);
   }
 
-  /* ─────────────────────────────────────────
-     Entry reveal — runs on DOMContentLoaded of
-     the NEW page. Only animates if we actually
-     arrived via an in-app navigation.
-  ───────────────────────────────────────── */
-  function playEntryReveal() {
+  /* ───────────── Entry reveal ───────────── */
+  function playEntry() {
     var effect;
     try { effect = sessionStorage.getItem("pc-arrival-effect"); } catch(e) {}
-    /* ← KEY FIX: no fallback — if no stored effect we were NOT doing
-       an in-app navigation (direct URL, external link, browser refresh).
-       In that case skip ALL curtain animation entirely. */
-    if (!effect) return;
+    if (!effect) { animateContent(); return; }
     try { sessionStorage.removeItem("pc-arrival-effect"); } catch(e) {}
+    if (prefersReduced) { animateContent(); return; }
 
-    var inDur = getDur("--pc-dur-in");
+    /* Snap to closed without transition */
+    var ids = ["pc-fade","pc-wipe","pc-dl","pc-dr","pc-iris"];
+    ids.forEach(function(id){ var n=el(id); if(n) n.style.transition="none"; });
+    /* also suppress stripe transitions */
+    var stripes = el("pc-wipe") ? el("pc-wipe").querySelectorAll(".pc-stripe") : [];
+    stripes.forEach(function(s){ s.style.transition="none"; s.style.transitionDelay="0ms"; });
+    void el("pc-root").offsetWidth;
 
-    /* Snap the curtain to fully-closed position WITHOUT any CSS transition */
-    var ids = ["pc-cover","pc-wipe","pc-door-left","pc-door-right","pc-iris"];
-    ids.forEach(function(id) {
-      var node = el(id);
-      if (node) node.style.transition = "none";
-    });
-    void el("page-curtain-root").offsetWidth; /* flush */
+    resetLayers();
+    el("pc-" + (effect === "doors" ? "dl" : effect)).classList.add("pc-show");
+    if (effect === "doors") el("pc-dr").classList.add("pc-show");
 
-    /* Depending on effect, force the "fully covered" CSS state instantly */
-    resetAll();
-    if (effect === "fade") {
-      el("pc-cover").classList.add("pc-show");
-    } else if (effect === "wipe") {
-      var w = el("pc-wipe");
-      w.style.width = "100%"; w.style.left = "0"; w.style.right = "auto";
-      w.classList.add("pc-show");
-    } else if (effect === "doors") {
-      el("pc-door-left").classList.add("pc-show");
-      el("pc-door-right").classList.add("pc-show");
-    } else if (effect === "iris") {
-      el("pc-iris").classList.add("pc-show");
-    }
-
-    /* Re-enable transitions, then trigger the reveal (open) */
-    requestAnimationFrame(function() {
-      requestAnimationFrame(function() {
-        ids.forEach(function(id) {
-          var node = el(id);
-          if (node) node.style.transition = "";
-        });
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        /* Re-enable transitions */
+        ids.forEach(function(id){ var n=el(id); if(n) n.style.transition=""; });
+        stripes.forEach(function(s){ s.style.transition=""; s.style.transitionDelay=""; });
+        barDone();
         hideCurtain(effect);
-        setTimeout(function() {
-          resetAll(); /* fully clean up after reveal */
+        setTimeout(function(){
+          resetLayers();
           isTransitioning = false;
-          document.documentElement.classList.remove("pc-navigating");
-        }, inDur + 80);
+          document.documentElement.classList.remove("pc-busy");
+          animateContent();
+        }, DUR_IN + 100);
       });
     });
   }
 
-  /* ─────────────────────────────────────────
-     Link filter — only intercept same-origin
-     non-hash, non-download, non-blank links
-  ───────────────────────────────────────── */
+  /* ───────────── Link filter ───────────── */
   function isInternal(a) {
     if (!a || !a.href) return false;
     try {
       var url = new URL(a.href);
-      if (url.origin !== location.origin)              return false;
-      if (a.target === "_blank")                       return false;
+      if (url.origin !== location.origin)             return false;
+      if (a.target === "_blank")                      return false;
       var raw = a.getAttribute("href") || "";
-      if (raw === "#" || raw.charAt(0) === "#")        return false;
-      if (a.hasAttribute("download"))                  return false;
+      if (!raw || raw === "#" || raw.charAt(0) === "#") return false;
+      if (a.hasAttribute("download"))                 return false;
       if (url.protocol !== "http:" && url.protocol !== "https:") return false;
-      if (a.hasAttribute("data-no-curtain"))           return false;
-      if (url.href === location.href)                  return false;
+      if (a.hasAttribute("data-no-curtain"))          return false;
+      if (url.href === location.href)                 return false;
       return true;
-    } catch(e) { return false; }
+    } catch(e){ return false; }
   }
 
-  /* ─────────────────────────────────────────
-     Single click interceptor (registered once)
-  ───────────────────────────────────────── */
-  function attachClickHandler() {
-    document.addEventListener("click", function(e) {
+  /* ───────────── Init ───────────── */
+  function init() {
+    injectStyles();
+    buildDOM();
+    playEntry();
+    document.addEventListener("click", function(e){
       var a = e.target.closest("a");
-      if (!a) return;
-      if (!isInternal(a)) return;
+      if (!a || !isInternal(a)) return;
       if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
       e.preventDefault();
       goTo(a.href, nextEffect());
     }, { capture: true });
-  }
-
-  /* ─────────────────────────────────────────
-     Bootstrap
-  ───────────────────────────────────────── */
-  function init() {
-    injectStyles();
-    buildDOM();
-    playEntryReveal();   /* reveals curtain only if arriving from in-app nav */
-    attachClickHandler();
   }
 
   if (document.readyState === "loading") {
@@ -415,5 +368,4 @@
   } else {
     init();
   }
-
 })();
